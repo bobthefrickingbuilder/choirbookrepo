@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="choirbook.css">
+<script src="_ds/choirbook-design-system-9d7b3b08-5cc4-4553-b44b-4db9eb92dfdb/_ds_bundle.js"></script>
+</helmet>
+<div style="width:100%; max-width:1200px; margin:0 auto; padding:{{ pad }}; display:flex; flex-direction:column; gap:20px;">
+  <header style="display:flex; flex-direction:column; gap:6px;">
+    <span style="font:700 12px/1.2 var(--font-ui); letter-spacing:var(--tracking-overline); text-transform:uppercase; color:var(--accent-text);">{{ X.over }}</span>
+    <h1 style="font:500 {{ h1 }}/1.15 var(--font-display); letter-spacing:var(--tracking-display); margin:0;">{{ title }}</h1>
+    <div style="display:flex; flex-wrap:wrap; align-items:center; gap:8px 12px; margin-top:2px; font-size:14px; color:var(--text-2);">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.VoicePartBadge" part="A2" variant="pill" lang="{{ lang }}" hint-size="90px,24px"></x-import>
+      <span>{{ X.year }}</span>
+    </div>
+  </header>
+
+<sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+  <div style="display:flex; flex-wrap:wrap; gap:20px; align-items:flex-start;">
+    <div style="flex:1 1 400px; min-width:0; display:flex; flex-direction:column; gap:20px;">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.NextRehearsalCard" when="{{ X.tonight }}" date="{{ data.rehearsal.date }}" start="{{ data.rehearsal.start }}" end="{{ data.rehearsal.end }}" call-time="{{ data.rehearsal.callTime }}" location="{{ data.rehearsal.location }}" address="{{ data.rehearsal.address }}" map-href="#" bring="{{ X.bring }}" countdown="{{ X.countdown }}" locale="{{ locale }}" hint-size="100%,300px"></x-import>
+
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Card" title="{{ X.practice }}" action="{{ dueBadge }}" hint-size="100%,320px">
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          <div style="display:flex; flex-direction:column; gap:2px;">
+            <h3 style="margin:0; font:500 24px/1.2 var(--font-display); letter-spacing:var(--tracking-display);">{{ data.practice.piece }}</h3>
+            <span style="font:italic 400 15px/1.4 var(--font-display); color:var(--text-2);">{{ data.practice.composer }} · {{ data.practice.bars }}</span>
+          </div>
+          <blockquote style="margin:0; padding:12px 14px; border-radius:var(--radius-md); background:var(--surface-muted); display:flex; flex-direction:column; gap:6px;">
+            <p style="margin:0; font:400 15px/1.5 var(--font-ui); color:var(--text-1);">{{ data.practice.text }}</p>
+            <cite style="font-style:normal; font:600 12.5px/1.3 var(--font-ui); color:var(--text-3);">{{ data.practice.from }} · {{ X.conductor }}</cite>
+          </blockquote>
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.AudioPlayer" part="A" label="{{ X.trackLabel }}" duration="{{ 196 }}" lang="{{ lang }}" hint-size="100%,96px"></x-import>
+          <div style="display:flex; flex-wrap:wrap; gap:8px;">
+            <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" variant="secondary" size="sm" icon-start="file-text" href="#" hint-size="140px,32px">{{ X.score }}</x-import>
+          </div>
+        </div>
+      </x-import>
+
+      <section style="display:flex; flex-direction:column; gap:12px;">
+        <h2 style="margin:0; font:500 var(--text-h3)/var(--lh-h3) var(--font-display);">{{ X.concerts }}</h2>
+        <sc-for list="{{ concerts }}" as="c" hint-placeholder-count="2">
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Card" padded="{{ false }}" hint-size="100%,160px">
+            <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.EventCard" type="concert" title="{{ c.title }}" date="{{ c.date }}" start="{{ c.start }}" end="{{ c.end }}" location="{{ c.location }}" note="{{ c.noteNode }}" locale="{{ locale }}" flat="{{ true }}" hint-size="100%,150px"></x-import>
+          </x-import>
+        </sc-for>
+      </section>
+    </div>
+
+    <section style="flex:1 1 380px; min-width:0; display:flex; flex-direction:column; gap:12px;">
+      <div style="display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+        <h2 style="margin:0; font:500 var(--text-h3)/var(--lh-h3) var(--font-display);">{{ X.library }}</h2>
+        <span style="font-size:13px; color:var(--text-3);">{{ X.libraryMeta }}</span>
+      </div>
+      <sc-for list="{{ homePieces }}" as="m" hint-placeholder-count="3">
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.MusicItem" title="{{ m.title }}" composer="{{ m.composer }}" arranger="{{ m.arranger }}" voicing="{{ m.voicing }}" duration="{{ m.duration }}" language="{{ m.language }}" score-href="#" score-size="{{ m.scoreSize }}" tracks="{{ m.tracks }}" due="{{ m.due }}" lang="{{ lang }}" hint-size="100%,200px"></x-import>
+      </sc-for>
+      <sc-if value="{{ hasMore }}" hint-placeholder-val="{{ false }}">
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" variant="secondary" full-width="{{ true }}" icon-end="arrow-right" on-click="{{ goMusic }}" hint-size="100%,40px">{{ X.allMusic }}</x-import>
+      </sc-if>
+    </section>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isMusic }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex; flex-direction:column; gap:16px; max-width:760px;">
+    <p style="margin:0; color:var(--text-2);">{{ X.libraryMeta }}</p>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.SearchField" value="{{ query }}" on-change="{{ onQuery }}" placeholder="{{ X.searchMusic }}" label="{{ X.searchMusic }}" hint-size="100%,40px"></x-import>
+    <sc-for list="{{ pieces }}" as="m" hint-placeholder-count="5">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.MusicItem" title="{{ m.title }}" composer="{{ m.composer }}" arranger="{{ m.arranger }}" voicing="{{ m.voicing }}" duration="{{ m.duration }}" language="{{ m.language }}" score-href="#" score-size="{{ m.scoreSize }}" tracks="{{ m.tracks }}" due="{{ m.due }}" lang="{{ lang }}" hint-size="100%,200px"></x-import>
+    </sc-for>
+    <sc-if value="{{ noMusic }}" hint-placeholder-val="{{ false }}">
+      <div style="background:var(--surface-card); border:1px solid var(--border-subtle); border-radius:var(--radius-lg);">
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.EmptyState" icon="music" title="{{ X.noMusic }}" size="sm" hint-size="100%,200px">{{ X.noMusicBody }}</x-import>
+      </div>
+    </sc-if>
+  </div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const TX = {
+  en: { over: 'Thursday, October 15', hi: (n) => `Hi, ${n}`, music: 'Music', year: '3rd year · Ottawa Regional Youth Choir', tonight: 'Tonight', countdown: 'Starts in 2 h 10 min', bring: 'Folder, pencil, water. Wear your choir T-shirt for the 8:15 photo.', practice: 'This week’s practice', due: 'Due Thu, Oct 22', conductor: 'Conductor', trackLabel: 'Alto · Bogoroditse Devo', score: 'Score (PDF)', concerts: 'Upcoming concerts', call: 'Call time', library: 'Music library', libraryMeta: 'Winter Light repertoire · 5 pieces · alto tracks', allMusic: 'See all music', searchMusic: 'Search music', noMusic: 'No pieces match', noMusicBody: 'Try a composer or a shorter title.', altoTrack: 'Alto learning track' },
+  fr: { over: 'Jeudi 15 octobre', hi: (n) => `Bonjour ${n}`, music: 'Musique', year: '3e année · Ottawa Regional Youth Choir', tonight: 'Ce soir', countdown: 'Dans 2 h 10', bring: 'Cartable, crayon, eau. Portez le t-shirt du chœur pour la photo de 20 h 15.', practice: 'À travailler cette semaine', due: 'Pour le jeu. 22 oct.', conductor: 'Cheffe', trackLabel: 'Alto · Bogoroditse Devo', score: 'Partition (PDF)', concerts: 'Concerts à venir', call: 'Arrivée', library: 'Répertoire', libraryMeta: 'Répertoire Winter Light · 5 pièces · pistes alto', allMusic: 'Voir toute la musique', searchMusic: 'Rechercher', noMusic: 'Aucune pièce trouvée', noMusicBody: 'Essayez un compositeur ou un titre plus court.', altoTrack: 'Piste d’apprentissage alto' },
+};
+const norm = (s) => (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+class Component extends DCLogic {
+  state = { query: '' };
+  componentDidMount() { this.waitDS(); }
+  waitDS() { if (window.ChoirbookDesignSystem_9d7b3b?.MusicItem) this.forceUpdate(); else setTimeout(() => this.waitDS(), 60); }
+  renderVals() {
+    const p = this.props, s = this.state;
+    const NS = window.ChoirbookDesignSystem_9d7b3b || {};
+    const h = (C, pr, ...c) => (C ? React.createElement(C, pr, ...c) : null);
+    const d = p.data || {};
+    const lang = p.lang ?? 'en';
+    const X = TX[lang];
+    const mobile = p.device === 'mobile';
+    const music = p.view === 'music';
+    const q = norm(s.query.trim());
+    const all = (d.repertoire || []).map((m) => ({ ...m, tracks: [{ part: 'A', label: X.altoTrack, duration: m.seconds }] }));
+    const pieces = all.filter((m) => !q || norm(m.title + m.composer).includes(q));
+    const homePieces = mobile ? all.slice(0, 2) : all;
+    return {
+      data: d, X, lang, locale: lang === 'fr' ? 'fr-CA' : 'en-CA',
+      pad: mobile ? '16px 16px 32px' : p.device === 'tablet' ? '24px 24px 48px' : '28px 32px 56px',
+      h1: mobile ? '28px' : 'var(--text-h1)',
+      title: music ? X.music : X.hi(d.users?.chorister?.first ?? ''),
+      isHome: !music, isMusic: music,
+      dueBadge: h(NS.Badge, { tone: 'accent', icon: 'calendar-check' }, X.due),
+      concerts: (d.concerts || []).map((c) => ({ ...c, noteNode: h('span', { style: { display: 'flex', flexDirection: 'column', gap: 6, marginTop: 8 } }, h('span', null, h(NS.Badge, { tone: 'accent', icon: 'clock', size: 'md' }, `${X.call} ${c.call}`)), h('span', { style: { fontSize: 14, color: 'var(--text-2)' } }, c.dress)) })),
+      homePieces, hasMore: mobile, goMusic: () => p.go?.('chorister-music'),
+      pieces, noMusic: pieces.length === 0,
+      query: s.query, onQuery: (v) => this.setState({ query: v }),
+    };
+  }
+}
+</script>
+</body>
+</html>

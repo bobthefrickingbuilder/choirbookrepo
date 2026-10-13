@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="choirbook.css">
+<script src="_ds/choirbook-design-system-9d7b3b08-5cc4-4553-b44b-4db9eb92dfdb/_ds_bundle.js"></script>
+</helmet>
+<div style="width:100%; max-width:1200px; margin:0 auto; padding:{{ pad }}; display:flex; flex-direction:column; gap:20px;">
+  <header style="display:flex; flex-wrap:wrap; align-items:flex-end; gap:14px 24px;">
+    <div style="flex:1 1 260px; min-width:0; display:flex; flex-direction:column; gap:6px;">
+      <span style="font:700 12px/1.2 var(--font-ui); letter-spacing:var(--tracking-overline); text-transform:uppercase; color:var(--accent-text);">{{ X.over }}</span>
+      <h1 style="font:500 {{ h1 }}/1.15 var(--font-display); letter-spacing:var(--tracking-display); margin:0;">{{ title }}</h1>
+      <p style="margin:0; font-size:14px; color:var(--text-2);">{{ child.choirName }} · {{ child.partLabel }}</p>
+    </div>
+    <div style="flex:0 1 320px; min-width:220px;">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.SegmentedControl" full-width="{{ true }}" label="{{ X.choose }}" value="{{ child.id }}" on-change="{{ pickChild }}" options="{{ kidOptions }}" hint-size="100%,38px"></x-import>
+    </div>
+  </header>
+
+  <div style="display:flex; flex-wrap:wrap; gap:20px; align-items:flex-start;">
+    <div style="flex:1.3 1 420px; min-width:0; display:flex; flex-direction:column; gap:20px;">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.NextRehearsalCard" when="{{ next.when }}" date="{{ next.date }}" start="{{ next.start }}" end="{{ next.end }}" call-time="{{ next.callTime }}" location="{{ next.location }}" address="{{ next.address }}" map-href="#" bring="{{ next.bring }}" pieces="{{ next.pieces }}" countdown="{{ next.countdown }}" status="{{ nextStatus }}" actions="{{ nextActions }}" locale="{{ locale }}" hint-size="100%,420px"></x-import>
+
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Card" title="{{ X.todo }}" action="{{ todoBadge }}" padded="{{ false }}" hint-size="100%,180px">
+        <ul style="list-style:none; margin:0; padding:0;">
+          <sc-for list="{{ todo }}" as="it" hint-placeholder-count="2">
+            <li style="display:flex; flex-wrap:wrap; align-items:center; gap:12px; padding:14px 20px; border-bottom:1px solid var(--border-subtle);">
+              <span aria-hidden="true" style="flex:none; width:40px; height:40px; display:grid; place-items:center; border-radius:var(--radius-md); background:var(--warning-subtle); color:var(--warning-text); border:1px solid var(--warning-border);">
+                <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Icon" name="{{ it.icon }}" size="{{ 20 }}" hint-size="20px,20px"></x-import>
+              </span>
+              <div style="flex:1 1 160px; min-width:0;">
+                <div style="font:600 15px/1.35 var(--font-ui);">{{ it.title }}</div>
+                <div style="font:400 13.5px/1.4 var(--font-ui); color:var(--text-2); font-variant-numeric:var(--numeric-tabular);">{{ it.detail }}</div>
+              </div>
+              <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" variant="secondary" icon-start="{{ it.btnIcon }}" on-click="{{ it.open }}" hint-size="110px,40px">{{ it.action }}</x-import>
+            </li>
+          </sc-for>
+        </ul>
+        <sc-if value="{{ allDone }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex; align-items:center; gap:10px; padding:16px 20px; color:var(--success-text); font:500 14.5px/1.4 var(--font-ui);">
+            <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Icon" name="circle-check" size="{{ 20 }}" hint-size="20px,20px"></x-import>{{ X.allDone }}
+          </div>
+        </sc-if>
+      </x-import>
+    </div>
+
+    <div style="flex:1 1 360px; min-width:0; display:flex; flex-direction:column; gap:20px;">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Card" title="{{ X.announcements }}" padded="{{ false }}" hint-size="100%,360px">
+        <sc-for list="{{ announcements }}" as="a" hint-placeholder-count="3">
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.AnnouncementItem" title="{{ a.title }}" author="{{ a.author }}" role="{{ a.role }}" date="{{ a.date }}" body="{{ a.body }}" unread="{{ a.unread }}" requires-ack="{{ a.requiresAck }}" acknowledged="{{ a.acknowledged }}" acknowledged-at="{{ a.acknowledgedAt }}" ack-due="{{ a.ackDue }}" on-acknowledge="{{ a.ack }}" lang="{{ lang }}" hint-size="100%,120px"></x-import>
+        </sc-for>
+      </x-import>
+
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Card" title="{{ X.coming }}" padded="{{ false }}" hint-size="100%,420px">
+        <div style="display:flex; flex-direction:column;">
+          <sc-for list="{{ events }}" as="e" hint-placeholder-count="5">
+            <div style="border-bottom:1px solid var(--border-subtle);">
+              <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.EventCard" type="{{ e.type }}" title="{{ e.title }}" date="{{ e.date }}" start="{{ e.start }}" end="{{ e.end }}" location="{{ e.location }}" note="{{ e.calBtn }}" locale="{{ locale }}" flat="{{ true }}" hint-size="100%,120px"></x-import>
+            </div>
+          </sc-for>
+        </div>
+      </x-import>
+    </div>
+  </div>
+</div>
+
+<x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Modal" open="{{ absenceOpen }}" on-close="{{ closeModal }}" size="sm" title="{{ t.reportAbsence }}" close-label="{{ X.close }}" footer="{{ absenceFooter }}" hint-size="0px,0px">
+  <div style="display:flex; flex-direction:column; gap:18px;">
+    <p style="margin:0; color:var(--text-2);">{{ X.forChild }}</p>
+    <fieldset style="border:0; margin:0; padding:0; display:flex; flex-direction:column; gap:8px;">
+      <legend style="padding:0; margin-bottom:8px; font:600 14px/1.3 var(--font-ui); color:var(--text-1);">{{ X.dates }}</legend>
+      <div style="display:flex; flex-wrap:wrap; gap:6px;">
+        <sc-for list="{{ absenceDates }}" as="dt" hint-placeholder-count="5">
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Chip" selected="{{ dt.on }}" on-click="{{ dt.toggle }}" hint-size="120px,32px">{{ dt.label }}</x-import>
+        </sc-for>
+      </div>
+    </fieldset>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.RadioGroup" label="{{ X.reason }}" value="{{ reason }}" on-change="{{ setReason }}" options="{{ reasonOptions }}" hint-size="100%,200px"></x-import>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="{{ X.note }}" optional="{{ true }}" multiline="{{ true }}" rows="{{ 2 }}" value="{{ absNote }}" on-change="{{ onAbsNote }}" placeholder="{{ X.notePh }}" hint="{{ X.noteHint }}" hint-size="100%,110px"></x-import>
+  </div>
+</x-import>
+
+<x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Modal" open="{{ signOpen }}" on-close="{{ closeModal }}" size="md" title="{{ X.permTitle }}" close-label="{{ X.close }}" hint-size="0px,0px">
+  <div style="display:flex; flex-direction:column; gap:16px;">
+    <dl style="margin:0; display:grid; grid-template-columns:minmax(7rem,auto) minmax(0,1fr); gap:8px 16px; padding:14px 16px; background:var(--surface-muted); border-radius:var(--radius-md); font-size:14px;">
+      <sc-for list="{{ permDetails }}" as="pd" hint-placeholder-count="5">
+        <dt style="color:var(--text-3); font-weight:600;">{{ pd.k }}</dt>
+        <dd style="margin:0; color:var(--text-1);">{{ pd.v }}</dd>
+      </sc-for>
+    </dl>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.ConsentSignature" title="{{ X.consentTitle }}" agree-label="{{ X.agree }}" on-sign="{{ onSign }}" locale="{{ locale }}" required="{{ true }}" hint-size="100%,380px">
+      <p style="margin:0;">{{ X.consent1 }}</p>
+      <p style="margin:8px 0 0;">{{ X.consent2 }}</p>
+    </x-import>
+  </div>
+</x-import>
+
+<x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Modal" open="{{ payOpen }}" on-close="{{ closeModal }}" size="sm" title="{{ X.payTitle }}" close-label="{{ X.close }}" footer="{{ payFooter }}" hint-size="0px,0px">
+  <div style="display:flex; flex-direction:column; gap:16px;">
+    <div style="display:flex; flex-direction:column; gap:8px; padding:14px 16px; background:var(--surface-muted); border-radius:var(--radius-md);">
+      <div style="display:flex; justify-content:space-between; gap:12px; font-size:14px; color:var(--text-2);"><span>{{ X.feeLine }}</span><span style="font-variant-numeric:var(--numeric-tabular);">$390.00</span></div>
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:12px; padding-top:8px; border-top:1px solid var(--border-default);"><span style="font-weight:600; color:var(--text-1);">{{ X.total }}</span><span style="font:500 24px/1 var(--font-display); font-variant-numeric:var(--numeric-tabular); color:var(--text-1);">$390.00</span></div>
+    </div>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="{{ X.cardName }}" auto-complete="cc-name" default-value="Daniel Martin" size="lg" hint-size="100%,72px"></x-import>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="{{ X.cardNumber }}" icon-start="credit-card" input-mode="numeric" auto-complete="cc-number" placeholder="1234 1234 1234 1234" size="lg" hint-size="100%,72px"></x-import>
+    <div style="display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px;">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="{{ X.expiry }}" auto-complete="cc-exp" placeholder="MM / YY" size="lg" hint-size="100%,72px"></x-import>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="CVC" auto-complete="cc-csc" placeholder="123" size="lg" hint-size="100%,72px"></x-import>
+    </div>
+    <p style="display:flex; align-items:center; gap:8px; margin:0; font-size:13px; color:var(--text-3);">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Icon" name="lock" size="{{ 15 }}" stroke-width="{{ 2 }}" hint-size="15px,15px"></x-import>{{ X.secure }}
+    </p>
+  </div>
+</x-import>
+
+<x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.ToastStack" toasts="{{ toasts }}" on-dismiss="{{ dismissToast }}" hint-size="0px,0px"></x-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const TX = {
+  en: { over: 'Thursday, October 15', week: (n) => `${n}’s week`, choose: 'Choose chorister', todo: 'To do', allDone: 'All caught up. Nothing to sign or pay.', announcements: 'Announcements', coming: 'Coming up', close: 'Close', cancel: 'Cancel', send: 'Send to choir staff', dates: 'Which rehearsals?', reason: 'Reason', note: 'Note for the conductor', notePh: 'e.g. Arriving at 7:15 after a school concert', noteHint: 'Arriving late or leaving early? Choose the date and say so here.',
+    reasons: [['ill', 'Illness'], ['school', 'School commitment'], ['family', 'Family'], ['travel', 'Travel'], ['other', 'Other']],
+    reported: 'Excused · reported by you', forChild: (n, c) => `For ${n} · ${c}`, permTitle: 'Winter Light permission form', consentTitle: 'Permission to take part', agree: 'I have read the details and give permission.',
+    consent1: (n) => `I give permission for ${n} to take part in the Winter Light dress rehearsal and concert, and to travel with the choir between Grace Hall and Holy Trinity Church.`,
+    consent2: 'In an emergency, chaperones may arrange medical care if a guardian cannot be reached.',
+    perm: [['Dress rehearsal', 'Friday, December 11 · 5:30–8:30 p.m.'], ['Concert', 'Saturday, December 12 · call 5:45 p.m., concert 7:00 p.m.'], ['Venue', 'Holy Trinity Church, 120 Oak Avenue'], ['Pick-up', '9:15 p.m. at the church hall doors'], ['Due', 'Monday, November 30']],
+    payTitle: 'Pay annual fee', feeLine: 'Annual fee 2026–27 · Ella Martin', total: 'Total', cardName: 'Name on card', cardNumber: 'Card number', expiry: 'Expiry', secure: 'Payments are encrypted. Choirbook never stores your full card number.', pay: 'Pay $390.00',
+    tAbs: 'Absence reported', tAbsBody: (n) => `${n}’s conductor and section leader can see it.`, tSign: 'Permission form signed', tSignBody: 'A copy was emailed to daniel.martin@example.com.', tPay: 'Payment received', tPayBody: 'Receipt ORYC-2026-0418 was emailed to you.', tCal: 'Added to your calendar' },
+  fr: { over: 'Jeudi 15 octobre', week: (n) => `La semaine de ${n}`, choose: 'Choisir le choriste', todo: 'À faire', allDone: 'Tout est à jour. Rien à signer ni à payer.', announcements: 'Annonces', coming: 'À venir', close: 'Fermer', cancel: 'Annuler', send: 'Envoyer au personnel', dates: 'Quelles répétitions ?', reason: 'Motif', note: 'Note pour la cheffe', notePh: 'p. ex. Arrivée à 19 h 15 après un concert scolaire', noteHint: 'Arrivée tardive ou départ hâtif ? Choisissez la date et précisez-le ici.',
+    reasons: [['ill', 'Maladie'], ['school', 'Engagement scolaire'], ['family', 'Famille'], ['travel', 'Voyage'], ['other', 'Autre']],
+    reported: 'Motivé · signalé par vous', forChild: (n, c) => `Pour ${n} · ${c}`, permTitle: 'Autorisation Winter Light', consentTitle: 'Autorisation de participer', agree: 'J’ai lu les détails et je donne mon autorisation.',
+    consent1: (n) => `J’autorise ${n} à participer à la générale et au concert Winter Light, et à se déplacer avec le chœur entre Grace Hall et l’église Holy Trinity.`,
+    consent2: 'En cas d’urgence, les accompagnateurs peuvent organiser des soins si un parent ne peut être joint.',
+    perm: [['Générale', 'Vendredi 11 décembre · 17 h 30 à 20 h 30'], ['Concert', 'Samedi 12 décembre · arrivée 17 h 45, concert 19 h'], ['Lieu', 'Église Holy Trinity, 120, avenue Oak'], ['Retour', '21 h 15 aux portes de la salle paroissiale'], ['Échéance', 'Lundi 30 novembre']],
+    payTitle: 'Payer les frais annuels', feeLine: 'Frais annuels 2026-2027 · Ella Martin', total: 'Total', cardName: 'Nom sur la carte', cardNumber: 'Numéro de carte', expiry: 'Expiration', secure: 'Les paiements sont chiffrés. Choirbook ne conserve jamais votre numéro complet.', pay: 'Payer 390,00 $',
+    tAbs: 'Absence signalée', tAbsBody: (n) => `La cheffe et le chef de pupitre de ${n} en sont informés.`, tSign: 'Autorisation signée', tSignBody: 'Une copie a été envoyée à daniel.martin@example.com.', tPay: 'Paiement reçu', tPayBody: 'Le reçu ORYC-2026-0418 vous a été envoyé.', tCal: 'Ajouté à votre calendrier' },
+};
+class Component extends DCLogic {
+  state = this.initState(this.props);
+  initState(p) {
+    const demo = p.demo;
+    return {
+      modal: ['absence', 'sign', 'pay'].includes(demo) ? demo : null,
+      reported: demo === 'reported' ? { ella: true } : {}, completed: {}, added: {}, acked: {}, toasts: [],
+      absDates: demo === 'absence' ? { '2026-10-22': true } : {}, reason: demo === 'absence' ? 'school' : null,
+      absNote: demo === 'absence' ? 'Grade 10 band concert at Bayview that evening.' : '',
+    };
+  }
+  componentDidMount() { this.waitDS(); }
+  waitDS() { if (window.ChoirbookDesignSystem_9d7b3b?.Modal) this.forceUpdate(); else setTimeout(() => this.waitDS(), 60); }
+  componentDidUpdate(prev) { if (prev.demo !== this.props.demo) this.setState(this.initState(this.props)); }
+  toast(tone, title, body) {
+    const id = String(Date.now());
+    this.setState((s) => ({ toasts: [...s.toasts, { id, tone, title, children: body, duration: 5000 }] }));
+  }
+  renderVals() {
+    const p = this.props, s = this.state;
+    const NS = window.ChoirbookDesignSystem_9d7b3b || {};
+    const h = (C, pr, ...c) => (C ? React.createElement(C, pr, ...c) : null);
+    const d = p.data || {}, t = p.t || {};
+    const lang = p.lang ?? 'en';
+    const X = TX[lang];
+    const mobile = p.device === 'mobile';
+    const kids = d.guardianChildren || [];
+    const c = kids.find((k) => k.id === p.childId) || kids[0] || { next: {}, todo: [], announcements: [], events: [], absenceDates: [] };
+    const choir = (d.choirs || []).find((x) => x.id === c.choirId) || {};
+    const partLabel = c.part ? `${d.sections?.[c.part[0]]?.one?.[lang]} ${c.part.slice(1)}` : (lang === 'fr' ? 'Voix aiguë' : 'Treble');
+    const reported = !!s.reported[c.id];
+    const todo = c.todo.filter((i) => !s.completed[i.id]).map((i) => ({ ...i, btnIcon: i.kind === 'form' ? 'signature' : 'credit-card', action: i.kind === 'form' ? (lang === 'fr' ? 'Signer' : 'Sign form') : (lang === 'fr' ? 'Payer 390 $' : 'Pay $390'), open: () => this.setState({ modal: i.kind === 'form' ? 'sign' : 'pay' }) }));
+    const picked = c.absenceDates.filter((x) => s.absDates[x.id]);
+    const canSend = picked.length > 0 && !!s.reason;
+    const close = () => this.setState({ modal: null });
+    return {
+      t, X, lang, locale: lang === 'fr' ? 'fr-CA' : 'en-CA',
+      pad: mobile ? '16px 16px 32px' : p.device === 'tablet' ? '24px 24px 48px' : '28px 32px 56px',
+      h1: mobile ? '28px' : 'var(--text-h1)',
+      title: X.week(c.first),
+      child: { ...c, choirName: choir.name, partLabel },
+      kidOptions: kids.map((k) => ({ value: k.id, label: k.first })),
+      pickChild: (id) => { p.setChildId?.(id); this.setState({ modal: null }); },
+      next: { ...c.next, when: c.next.when?.[lang], countdown: c.next.countdown?.[lang] },
+      nextStatus: reported ? h(NS.AttendanceBadge, { status: 'excused', size: 'md', lang }, X.reported) : null,
+      nextActions: reported ? null : h(NS.Button, { size: 'lg', fullWidth: true, iconStart: 'calendar-x', onClick: () => this.setState({ modal: 'absence' }) }, t.reportAbsence),
+      todo, allDone: todo.length === 0, todoBadge: todo.length ? h(NS.Badge, { tone: 'accent' }, String(todo.length)) : null,
+      announcements: c.announcements.map((a) => ({ ...a, unread: a.unread && !s.acked[a.id], acknowledged: !!s.acked[a.id], acknowledgedAt: lang === 'fr' ? 'À l’instant' : 'Just now', ack: () => this.setState({ acked: { ...s.acked, [a.id]: true } }) })),
+      events: c.events.map((e) => {
+        const on = !!s.added[e.id];
+        return { ...e, calBtn: h('span', { style: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8, marginTop: 8 } }, e.note ? h(NS.Badge, { tone: 'accent', icon: 'clock' }, e.note) : null, h(NS.Button, { size: 'sm', variant: on ? 'tonal' : 'secondary', iconStart: on ? 'calendar-check' : 'plus', onClick: () => { this.setState({ added: { ...s.added, [e.id]: !on } }); if (!on) this.toast('success', X.tCal, e.title); } }, on ? t.added : t.addToCalendar)) };
+      }),
+      closeModal: close,
+      absenceOpen: s.modal === 'absence', signOpen: s.modal === 'sign', payOpen: s.modal === 'pay',
+      forChild: X.forChild(c.first, choir.name),
+      X: { ...X, forChild: X.forChild(c.first, choir.name), consent1: X.consent1(c.name) },
+      absenceDates: c.absenceDates.map((x) => ({ ...x, on: !!s.absDates[x.id], toggle: () => this.setState({ absDates: { ...s.absDates, [x.id]: !s.absDates[x.id] } }) })),
+      reasonOptions: X.reasons.map(([value, label]) => ({ value, label })),
+      reason: s.reason, setReason: (v) => this.setState({ reason: v }),
+      absNote: s.absNote, onAbsNote: (e) => this.setState({ absNote: e.target.value }),
+      absenceFooter: [
+        h(NS.Button, { key: 'c', variant: 'secondary', onClick: close }, X.cancel),
+        h(NS.Button, { key: 's', iconStart: 'send', disabled: !canSend, onClick: () => { this.setState({ modal: null, reported: { ...s.reported, [c.id]: true }, absDates: {}, reason: null, absNote: '' }); this.toast('success', X.tAbs, X.tAbsBody(c.first)); } }, X.send),
+      ],
+      permDetails: X.perm.map(([k, v]) => ({ k, v })),
+      onSign: () => { setTimeout(() => { this.setState({ modal: null, completed: { ...this.state.completed, permission: true } }); this.toast('success', X.tSign, X.tSignBody); }, 700); },
+      payFooter: [
+        h(NS.Button, { key: 'c', variant: 'secondary', onClick: close }, X.cancel),
+        h(NS.Button, { key: 'p', iconStart: 'lock', onClick: () => { this.setState({ modal: null, completed: { ...s.completed, fee: true } }); this.toast('success', X.tPay, X.tPayBody); } }, X.pay),
+      ],
+      toasts: s.toasts, dismissToast: (id) => this.setState((x) => ({ toasts: x.toasts.filter((tt) => tt.id !== id) })),
+    };
+  }
+}
+</script>
+</body>
+</html>

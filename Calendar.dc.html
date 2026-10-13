@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="choirbook.css">
+<script src="_ds/choirbook-design-system-9d7b3b08-5cc4-4553-b44b-4db9eb92dfdb/_ds_bundle.js"></script>
+</helmet>
+<div style="width:100%; max-width:1200px; margin:0 auto; padding:{{ pad }}; display:flex; flex-direction:column; gap:20px;">
+  <header style="display:flex; flex-wrap:wrap; align-items:flex-end; gap:12px 16px;">
+    <div style="min-width:0; display:flex; flex-direction:column; gap:6px;">
+      <span style="font:700 12px/1.2 var(--font-ui); letter-spacing:var(--tracking-overline); text-transform:uppercase; color:var(--accent-text);">2026–27 season</span>
+      <h1 style="font:500 {{ h1 }}/1.15 var(--font-display); letter-spacing:var(--tracking-display); margin:0;">{{ t.calendar }}</h1>
+      <p style="margin:0; font-size:15px; color:var(--text-2); text-wrap:pretty;">{{ sub }}</p>
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:8px; margin-left:auto;">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" variant="secondary" icon-start="calendar-check" on-click="{{ openSub }}" hint-size="120px,40px">Subscribe</x-import>
+      <sc-if value="{{ isStaff }}" hint-placeholder-val="{{ false }}">
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" icon-start="plus" on-click="{{ openAdd }}" hint-size="120px,40px">{{ t.addEvent }}</x-import>
+      </sc-if>
+    </div>
+  </header>
+
+  <sc-if value="{{ isMonth }}" hint-placeholder-val="{{ true }}">
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.MonthCalendar" locale="{{ locale }}" month="{{ month }}" on-month-change="{{ setMonth }}" today="{{ data.today }}" events="{{ events }}" on-event-click="{{ openEvent }}" tools="{{ viewSeg }}" hint-size="100%,640px"></x-import>
+  </sc-if>
+  <sc-if value="{{ isWeek }}" hint-placeholder-val="{{ false }}">
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.WeekCalendar" locale="{{ locale }}" week-start="{{ weekStart }}" on-week-change="{{ setWeek }}" today="{{ data.today }}" now="{{ data.now }}" start-hour="{{ 9 }}" end-hour="{{ 22 }}" events="{{ events }}" on-event-click="{{ openEvent }}" tools="{{ viewSeg }}" height="{{ 600 }}" hint-size="100%,680px"></x-import>
+  </sc-if>
+  <sc-if value="{{ isList }}" hint-placeholder-val="{{ false }}">
+    <div style="background:var(--surface-card); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); box-shadow:var(--shadow-1); overflow:hidden;">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.CalendarBar" title="Upcoming" tools="{{ viewSeg }}" lang="{{ lang }}" hint-size="100%,60px"></x-import>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.AgendaList" locale="{{ locale }}" today="{{ data.today }}" events="{{ upcoming }}" on-event-click="{{ openEvent }}" hint-size="100%,600px"></x-import>
+    </div>
+  </sc-if>
+</div>
+
+<x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Modal" open="{{ eventOpen }}" on-close="{{ closeAll }}" size="sm" title="{{ ev.title }}" close-label="Close" footer="{{ eventFooter }}" hint-size="0px,0px">
+  <div style="display:flex; flex-direction:column; gap:16px;">
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.EventCard" type="{{ ev.type }}" title="{{ ev.title }}" date="{{ ev.date }}" start="{{ ev.start }}" end="{{ ev.end }}" location="{{ ev.location }}" parts="{{ ev.parts }}" locale="{{ locale }}" flat="{{ true }}" hint-size="100%,110px"></x-import>
+    <sc-if value="{{ ev.hasDetail }}" hint-placeholder-val="{{ false }}">
+      <dl style="margin:0; display:grid; grid-template-columns:minmax(6rem,auto) minmax(0,1fr); gap:8px 16px; padding:14px 16px; background:var(--surface-muted); border-radius:var(--radius-md); font-size:14px;">
+        <sc-for list="{{ ev.detail }}" as="d" hint-placeholder-count="3">
+          <dt style="color:var(--text-3); font-weight:600;">{{ d.k }}</dt>
+          <dd style="margin:0; color:var(--text-1);">{{ d.v }}</dd>
+        </sc-for>
+      </dl>
+    </sc-if>
+    <sc-if value="{{ isStaff }}" hint-placeholder-val="{{ false }}">
+      <p style="margin:0; font-size:13.5px; color:var(--text-3);">{{ ev.called }}</p>
+    </sc-if>
+  </div>
+</x-import>
+
+<x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Modal" open="{{ addOpen }}" on-close="{{ closeAll }}" size="md" title="{{ addTitle }}" close-label="Close" footer="{{ addFooter }}" hint-size="0px,0px">
+  <div style="display:flex; flex-direction:column; gap:18px;">
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.FormRow" hint-size="100%,72px">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="Title" required="{{ true }}" value="{{ f.title }}" on-change="{{ on.title }}" error="{{ fErr }}" hint-size="100%,72px"></x-import>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Select" label="Type" value="{{ f.type }}" on-change="{{ on.type }}" options="{{ typeOptions }}" hint-size="100%,72px"></x-import>
+    </x-import>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.FormRow" hint-size="100%,72px">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.DatePicker" label="Date" required="{{ true }}" value="{{ f.date }}" on-change="{{ onDate }}" locale="{{ locale }}" hint-size="100%,72px"></x-import>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TimePicker" label="Starts" value="{{ f.start }}" on-change="{{ onStart }}" locale="{{ locale }}" hint-size="100%,72px"></x-import>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TimePicker" label="Ends" value="{{ f.end }}" on-change="{{ onEnd }}" locale="{{ locale }}" hint-size="100%,72px"></x-import>
+    </x-import>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.FormRow" hint-size="100%,72px">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="Location" icon-start="map-pin" value="{{ f.location }}" on-change="{{ on.location }}" hint-size="100%,72px"></x-import>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TimePicker" label="Call time" optional="{{ true }}" value="{{ f.call }}" on-change="{{ onCall }}" locale="{{ locale }}" hint-size="100%,72px"></x-import>
+    </x-import>
+    <fieldset style="border:0; margin:0; padding:0; display:flex; flex-direction:column; gap:8px;">
+      <legend style="padding:0; margin-bottom:8px; font:600 14px/1.3 var(--font-ui);">Who is called?</legend>
+      <div style="display:flex; flex-wrap:wrap; gap:6px;">
+        <sc-for list="{{ partChips }}" as="p" hint-placeholder-count="5">
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Chip" selected="{{ p.on }}" on-click="{{ p.toggle }}" hint-size="90px,32px">{{ p.label }}</x-import>
+        </sc-for>
+      </div>
+    </fieldset>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="Dress code and what to bring" optional="{{ true }}" multiline="{{ true }}" rows="{{ 2 }}" value="{{ f.notes }}" on-change="{{ on.notes }}" hint-size="100%,100px"></x-import>
+    <div style="display:flex; flex-direction:column; gap:12px; padding-top:4px;">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Toggle" label="Repeat weekly until the end of term" label-position="end" checked="{{ f.repeat }}" on-change="{{ toggleRepeat }}" hint-size="100%,32px"></x-import>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Toggle" label="Notify everyone called" description="{{ notifyHint }}" label-position="end" checked="{{ f.notify }}" on-change="{{ toggleNotify }}" hint-size="100%,44px"></x-import>
+    </div>
+  </div>
+</x-import>
+
+<x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.ConfirmDialog" open="{{ cancelOpen }}" tone="danger" title="Cancel this event?" confirm-label="Cancel event" cancel-label="Keep event" on-cancel="{{ backToEvent }}" on-confirm="{{ doCancel }}" hint-size="0px,0px">{{ cancelBody }}</x-import>
+
+<x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Modal" open="{{ subOpen }}" on-close="{{ closeAll }}" size="sm" title="Subscribe to the calendar" close-label="Close" hint-size="0px,0px">
+  <div style="display:flex; flex-direction:column; gap:14px;">
+    <p style="margin:0; color:var(--text-2);">Add the season to Google, Apple or Outlook calendar. Changes and cancellations appear there automatically.</p>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="Calendar address" value="webcal://cal.choirbook.app/oryc/9f3k2.ics" read-only="{{ true }}" trailing="{{ copyBtn }}" hint-size="100%,72px"></x-import>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.RadioGroup" label="Include" value="{{ subScope }}" on-change="{{ setSubScope }}" options="{{ subOptions }}" hint-size="100%,140px"></x-import>
+  </div>
+</x-import>
+
+<x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.ToastStack" toasts="{{ toasts }}" on-dismiss="{{ dismissToast }}" hint-size="0px,0px"></x-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const TYPES = [['rehearsal', 'Rehearsal'], ['sectional', 'Sectional'], ['concert', 'Concert'], ['tour', 'Tour'], ['social', 'Social'], ['deadline', 'Deadline']];
+const PARTS = [['all', 'Full choir'], ['S', 'Sopranos'], ['A', 'Altos'], ['T', 'Tenors'], ['B', 'Basses']];
+const BLANK = { title: '', type: 'rehearsal', date: '2026-10-29', start: '18:30', end: '20:30', call: '', location: 'Grace Hall', notes: '', parts: { all: true }, repeat: false, notify: true };
+class Component extends DCLogic {
+  state = this.initState(this.props);
+  initState(p) {
+    const mobile = p.device === 'mobile';
+    const demo = p.demo;
+    const base = { view: mobile || p.role === 'guardian' ? 'list' : 'month', month: '2026-10', weekStart: '2026-10-11', modal: null, evId: null, f: { ...BLANK }, err: false, extra: [], cancelled: [], toasts: [], subScope: 'all' };
+    if (demo === 'add') return { ...base, modal: 'add', f: { ...BLANK, title: 'Soprano and alto sectional', type: 'sectional', date: '2026-10-31', start: '10:00', end: '11:30', location: 'Grace Hall, Room 2', parts: { S: true, A: true } } };
+    if (demo === 'event') return { ...base, modal: 'event', evId: 'c1', month: '2026-12' };
+    if (demo === 'week') return { ...base, view: 'week' };
+    return base;
+  }
+  componentDidMount() { this.waitDS(); }
+  waitDS() { if (window.ChoirbookDesignSystem_9d7b3b?.MonthCalendar) this.forceUpdate(); else setTimeout(() => this.waitDS(), 60); }
+  componentDidUpdate(prev) { if (prev.demo !== this.props.demo || prev.device !== this.props.device) this.setState(this.initState(this.props)); }
+  toast(title, body) { const id = String(Date.now()); this.setState((s) => ({ toasts: [...s.toasts, { id, tone: 'success', title, children: body, duration: 5000 }] })); }
+  renderVals() {
+    const p = this.props, s = this.state;
+    const NS = window.ChoirbookDesignSystem_9d7b3b || {};
+    const h = (C, pr, ...c) => (C ? React.createElement(C, pr, ...c) : null);
+    const d = p.data || {}, t = p.t || {};
+    const lang = p.lang ?? 'en', locale = lang === 'fr' ? 'fr-CA' : 'en-CA';
+    const role = p.role || 'staff', staff = role === 'staff';
+    const mobile = p.device === 'mobile';
+    const concerts = Object.fromEntries((d.concerts || []).map((c) => [c.id, c]));
+    let events = [...(d.events || []), ...s.extra].filter((e) => !s.cancelled.includes(e.id));
+    if (role === 'chorister') events = events.filter((e) => !e.parts || e.parts.includes('A'));
+    const ev0 = events.find((e) => e.id === s.evId) || (d.events || []).find((e) => e.id === s.evId) || {};
+    const c = concerts[ev0.id];
+    const detail = c ? [{ k: 'Call time', v: c.call }, { k: 'Dress', v: c.dress }, { k: 'Address', v: c.location }] : ev0.type === 'rehearsal' ? [{ k: 'Bring', v: d.rehearsal?.bring }] : ev0.notes ? [{ k: 'Notes', v: ev0.notes }] : [];
+    const calledN = ev0.parts ? (d.choristers || []).filter((x) => ev0.parts.includes(x.section)).length : (d.choristers || []).length;
+    const ev = { ...ev0, detail, hasDetail: detail.length > 0, called: `${calledN} choristers called · ${ev0.parts ? ev0.parts.join('/') + ' only' : 'full choir'}` };
+    const close = () => this.setState({ modal: null });
+    const setF = (k, v) => this.setState((x) => ({ f: { ...x.f, [k]: v }, err: k === 'title' ? false : x.err }));
+    const on = Object.fromEntries(['title', 'type', 'location', 'notes'].map((k) => [k, (e) => setF(k, e.target.value)]));
+    const nCalled = s.f.parts.all ? (d.choristers || []).length : (d.choristers || []).filter((x) => s.f.parts[x.section]).length;
+    const save = () => {
+      if (!s.f.title.trim()) { this.setState({ err: true }); return; }
+      const parts = s.f.parts.all ? undefined : Object.keys(s.f.parts).filter((k) => s.f.parts[k]);
+      const ne = { id: 'n' + Date.now(), type: s.f.type, title: s.f.title.trim(), date: s.f.date, start: s.f.start, end: s.f.end, location: s.f.location, parts, notes: s.f.notes };
+      this.setState({ modal: null, extra: [...s.extra, ne], month: s.f.date.slice(0, 7), f: { ...BLANK } });
+      this.toast('Event added', s.f.notify ? `${nCalled} choristers and their guardians will be notified.` : 'No one was notified.');
+    };
+    const viewSeg = h(NS.SegmentedControl, { label: 'Calendar view', value: s.view, onChange: (v) => this.setState({ view: v }), options: [{ value: 'month', label: 'Month', icon: 'calendar-days' }, { value: 'week', label: 'Week', icon: 'layout-grid' }, { value: 'list', label: 'List', icon: 'list' }] });
+    const eventFooter = staff
+      ? [h(NS.Button, { key: 'x', variant: 'ghost', iconStart: 'trash-2', onClick: () => this.setState({ modal: 'cancel' }), style: { marginRight: 'auto', color: 'var(--error-text)' } }, 'Cancel event'), h(NS.Button, { key: 'e', variant: 'secondary', iconStart: 'pencil', onClick: () => this.setState({ modal: 'add', f: { ...BLANK, ...ev0, parts: ev0.parts ? Object.fromEntries(ev0.parts.map((k) => [k, true])) : { all: true } } }) }, 'Edit'), h(NS.Button, { key: 'a', iconStart: 'clipboard-check', onClick: () => p.go?.('attendance') }, 'Take attendance')]
+      : [role === 'guardian' && ev0.type !== 'deadline' ? h(NS.Button, { key: 'r', variant: 'secondary', iconStart: 'calendar-x', onClick: () => p.go?.('guardian-home', 'absence') }, t.reportAbsence) : null, h(NS.Button, { key: 'c', iconStart: 'plus', onClick: () => { close(); this.toast('Added to your calendar', ev0.title); } }, t.addToCalendar)];
+    return {
+      t, lang, locale, data: d, isStaff: staff,
+      pad: mobile ? '16px 16px 32px' : p.device === 'tablet' ? '24px 24px 48px' : '28px 32px 56px',
+      h1: mobile ? '28px' : 'var(--text-h1)',
+      sub: staff ? 'Concerts and tours are marked in the accent colour. Click any event to edit it.' : role === 'guardian' ? 'Every rehearsal and concert for Ella. Subscribe to see them in your own calendar.' : 'Your rehearsals, sectionals and concerts.',
+      isMonth: s.view === 'month', isWeek: s.view === 'week', isList: s.view === 'list',
+      month: s.month, setMonth: (m) => this.setState({ month: m }), weekStart: s.weekStart, setWeek: (w) => this.setState({ weekStart: w }),
+      events, upcoming: events.filter((e) => e.date >= d.today), viewSeg,
+      openEvent: (e) => this.setState({ modal: 'event', evId: e.id }),
+      eventOpen: s.modal === 'event', ev, eventFooter,
+      addOpen: s.modal === 'add', addTitle: s.f.id ? 'Edit event' : 'Add event', openAdd: () => this.setState({ modal: 'add', f: { ...BLANK }, err: false }),
+      f: s.f, on, fErr: s.err ? 'Enter a title, like “Rehearsal 12”' : undefined,
+      typeOptions: TYPES.map(([value, label]) => ({ value, label })),
+      onDate: (v) => setF('date', v), onStart: (v) => setF('start', v), onEnd: (v) => setF('end', v), onCall: (v) => setF('call', v),
+      partChips: PARTS.map(([k, label]) => ({ label, on: !!s.f.parts[k], toggle: () => this.setState((x) => ({ f: { ...x.f, parts: k === 'all' ? { all: true } : { ...x.f.parts, all: false, [k]: !x.f.parts[k] } } })) })),
+      toggleRepeat: (e) => setF('repeat', e.target.checked), toggleNotify: (e) => setF('notify', e.target.checked),
+      notifyHint: `${nCalled} choristers and their guardians get an email and an in-app notice.`,
+      addFooter: [h(NS.Button, { key: 'c', variant: 'secondary', onClick: close }, 'Cancel'), h(NS.Button, { key: 's', iconStart: 'check', onClick: save }, s.f.id ? 'Save changes' : 'Add event')],
+      cancelOpen: s.modal === 'cancel', backToEvent: () => this.setState({ modal: 'event' }),
+      cancelBody: `${calledN} choristers and their guardians will be told by email and in the app that ${ev0.title || 'this event'} is cancelled.`,
+      doCancel: () => { this.setState({ modal: null, cancelled: [...s.cancelled, ev0.id] }); this.toast('Event cancelled', `${calledN} choristers and their guardians notified.`); },
+      closeAll: close,
+      subOpen: s.modal === 'sub', openSub: () => this.setState({ modal: 'sub' }),
+      subScope: s.subScope, setSubScope: (v) => this.setState({ subScope: v }),
+      subOptions: [{ value: 'all', label: 'Everything', description: 'Rehearsals, sectionals, concerts and deadlines' }, { value: 'perf', label: 'Concerts only' }],
+      copyBtn: h(NS.IconButton, { icon: 'copy', label: 'Copy address', size: 'sm', variant: 'ghost', onClick: () => this.toast('Address copied', 'Paste it into your calendar app.') }),
+      toasts: s.toasts, dismissToast: (id) => this.setState((x) => ({ toasts: x.toasts.filter((tt) => tt.id !== id) })),
+    };
+  }
+}
+</script>
+</body>
+</html>

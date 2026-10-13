@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="choirbook.css">
+<script src="_ds/choirbook-design-system-9d7b3b08-5cc4-4553-b44b-4db9eb92dfdb/_ds_bundle.js"></script>
+<title>Choirbook · Screens</title>
+</helmet>
+<div ref="{{ rootRef }}" data-mode="light" data-choir="choirbook" style="background:var(--bg-sunken); color:var(--text-1); font-family:var(--font-ui); line-height:var(--lh-body); padding:64px 72px 120px; display:flex; flex-direction:column; gap:88px; width:max-content; min-width:100%;">
+  <header style="display:flex; gap:64px; align-items:flex-end; max-width:1800px;">
+    <div style="display:flex; flex-direction:column; gap:12px; width:560px; flex:none;">
+      <span style="font:700 12px/1.2 var(--font-ui); letter-spacing:var(--tracking-overline); text-transform:uppercase; color:var(--accent-text);">Choirbook · screen set, round 5</span>
+      <h1 style="margin:0; font:500 var(--text-display-xl)/var(--lh-display-xl) var(--font-display); letter-spacing:var(--tracking-display);">Built on the Choirbook design system</h1>
+      <p style="margin:0; color:var(--text-2); font-size:var(--text-body-l); line-height:var(--lh-body-l); text-wrap:pretty;">Every artboard is the live app. Click through any of them, or open the <a href="Choirbook.dc.html">clickable prototype</a> and use the sign-in screen to switch roles.</p>
+    </div>
+    <dl style="margin:0; display:grid; grid-template-columns:170px 560px; gap:10px 24px; font-size:14px; padding:20px 24px; background:var(--surface-card); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); box-shadow:var(--shadow-1);">
+      <dt style="color:var(--text-3); font-weight:600;">Demo choir</dt><dd style="margin:0; color:var(--text-2);">Ottawa Regional Youth Choir, on its ORYC theme layer. The blue is the design system’s placeholder until ORYC supplies its brand colour and logo; people and venues are fictional.</dd>
+      <dt style="color:var(--text-3); font-weight:600;">Demo date</dt><dd style="margin:0; color:var(--text-2);">Thursday, October 15, 2026, a rehearsal night. Concerts on December 12 and May 15.</dd>
+      <dt style="color:var(--text-3); font-weight:600;">Layout</dt><dd style="margin:0; color:var(--text-2);">Desktop: header and sidebar. Tablet: header and drawer. Phone: header and bottom tabs. Same for every role.</dd>
+      <dt style="color:var(--text-3); font-weight:600;">Theme and language</dt><dd style="margin:0; color:var(--text-2);">Follows the device; switch light, dark and EN/FR in the account menu. <a href="#1b">1b</a> shows French labels.</dd>
+    </dl>
+  </header>
+
+  <section id="round5-tickets" style="display:flex; flex-direction:column; gap:28px;">
+    <div style="display:flex; align-items:baseline; gap:16px; border-bottom:1px solid var(--border-default); padding-bottom:14px;">
+      <span style="font:700 12px/1.2 var(--font-ui); letter-spacing:var(--tracking-overline); text-transform:uppercase; color:var(--accent-text);">New · Office</span>
+      <h2 style="margin:0; font:500 var(--text-h1)/var(--lh-h1) var(--font-display);">Ticket sales</h2>
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:48px; align-items:flex-start; max-width:3000px;">
+      <div id="17a" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#17a" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">17a</a><span style="color:var(--text-1); font-weight:600;">Ticket sales</span>Desktop 1440 · Light</div>
+        <div data-board="17a" style="width:1440px; height:1500px; border:1px solid var(--border-default); border-radius:12px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on17a }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="staff-tickets" device="desktop" mode="light" lang="en" height="1500px" hint-size="1440px,1500px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off17a }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+      <div id="17b" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#17b" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">17b</a><span style="color:var(--text-1); font-weight:600;">Issue free tickets</span>Tablet 834 · Dark</div>
+        <div data-board="17b" style="width:834px; height:1112px; border:1px solid var(--border-default); border-radius:12px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on17b }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="staff-tickets" device="tablet" mode="dark" lang="en" demo="comp" height="1112px" hint-size="834px,1112px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off17b }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section id="round4-board" style="display:flex; flex-direction:column; gap:28px;">
+    <div style="display:flex; align-items:baseline; gap:16px; border-bottom:1px solid var(--border-default); padding-bottom:14px;">
+      <span style="font:700 12px/1.2 var(--font-ui); letter-spacing:var(--tracking-overline); text-transform:uppercase; color:var(--accent-text);">New · Reports</span>
+      <h2 style="margin:0; font:500 var(--text-h1)/var(--lh-h1) var(--font-display);">Board report</h2>
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:48px; align-items:flex-start; max-width:3000px;">
+      <div id="16a" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#16a" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">16a</a><span style="color:var(--text-1); font-weight:600;">Board report builder and preview</span>Desktop 1440 · Light</div>
+        <div data-board="16a" style="width:1440px; height:2300px; border:1px solid var(--border-default); border-radius:12px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on16a }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="staff-reports" device="desktop" mode="light" lang="en" demo="board" height="2300px" hint-size="1440px,2300px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off16a }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+      <div id="16b" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#16b" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">16b</a><span style="color:var(--text-1); font-weight:600;">Send to the board</span>Desktop 1440 · Light</div>
+        <div data-board="16b" style="width:1440px; height:900px; border:1px solid var(--border-default); border-radius:12px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on16b }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="staff-reports" device="desktop" mode="light" lang="en" demo="board-email" height="900px" hint-size="1440px,900px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off16b }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+      <div id="16c" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#16c" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">16c</a><span style="color:var(--text-1); font-weight:600;">Board report</span>Tablet 834 · Dark</div>
+        <div data-board="16c" style="width:834px; height:1112px; border:1px solid var(--border-default); border-radius:12px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on16c }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="staff-reports" device="tablet" mode="dark" lang="en" demo="board-sent" height="1112px" hint-size="834px,1112px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off16c }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section id="round3-calendar" style="display:flex; flex-direction:column; gap:28px;">
+    <div style="display:flex; align-items:baseline; gap:16px; border-bottom:1px solid var(--border-default); padding-bottom:14px;">
+      <span style="font:700 12px/1.2 var(--font-ui); letter-spacing:var(--tracking-overline); text-transform:uppercase; color:var(--accent-text);">New · Calendar</span>
+      <h2 style="margin:0; font:500 var(--text-h1)/var(--lh-h1) var(--font-display);">Season calendar for every role</h2>
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:48px; align-items:flex-start; max-width:3000px;">
+      <div id="8a" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#8a" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">8a</a><span style="color:var(--text-1); font-weight:600;">Staff calendar, month</span>Desktop 1440 · Light</div>
+        <div data-board="8a" style="width:1440px; height:900px; border:1px solid var(--border-default); border-radius:12px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on8a }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="staff-calendar" device="desktop" mode="light" lang="en" height="900px" hint-size="1440px,900px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off8a }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+      <div id="8b" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#8b" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">8b</a><span style="color:var(--text-1); font-weight:600;">Add event</span>Desktop 1440 · Light</div>
+        <div data-board="8b" style="width:1440px; height:900px; border:1px solid var(--border-default); border-radius:12px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on8b }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="staff-calendar" device="desktop" mode="light" lang="en" demo="add" height="900px" hint-size="1440px,900px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off8b }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+      <div id="8c" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#8c" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">8c</a><span style="color:var(--text-1); font-weight:600;">Concert details</span>Desktop 1440 · Dark</div>
+        <div data-board="8c" style="width:1440px; height:900px; border:1px solid var(--border-default); border-radius:12px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on8c }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="staff-calendar" device="desktop" mode="dark" lang="en" demo="event" height="900px" hint-size="1440px,900px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off8c }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+      <div id="8d" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#8d" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">8d</a><span style="color:var(--text-1); font-weight:600;">Guardian calendar, list</span>Mobile 390 · Light</div>
+        <div data-board="8d" style="width:390px; height:844px; border:1px solid var(--border-default); border-radius:28px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on8d }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="guardian-calendar" device="mobile" mode="light" lang="en" height="844px" hint-size="390px,844px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off8d }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="round3-music" style="display:flex; flex-direction:column; gap:28px;">
+    <div style="display:flex; align-items:baseline; gap:16px; border-bottom:1px solid var(--border-default); padding-bottom:14px;">
+      <span style="font:700 12px/1.2 var(--font-ui); letter-spacing:var(--tracking-overline); text-transform:uppercase; color:var(--accent-text);">New · Music</span>
+      <h2 style="margin:0; font:500 var(--text-h1)/var(--lh-h1) var(--font-display);">Staff music library and practice</h2>
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:48px; align-items:flex-start; max-width:3000px;">
+      <div id="9a" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#9a" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">9a</a><span style="color:var(--text-1); font-weight:600;">Music library</span>Desktop 1440 · Light</div>
+        <div data-board="9a" style="width:1440px; height:900px; border:1px solid var(--border-default); border-radius:12px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on9a }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="staff-music" device="desktop" mode="light" lang="en" height="900px" hint-size="1440px,900px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off9a }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+      <div id="9b" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#9b" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">9b</a><span style="color:var(--text-1); font-weight:600;">Assign practice</span>Desktop 1440 · Light</div>
+        <div data-board="9b" style="width:1440px; height:900px; border:1px solid var(--border-default); border-radius:12px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on9b }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="staff-music" device="desktop" mode="light" lang="en" demo="assign" height="900px" hint-size="1440px,900px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off9b }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+      <div id="9c" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#9c" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">9c</a><span style="color:var(--text-1); font-weight:600;">Add a piece with tracks</span>Tablet 834 · Dark</div>
+        <div data-board="9c" style="width:834px; height:1112px; border:1px solid var(--border-default); border-radius:12px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on9c }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="staff-music" device="tablet" mode="dark" lang="en" demo="upload" height="1112px" hint-size="834px,1112px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off9c }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="round3-comms" style="display:flex; flex-direction:column; gap:28px;">
+    <div style="display:flex; align-items:baseline; gap:16px; border-bottom:1px solid var(--border-default); padding-bottom:14px;">
+      <span style="font:700 12px/1.2 var(--font-ui); letter-spacing:var(--tracking-overline); text-transform:uppercase; color:var(--accent-text);">New · Communications</span>
+      <h2 style="margin:0; font:500 var(--text-h1)/var(--lh-h1) var(--font-display);">Announcements, office inbox and monthly family updates</h2>
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:48px; align-items:flex-start; max-width:3000px;">
+      <div id="10a" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#10a" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">10a</a><span style="color:var(--text-1); font-weight:600;">Announcements</span>Desktop 1440 · Light</div>
+        <div data-board="10a" style="width:1440px; height:900px; border:1px solid var(--border-default); border-radius:12px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on10a }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="staff-comms" device="desktop" mode="light" lang="en" height="900px" hint-size="1440px,900px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off10a }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+      <div id="10b" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#10b" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">10b</a><span style="color:var(--text-1); font-weight:600;">New announcement</span>Tablet 834 · Light</div>
+        <div data-board="10b" style="width:834px; height:1112px; border:1px solid var(--border-default); border-radius:12px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on10b }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="staff-comms" device="tablet" mode="light" lang="en" demo="compose" height="1112px" hint-size="834px,1112px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off10b }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+      <div id="10c" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#10c" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">10c</a><span style="color:var(--text-1); font-weight:600;">Office inbox</span>Desktop 1440 · Light</div>
+        <div data-board="10c" style="width:1440px; height:900px; border:1px solid var(--border-default); border-radius:12px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on10c }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="staff-comms" device="desktop" mode="light" lang="en" demo="t2" height="900px" hint-size="1440px,900px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off10c }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+      <div id="10d" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#10d" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">10d</a><span style="color:var(--text-1); font-weight:600;">Monthly update: contents and preview</span>Desktop 1440 · Light</div>
+        <div data-board="10d" style="width:1440px; height:1400px; border:1px solid var(--border-default); border-radius:12px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on10d }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="staff-comms" device="desktop" mode="light" lang="en" demo="monthly" height="1400px" hint-size="1440px,1400px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off10d }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+      <div id="10e" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#10e" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">10e</a><span style="color:var(--text-1); font-weight:600;">Monthly update send settings</span>Desktop 1440 · Dark</div>
+        <div data-board="10e" style="width:1440px; height:900px; border:1px solid var(--border-default); border-radius:12px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on10e }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="staff-comms" device="desktop" mode="dark" lang="en" demo="monthly-settings" height="900px" hint-size="1440px,900px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off10e }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="round3-forms" style="display:flex; flex-direction:column; gap:28px;">
+    <div style="display:flex; align-items:baseline; gap:16px; border-bottom:1px solid var(--border-default); padding-bottom:14px;">
+      <span style="font:700 12px/1.2 var(--font-ui); letter-spacing:var(--tracking-overline); text-transform:uppercase; color:var(--accent-text);">New · Forms & fees</span>
+      <h2 style="margin:0; font:500 var(--text-h1)/var(--lh-h1) var(--font-display);">Form builder, responses, fee tracking and payments</h2>
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:48px; align-items:flex-start; max-width:3000px;">
+      <div id="11a" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#11a" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">11a</a><span style="color:var(--text-1); font-weight:600;">Forms</span>Desktop 1440 · Light</div>
+        <div data-board="11a" style="width:1440px; height:900px; border:1px solid var(--border-default); border-radius:12px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on11a }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="staff-forms" device="desktop" mode="light" lang="en" height="900px" hint-size="1440px,900px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off11a }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+      <div id="11b" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#11b" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">11b</a><span style="color:var(--text-1); font-weight:600;">Form builder</span>Desktop 1440 · Light</div>
+        <div data-board="11b" style="width:1440px; height:900px; border:1px solid var(--border-default); border-radius:12px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on11b }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="staff-forms" device="desktop" mode="light" lang="en" demo="builder" height="900px" hint-size="1440px,900px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off11b }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+      <div id="11c" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#11c" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">11c</a><span style="color:var(--text-1); font-weight:600;">Form responses</span>Desktop 1440 · Light</div>
+        <div data-board="11c" style="width:1440px; height:900px; border:1px solid var(--border-default); border-radius:12px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on11c }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="staff-forms" device="desktop" mode="light" lang="en" demo="responses" height="900px" hint-size="1440px,900px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off11c }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+      <div id="11d" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#11d" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">11d</a><span style="color:var(--text-1); font-weight:600;">Fees</span>Desktop 1440 · Light</div>
+        <div data-board="11d" style="width:1440px; height:900px; border:1px solid var(--border-default); border-radius:12px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on11d }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="staff-forms" device="desktop" mode="light" lang="en" demo="fees" height="900px" hint-size="1440px,900px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off11d }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+      <div id="11e" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#11e" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">11e</a><span style="color:var(--text-1); font-weight:600;">Record a payment</span>Desktop 1440 · Dark</div>
+        <div data-board="11e" style="width:1440px; height:900px; border:1px solid var(--border-default); border-radius:12px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on11e }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="staff-forms" device="desktop" mode="dark" lang="en" demo="payment" height="900px" hint-size="1440px,900px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off11e }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+      <div id="11f" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#11f" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">11f</a><span style="color:var(--text-1); font-weight:600;">Guardian forms and fees</span>Mobile 390 · Light</div>
+        <div data-board="11f" style="width:390px; height:844px; border:1px solid var(--border-default); border-radius:28px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on11f }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="guardian-forms" device="mobile" mode="light" lang="en" height="844px" hint-size="390px,844px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off11f }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="round3-users" style="display:flex; flex-direction:column; gap:28px;">
+    <div style="display:flex; align-items:baseline; gap:16px; border-bottom:1px solid var(--border-default); padding-bottom:14px;">
+      <span style="font:700 12px/1.2 var(--font-ui); letter-spacing:var(--tracking-overline); text-transform:uppercase; color:var(--accent-text);">New · Users & permissions</span>
+      <h2 style="margin:0; font:500 var(--text-h1)/var(--lh-h1) var(--font-display);">Staff accounts and fully custom roles</h2>
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:48px; align-items:flex-start; max-width:3000px;">
+      <div id="12a" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#12a" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">12a</a><span style="color:var(--text-1); font-weight:600;">Staff users</span>Desktop 1440 · Light</div>
+        <div data-board="12a" style="width:1440px; height:900px; border:1px solid var(--border-default); border-radius:12px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on12a }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="staff-users" device="desktop" mode="light" lang="en" height="900px" hint-size="1440px,900px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off12a }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+      <div id="12b" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#12b" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">12b</a><span style="color:var(--text-1); font-weight:600;">Role permission matrix</span>Desktop 1440 · Light</div>
+        <div data-board="12b" style="width:1440px; height:1100px; border:1px solid var(--border-default); border-radius:12px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on12b }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="staff-users" device="desktop" mode="light" lang="en" demo="roles" height="1100px" hint-size="1440px,1100px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off12b }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+      <div id="12c" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#12c" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">12c</a><span style="color:var(--text-1); font-weight:600;">Invite staff</span>Desktop 1440 · Dark</div>
+        <div data-board="12c" style="width:1440px; height:900px; border:1px solid var(--border-default); border-radius:12px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on12c }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="staff-users" device="desktop" mode="dark" lang="en" demo="invite" height="900px" hint-size="1440px,900px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off12c }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="round3-reports" style="display:flex; flex-direction:column; gap:28px;">
+    <div style="display:flex; align-items:baseline; gap:16px; border-bottom:1px solid var(--border-default); padding-bottom:14px;">
+      <span style="font:700 12px/1.2 var(--font-ui); letter-spacing:var(--tracking-overline); text-transform:uppercase; color:var(--accent-text);">New · Reports</span>
+      <h2 style="margin:0; font:500 var(--text-h1)/var(--lh-h1) var(--font-display);">Attendance, fees and forms, enrolment</h2>
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:48px; align-items:flex-start; max-width:3000px;">
+      <div id="13a" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#13a" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">13a</a><span style="color:var(--text-1); font-weight:600;">Attendance report</span>Desktop 1440 · Light</div>
+        <div data-board="13a" style="width:1440px; height:1100px; border:1px solid var(--border-default); border-radius:12px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on13a }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="staff-reports" device="desktop" mode="light" lang="en" height="1100px" hint-size="1440px,1100px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off13a }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+      <div id="13b" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#13b" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">13b</a><span style="color:var(--text-1); font-weight:600;">Fees and forms report</span>Desktop 1440 · Light</div>
+        <div data-board="13b" style="width:1440px; height:900px; border:1px solid var(--border-default); border-radius:12px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on13b }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="staff-reports" device="desktop" mode="light" lang="en" demo="fees" height="900px" hint-size="1440px,900px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off13b }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+      <div id="13c" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#13c" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">13c</a><span style="color:var(--text-1); font-weight:600;">Enrolment report</span>Tablet 834 · Dark</div>
+        <div data-board="13c" style="width:834px; height:1112px; border:1px solid var(--border-default); border-radius:12px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on13c }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="staff-reports" device="tablet" mode="dark" lang="en" demo="enrol" height="1112px" hint-size="834px,1112px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off13c }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="round3-family" style="display:flex; flex-direction:column; gap:28px;">
+    <div style="display:flex; align-items:baseline; gap:16px; border-bottom:1px solid var(--border-default); padding-bottom:14px;">
+      <span style="font:700 12px/1.2 var(--font-ui); letter-spacing:var(--tracking-overline); text-transform:uppercase; color:var(--accent-text);">New · Messages and profile</span>
+      <h2 style="margin:0; font:500 var(--text-h1)/var(--lh-h1) var(--font-display);">Two-way messages with the choir office; chorister profile</h2>
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:48px; align-items:flex-start; max-width:3000px;">
+      <div id="14a" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#14a" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">14a</a><span style="color:var(--text-1); font-weight:600;">Guardian conversation</span>Mobile 390 · Light</div>
+        <div data-board="14a" style="width:390px; height:844px; border:1px solid var(--border-default); border-radius:28px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on14a }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="guardian-messages" device="mobile" mode="light" lang="en" demo="t7" height="844px" hint-size="390px,844px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off14a }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+      <div id="14b" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#14b" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">14b</a><span style="color:var(--text-1); font-weight:600;">Guardian messages</span>Desktop 1440 · Light</div>
+        <div data-board="14b" style="width:1440px; height:900px; border:1px solid var(--border-default); border-radius:12px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on14b }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="guardian-messages" device="desktop" mode="light" lang="en" height="900px" hint-size="1440px,900px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off14b }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+      <div id="14c" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#14c" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">14c</a><span style="color:var(--text-1); font-weight:600;">Chorister messages</span>Mobile 390 · Dark</div>
+        <div data-board="14c" style="width:390px; height:844px; border:1px solid var(--border-default); border-radius:28px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on14c }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="chorister-messages" device="mobile" mode="dark" lang="en" height="844px" hint-size="390px,844px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off14c }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+      <div id="14d" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#14d" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">14d</a><span style="color:var(--text-1); font-weight:600;">Chorister calendar</span>Mobile 390 · Light</div>
+        <div data-board="14d" style="width:390px; height:844px; border:1px solid var(--border-default); border-radius:28px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on14d }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="chorister-calendar" device="mobile" mode="light" lang="en" height="844px" hint-size="390px,844px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off14d }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+      <div id="14e" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#14e" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">14e</a><span style="color:var(--text-1); font-weight:600;">Chorister profile</span>Mobile 390 · Light</div>
+        <div data-board="14e" style="width:390px; height:844px; border:1px solid var(--border-default); border-radius:28px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on14e }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="chorister-profile" device="mobile" mode="light" lang="en" height="844px" hint-size="390px,844px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off14e }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="round3-password" style="display:flex; flex-direction:column; gap:28px;">
+    <div style="display:flex; align-items:baseline; gap:16px; border-bottom:1px solid var(--border-default); padding-bottom:14px;">
+      <span style="font:700 12px/1.2 var(--font-ui); letter-spacing:var(--tracking-overline); text-transform:uppercase; color:var(--accent-text);">New · Password reset</span>
+      <h2 style="margin:0; font:500 var(--text-h1)/var(--lh-h1) var(--font-display);">Forgot password flow</h2>
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:48px; align-items:flex-start; max-width:3000px;">
+      <div id="15a" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#15a" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">15a</a><span style="color:var(--text-1); font-weight:600;">Forgot password</span>Mobile 390 · Light</div>
+        <div data-board="15a" style="width:390px; height:844px; border:1px solid var(--border-default); border-radius:28px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on15a }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="login" device="mobile" mode="light" lang="en" demo="forgot" height="844px" hint-size="390px,844px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off15a }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+      <div id="15b" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#15b" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">15b</a><span style="color:var(--text-1); font-weight:600;">Reset email sent</span>Mobile 390 · Dark</div>
+        <div data-board="15b" style="width:390px; height:844px; border:1px solid var(--border-default); border-radius:28px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on15b }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="login" device="mobile" mode="dark" lang="en" demo="sent" height="844px" hint-size="390px,844px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off15b }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+      <div id="15c" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#15c" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">15c</a><span style="color:var(--text-1); font-weight:600;">Choose a new password</span>Desktop 1440 · Light</div>
+        <div data-board="15c" style="width:1440px; height:900px; border:1px solid var(--border-default); border-radius:12px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on15c }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="login" device="desktop" mode="light" lang="en" demo="reset" height="900px" hint-size="1440px,900px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off15c }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section id="staff" style="display:flex; flex-direction:column; gap:28px;">
+    <div style="display:flex; align-items:baseline; gap:16px; border-bottom:1px solid var(--border-default); padding-bottom:14px;">
+      <span style="font:700 12px/1.2 var(--font-ui); letter-spacing:var(--tracking-overline); text-transform:uppercase; color:var(--text-3);">Staff</span>
+      <h2 style="margin:0; font:500 var(--text-h1)/var(--lh-h1) var(--font-display);">Dashboard, attendance and roster</h2>
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:48px; align-items:flex-start; max-width:3000px;">
+      <div id="1a" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#1a" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">1a</a><span style="color:var(--text-1); font-weight:600;">Staff dashboard</span>Desktop 1440 · Light</div>
+        <div data-board="1a" style="width:1440px; height:900px; border:1px solid var(--border-default); border-radius:12px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on1a }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="staff-home" device="desktop" mode="light" lang="en" height="900px" hint-size="1440px,900px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off1a }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+      <div id="1b" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#1b" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">1b</a><span style="color:var(--text-1); font-weight:600;">Staff dashboard</span>Tablet 834 · Dark · French</div>
+        <div data-board="1b" style="width:834px; height:1112px; border:1px solid var(--border-default); border-radius:12px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on1b }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="staff-home" device="tablet" mode="dark" lang="fr" height="1112px" hint-size="834px,1112px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off1b }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+      <div id="2a" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#2a" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">2a</a><span style="color:var(--text-1); font-weight:600;">Attendance check-in, mid-rehearsal</span>Tablet 1180 landscape · Light</div>
+        <div data-board="2a" style="width:1180px; height:820px; border:1px solid var(--border-default); border-radius:12px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on2a }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="attendance" device="tablet" mode="light" lang="en" demo="midway" height="820px" hint-size="1180px,820px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off2a }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+      <div id="2b" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#2b" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">2b</a><span style="color:var(--text-1); font-weight:600;">Attendance submitted</span>Tablet 1180 landscape · Dark</div>
+        <div data-board="2b" style="width:1180px; height:820px; border:1px solid var(--border-default); border-radius:12px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on2b }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="attendance" device="tablet" mode="dark" lang="en" demo="submitted" height="820px" hint-size="1180px,820px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off2b }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+      <div id="3a" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#3a" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">3a</a><span style="color:var(--text-1); font-weight:600;">Roster with chorister profile</span>Desktop 1440 · Light</div>
+        <div data-board="3a" style="width:1440px; height:900px; border:1px solid var(--border-default); border-radius:12px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on3a }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="roster" device="desktop" mode="light" lang="en" demo="lucas.bergeron" height="900px" hint-size="1440px,900px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off3a }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="guardian" style="display:flex; flex-direction:column; gap:28px;">
+    <div style="display:flex; align-items:baseline; gap:16px; border-bottom:1px solid var(--border-default); padding-bottom:14px;">
+      <span style="font:700 12px/1.2 var(--font-ui); letter-spacing:var(--tracking-overline); text-transform:uppercase; color:var(--text-3);">Guardian</span>
+      <h2 style="margin:0; font:500 var(--text-h1)/var(--lh-h1) var(--font-display);">Home, absences, forms and fees</h2>
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:48px; align-items:flex-start; max-width:3000px;">
+      <div id="4a" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#4a" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">4a</a><span style="color:var(--text-1); font-weight:600;">Guardian home</span>Mobile 390 · Light</div>
+        <div data-board="4a" style="width:390px; height:844px; border:1px solid var(--border-default); border-radius:28px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on4a }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="guardian-home" device="mobile" mode="light" lang="en" height="844px" hint-size="390px,844px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off4a }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+      <div id="4b" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#4b" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">4b</a><span style="color:var(--text-1); font-weight:600;">Report an absence</span>Mobile 390 · Dark</div>
+        <div data-board="4b" style="width:390px; height:844px; border:1px solid var(--border-default); border-radius:28px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on4b }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="guardian-home" device="mobile" mode="dark" lang="en" demo="absence" height="844px" hint-size="390px,844px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off4b }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+      <div id="4c" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#4c" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">4c</a><span style="color:var(--text-1); font-weight:600;">Sign a form</span>Mobile 390 · Light</div>
+        <div data-board="4c" style="width:390px; height:844px; border:1px solid var(--border-default); border-radius:28px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on4c }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="guardian-home" device="mobile" mode="light" lang="en" demo="sign" height="844px" hint-size="390px,844px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off4c }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+      <div id="4d" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#4d" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">4d</a><span style="color:var(--text-1); font-weight:600;">Pay the annual fee</span>Mobile 390 · Light</div>
+        <div data-board="4d" style="width:390px; height:844px; border:1px solid var(--border-default); border-radius:28px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on4d }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="guardian-home" device="mobile" mode="light" lang="en" demo="pay" height="844px" hint-size="390px,844px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off4d }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+      <div id="4e" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#4e" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">4e</a><span style="color:var(--text-1); font-weight:600;">Guardian home</span>Desktop 1440 · Dark</div>
+        <div data-board="4e" style="width:1440px; height:900px; border:1px solid var(--border-default); border-radius:12px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on4e }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="guardian-home" device="desktop" mode="dark" lang="en" height="900px" hint-size="1440px,900px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off4e }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="chorister" style="display:flex; flex-direction:column; gap:28px;">
+    <div style="display:flex; align-items:baseline; gap:16px; border-bottom:1px solid var(--border-default); padding-bottom:14px;">
+      <span style="font:700 12px/1.2 var(--font-ui); letter-spacing:var(--tracking-overline); text-transform:uppercase; color:var(--text-3);">Chorister</span>
+      <h2 style="margin:0; font:500 var(--text-h1)/var(--lh-h1) var(--font-display);">Home and music library</h2>
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:48px; align-items:flex-start; max-width:3000px;">
+      <div id="5a" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#5a" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">5a</a><span style="color:var(--text-1); font-weight:600;">Chorister home</span>Mobile 390 · Light</div>
+        <div data-board="5a" style="width:390px; height:844px; border:1px solid var(--border-default); border-radius:28px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on5a }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="chorister-home" device="mobile" mode="light" lang="en" height="844px" hint-size="390px,844px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off5a }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+      <div id="5b" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#5b" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">5b</a><span style="color:var(--text-1); font-weight:600;">Music library</span>Mobile 390 · Dark</div>
+        <div data-board="5b" style="width:390px; height:844px; border:1px solid var(--border-default); border-radius:28px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on5b }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="chorister-music" device="mobile" mode="dark" lang="en" height="844px" hint-size="390px,844px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off5b }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="public" style="display:flex; flex-direction:column; gap:28px;">
+    <div style="display:flex; align-items:baseline; gap:16px; border-bottom:1px solid var(--border-default); padding-bottom:14px;">
+      <span style="font:700 12px/1.2 var(--font-ui); letter-spacing:var(--tracking-overline); text-transform:uppercase; color:var(--text-3);">Public</span>
+      <h2 style="margin:0; font:500 var(--text-h1)/var(--lh-h1) var(--font-display);">Registration and sign in</h2>
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:48px; align-items:flex-start; max-width:3000px;">
+      <div id="6a" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#6a" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">6a</a><span style="color:var(--text-1); font-weight:600;">Registration, step 1</span>Mobile 390 · Light</div>
+        <div data-board="6a" style="width:390px; height:844px; border:1px solid var(--border-default); border-radius:28px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on6a }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="register" device="mobile" mode="light" lang="en" height="844px" hint-size="390px,844px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off6a }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+      <div id="6b" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#6b" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">6b</a><span style="color:var(--text-1); font-weight:600;">Registration, voice part</span>Mobile 390 · Dark</div>
+        <div data-board="6b" style="width:390px; height:844px; border:1px solid var(--border-default); border-radius:28px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on6b }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="register" device="mobile" mode="dark" lang="en" demo="voice" height="844px" hint-size="390px,844px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off6b }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+      <div id="6c" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#6c" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">6c</a><span style="color:var(--text-1); font-weight:600;">Registration confirmation</span>Mobile 390 · Light</div>
+        <div data-board="6c" style="width:390px; height:844px; border:1px solid var(--border-default); border-radius:28px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on6c }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="register" device="mobile" mode="light" lang="en" demo="done" height="844px" hint-size="390px,844px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off6c }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+      <div id="7a" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#7a" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">7a</a><span style="color:var(--text-1); font-weight:600;">Sign in</span>Desktop 1440 · Light</div>
+        <div data-board="7a" style="width:1440px; height:900px; border:1px solid var(--border-default); border-radius:12px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on7a }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="login" device="desktop" mode="light" lang="en" height="900px" hint-size="1440px,900px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off7a }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+      <div id="7b" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; gap:10px; font-size:14px; color:var(--text-3);"><a href="#7b" style="font:700 11px ui-monospace,Menlo,monospace; padding:3px 7px; border-radius:var(--radius-sm); background:var(--surface-inverse); color:var(--text-inverse); text-decoration:none;">7b</a><span style="color:var(--text-1); font-weight:600;">Sign in, wrong password</span>Mobile 390 · Dark</div>
+        <div data-board="7b" style="width:390px; height:844px; border:1px solid var(--border-default); border-radius:28px; overflow:hidden; box-shadow:var(--shadow-3);">
+          <sc-if value="{{ on7b }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="Choirbook" route="login" device="mobile" mode="dark" lang="en" demo="error" height="844px" hint-size="390px,844px"></dc-import>
+          </sc-if>
+          <sc-if value="{{ off7b }}" hint-placeholder-val="{{ true }}"><div style="width:100%; height:100%; display:grid; place-items:center; background:var(--bg-app); color:var(--text-3); font-size:14px;">Loading screen…</div></sc-if>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const IDS = ['17a', '17b', '16a', '16b', '16c', '8a', '8b', '8c', '8d', '9a', '9b', '9c', '10a', '10b', '10c', '10d', '10e', '11a', '11b', '11c', '11d', '11e', '11f', '12a', '12b', '12c', '13a', '13b', '13c', '14a', '14b', '14c', '14d', '14e', '15a', '15b', '15c', '1a', '1b', '2a', '2b', '3a', '4a', '4b', '4c', '4d', '4e', '5a', '5b', '6a', '6b', '6c', '7a', '7b'];
+// Artboards are full app instances; mount them one at a time as they scroll or pan into view.
+class Component extends DCLogic {
+  state = { mounted: {} };
+  rootRef = React.createRef();
+  visible = new Set();
+  componentDidMount() {
+    const root = this.rootRef.current;
+    if (!root || !window.IntersectionObserver) { this.setState({ mounted: Object.fromEntries(IDS.map((id) => [id, true])) }); return; }
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { const id = e.target.getAttribute('data-board'); if (e.isIntersecting) this.visible.add(id); else this.visible.delete(id); });
+      this.pump();
+    }, { rootMargin: '300px' });
+    root.querySelectorAll('[data-board]').forEach((el) => this.io.observe(el));
+  }
+  componentWillUnmount() { this.io?.disconnect(); clearTimeout(this.timer); }
+  pump() {
+    if (this.timer) return;
+    const next = IDS.find((id) => this.visible.has(id) && !this.state.mounted[id]);
+    if (!next) return;
+    this.setState((s) => ({ mounted: { ...s.mounted, [next]: true } }));
+    this.timer = setTimeout(() => { this.timer = null; this.pump(); }, 600);
+  }
+  renderVals() {
+    const v = { rootRef: this.rootRef };
+    IDS.forEach((id) => { v['on' + id] = !!this.state.mounted[id]; v['off' + id] = !this.state.mounted[id]; });
+    return v;
+  }
+}
+</script>
+</body>
+</html>

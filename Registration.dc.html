@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="choirbook.css">
+<script src="_ds/choirbook-design-system-9d7b3b08-5cc4-4553-b44b-4db9eb92dfdb/_ds_bundle.js"></script>
+</helmet>
+<div style="flex:1; display:flex; flex-direction:column; min-height:100%; background:var(--bg-app);">
+  <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.AppHeader" start="{{ hStart }}" end="{{ hEnd }}" hint-size="100%,60px"></x-import>
+
+  <main style="flex:1; width:100%; max-width:820px; margin:0 auto; padding:{{ pad }}; display:flex; flex-direction:column; gap:24px;">
+  <sc-if value="{{ notDone }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex; flex-direction:column; gap:6px;">
+      <span style="font:700 12px/1.2 var(--font-ui); letter-spacing:var(--tracking-overline); text-transform:uppercase; color:var(--accent-text);">{{ X.over }}</span>
+      <h1 style="font:500 {{ h1 }}/1.12 var(--font-display); letter-spacing:var(--tracking-display); margin:0;">{{ X.title }}</h1>
+      <p style="margin:0; font:400 var(--text-body-l)/var(--lh-body-l) var(--font-ui); color:var(--text-2); max-width:60ch;">{{ X.intro }}</p>
+    </div>
+
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Stepper" steps="{{ steps }}" current="{{ step }}" on-step-click="{{ goStep }}" lang="{{ lang }}" label="{{ X.progress }}" hint-size="100%,56px"></x-import>
+
+    <div style="display:flex; flex-direction:column; gap:24px; padding:{{ cardPad }}; background:var(--surface-card); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); box-shadow:var(--shadow-1);">
+      <sc-if value="{{ s0 }}" hint-placeholder-val="{{ true }}">
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.AlertCard" tone="info" icon="music" title="{{ X.noAudition }}" hint-size="100%,100px">{{ X.noAuditionBody }}</x-import>
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.FormSection" title="{{ X.s0 }}" description="{{ X.s0d }}" hint-size="100%,380px">
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.FormRow" hint-size="100%,72px">
+            <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="{{ X.first }}" required="{{ true }}" value="{{ v.cFirst }}" on-change="{{ on.cFirst }}" error="{{ err.cFirst }}" size="{{ inputSize }}" hint-size="100%,72px"></x-import>
+            <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="{{ X.last }}" required="{{ true }}" value="{{ v.cLast }}" on-change="{{ on.cLast }}" error="{{ err.cLast }}" size="{{ inputSize }}" hint-size="100%,72px"></x-import>
+          </x-import>
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.FormRow" hint-size="100%,72px">
+            <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="{{ X.preferred }}" optional="{{ true }}" value="{{ v.cPreferred }}" on-change="{{ on.cPreferred }}" size="{{ inputSize }}" hint-size="100%,72px"></x-import>
+            <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="{{ X.pronouns }}" optional="{{ true }}" placeholder="{{ X.pronounsPh }}" value="{{ v.cPronouns }}" on-change="{{ on.cPronouns }}" size="{{ inputSize }}" hint-size="100%,72px"></x-import>
+          </x-import>
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.FormRow" hint-size="100%,72px">
+            <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="{{ X.dob }}" required="{{ true }}" type="date" value="{{ v.cDob }}" on-change="{{ on.cDob }}" error="{{ err.cDob }}" hint="{{ X.dobHint }}" size="{{ inputSize }}" hint-size="100%,72px"></x-import>
+            <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="{{ X.cEmail }}" required="{{ true }}" type="email" value="{{ v.cEmail }}" on-change="{{ on.cEmail }}" error="{{ err.cEmail }}" hint="{{ X.cEmailHint }}" size="{{ inputSize }}" hint-size="100%,72px"></x-import>
+          </x-import>
+        </x-import>
+      </sc-if>
+
+      <sc-if value="{{ s1 }}" hint-placeholder-val="{{ false }}">
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.FormSection" title="{{ X.s1 }}" description="{{ X.s1d }}" hint-size="100%,380px">
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.FormRow" hint-size="100%,72px">
+            <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="{{ X.fullName }}" required="{{ true }}" value="{{ v.gName }}" on-change="{{ on.gName }}" error="{{ err.gName }}" auto-complete="name" size="{{ inputSize }}" hint-size="100%,72px"></x-import>
+            <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Select" label="{{ X.relationship }}" value="{{ v.gRel }}" on-change="{{ on.gRel }}" options="{{ relOptions }}" size="{{ inputSize }}" hint-size="100%,72px"></x-import>
+          </x-import>
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.FormRow" hint-size="100%,72px">
+            <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="{{ X.email }}" required="{{ true }}" type="email" value="{{ v.gEmail }}" on-change="{{ on.gEmail }}" error="{{ err.gEmail }}" auto-complete="email" size="{{ inputSize }}" hint-size="100%,72px"></x-import>
+            <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="{{ X.mobile }}" required="{{ true }}" type="tel" value="{{ v.gPhone }}" on-change="{{ on.gPhone }}" error="{{ err.gPhone }}" auto-complete="tel" size="{{ inputSize }}" hint-size="100%,72px"></x-import>
+          </x-import>
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Checkbox" label="{{ X.second }}" description="{{ X.secondD }}" checked="{{ second }}" on-change="{{ toggleSecond }}" hint-size="100%,48px"></x-import>
+          <sc-if value="{{ second }}" hint-placeholder-val="{{ false }}">
+            <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.FormRow" hint-size="100%,72px">
+              <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="{{ X.fullName }}" value="{{ v.g2Name }}" on-change="{{ on.g2Name }}" size="{{ inputSize }}" hint-size="100%,72px"></x-import>
+              <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="{{ X.email }}" type="email" value="{{ v.g2Email }}" on-change="{{ on.g2Email }}" size="{{ inputSize }}" hint-size="100%,72px"></x-import>
+            </x-import>
+          </sc-if>
+        </x-import>
+      </sc-if>
+
+      <sc-if value="{{ s2 }}" hint-placeholder-val="{{ false }}">
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.FormSection" title="{{ X.s2 }}" description="{{ X.s2d }}" hint-size="100%,460px">
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.RadioGroup" label="{{ X.voice }}" hint="{{ X.voiceHint }}" value="{{ voice }}" on-change="{{ setVoice }}" options="{{ voiceOptions }}" hint-size="100%,300px"></x-import>
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.FormRow" hint-size="100%,72px">
+            <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="{{ X.school }}" required="{{ true }}" value="{{ v.school }}" on-change="{{ on.school }}" error="{{ err.school }}" size="{{ inputSize }}" hint-size="100%,72px"></x-import>
+            <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Select" label="{{ X.grade }}" required="{{ true }}" value="{{ v.grade }}" on-change="{{ on.grade }}" options="{{ gradeOptions }}" placeholder="{{ X.choose }}" error="{{ err.grade }}" size="{{ inputSize }}" hint-size="100%,72px"></x-import>
+          </x-import>
+        </x-import>
+      </sc-if>
+
+      <sc-if value="{{ s3 }}" hint-placeholder-val="{{ false }}">
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.FormSection" title="{{ X.s3 }}" description="{{ X.s3d }}" hint-size="100%,260px">
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.FormRow" hint-size="100%,72px">
+            <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="{{ X.fullName }}" required="{{ true }}" value="{{ v.eName }}" on-change="{{ on.eName }}" error="{{ err.eName }}" size="{{ inputSize }}" hint-size="100%,72px"></x-import>
+            <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="{{ X.relationship }}" optional="{{ true }}" placeholder="{{ X.relPh }}" value="{{ v.eRel }}" on-change="{{ on.eRel }}" size="{{ inputSize }}" hint-size="100%,72px"></x-import>
+          </x-import>
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="{{ X.phone }}" required="{{ true }}" type="tel" value="{{ v.ePhone }}" on-change="{{ on.ePhone }}" error="{{ err.ePhone }}" size="{{ inputSize }}" hint-size="100%,72px"></x-import>
+        </x-import>
+      </sc-if>
+
+      <sc-if value="{{ s4 }}" hint-placeholder-val="{{ false }}">
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.FormSection" title="{{ X.s4 }}" description="{{ X.s4d }}" hint-size="100%,420px">
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Checkbox" label="{{ X.media }}" description="{{ X.mediaD }}" checked="{{ consent }}" on-change="{{ toggleConsent }}" hint-size="100%,60px"></x-import>
+          <dl style="margin:0; display:grid; grid-template-columns:minmax(8rem,auto) minmax(0,1fr); gap:8px 16px; padding:14px 16px; background:var(--surface-muted); border-radius:var(--radius-md); font-size:14px;">
+            <sc-for list="{{ review }}" as="rv" hint-placeholder-count="6">
+              <dt style="color:var(--text-3); font-weight:600;">{{ rv.k }}</dt>
+              <dd style="margin:0; color:var(--text-1);">{{ rv.v }}</dd>
+            </sc-for>
+          </dl>
+        </x-import>
+      </sc-if>
+
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.FormActions" start="{{ backBtn }}" hint-size="100%,60px">
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" size="lg" icon-end="{{ nextIcon }}" icon-start="{{ submitIcon }}" on-click="{{ next }}" hint-size="160px,48px">{{ nextLabel }}</x-import>
+      </x-import>
+    </div>
+    <button type="button" onClick="{{ fillSample }}" style="align-self:center; padding:8px 14px; border:1px dashed var(--border-strong); border-radius:var(--radius-full); background:transparent; color:var(--text-3); font:600 12px/1 var(--font-ui); cursor:pointer;">Prototype · fill sample answers</button>
+  </sc-if>
+
+  <sc-if value="{{ done }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex; flex-direction:column; gap:24px; padding:{{ cardPad }}; background:var(--surface-card); border:1px solid var(--border-subtle); border-radius:var(--radius-xl); box-shadow:var(--shadow-2); animation:cb-rise-in var(--duration-slow) var(--ease-enter);">
+      <span aria-hidden="true" style="width:52px; height:52px; border-radius:var(--radius-full); display:grid; place-items:center; background:var(--success-subtle); color:var(--success-text); border:1px solid var(--success-border);">
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Icon" name="check" size="{{ 26 }}" stroke-width="{{ 2.5 }}" hint-size="26px,26px"></x-import>
+      </span>
+      <div style="display:flex; flex-direction:column; gap:6px;">
+        <span style="font:700 12px/1.2 var(--font-ui); letter-spacing:var(--tracking-overline); text-transform:uppercase; color:var(--success-text);">{{ X.received }}</span>
+        <h1 style="font:500 {{ h1 }}/1.12 var(--font-display); letter-spacing:var(--tracking-display); margin:0;">{{ doneTitle }}</h1>
+        <p style="margin:0; font:400 var(--text-body-l)/var(--lh-body-l) var(--font-ui); color:var(--text-2);">{{ doneBody }}</p>
+      </div>
+      <ol style="list-style:none; margin:0; padding:0; display:flex; flex-direction:column; border:1px solid var(--border-subtle); border-radius:var(--radius-lg);">
+        <sc-for list="{{ nextSteps }}" as="n" hint-placeholder-count="3">
+          <li style="display:flex; gap:14px; padding:16px 18px; border-top:1px solid {{ n.bt }};">
+            <span aria-hidden="true" style="flex:none; width:28px; height:28px; display:grid; place-items:center; border-radius:var(--radius-full); border:2px solid var(--accent); color:var(--accent-text); font:700 13px/1 var(--font-ui);">{{ n.num }}</span>
+            <span style="display:flex; flex-direction:column; gap:3px; min-width:0;">
+              <span style="font:600 17px/1.3 var(--font-display); color:var(--text-1);">{{ n.title }}</span>
+              <span style="font:400 14px/1.5 var(--font-ui); color:var(--text-2); text-wrap:pretty;">{{ n.body }}</span>
+            </span>
+          </li>
+        </sc-for>
+      </ol>
+      <div style="display:flex; flex-wrap:wrap; gap:8px;">
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" icon-start="{{ calIcon }}" variant="{{ calVariant }}" on-click="{{ addCal }}" hint-size="240px,40px">{{ calLabel }}</x-import>
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" variant="secondary" on-click="{{ goLogin }}" hint-size="130px,40px">{{ X.toSignIn }}</x-import>
+      </div>
+    </div>
+  </sc-if>
+  </main>
+
+  <footer style="display:flex; justify-content:center; padding:20px 16px 28px;">
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.PoweredBy" lang="{{ lang }}" hint-size="160px,20px"></x-import>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const TX = {
+  en: { over: 'Registration · 2026–27 season', title: 'Join the choir', intro: 'Ottawa Regional Youth Choir is open to singers aged 12 to 22. We rehearse on Thursdays from 6:30 to 8:30 p.m. at Grace Hall.', progress: 'Registration progress',
+    steps: ['Chorister', 'Guardian', 'Voice and school', 'Emergency contact', 'Consent and review'],
+    noAudition: 'No audition needed', noAuditionBody: 'Everyone who registers gets a place. During your first two rehearsals the conductor listens to each new singer in a relaxed setting and places you in a section. There is nothing to prepare.',
+    s0: 'Chorister', s0d: 'The singer joining the choir.', first: 'First name', last: 'Last name', preferred: 'Preferred name', pronouns: 'Pronouns', pronounsPh: 'e.g. she/her', dob: 'Date of birth', dobHint: 'Singers must be 12 to 22 on September 1.', cEmail: 'Chorister’s email', cEmailHint: 'Every chorister gets their own login for music and schedules.',
+    s1: 'Guardian', s1d: 'The main contact for forms, fees and absences.', fullName: 'Full name', relationship: 'Relationship', email: 'Email', mobile: 'Mobile phone', second: 'Add a second guardian', secondD: 'They’ll get their own login and the same emails.', rel: ['Parent', 'Guardian', 'Grandparent', 'Other'],
+    s2: 'Voice and school', s2d: 'Voice part helps us plan seating. You can change it later.', voice: 'Voice part, if you know it', voiceHint: 'Voices change a lot between 12 and 22. Choosing “Not sure” is common and doesn’t affect your place.',
+    voices: [['S', 'Soprano', 'Higher unchanged voice'], ['A', 'Alto', 'Lower unchanged voice'], ['T', 'Tenor', 'Higher changed voice'], ['B', 'Bass', 'Lower changed voice'], ['N', 'Not sure', 'We’ll find out together at the first rehearsals']],
+    school: 'School', grade: 'Grade', choose: 'Choose…', grades: [['7', 'Grade 7'], ['8', 'Grade 8'], ['9', 'Grade 9'], ['10', 'Grade 10'], ['11', 'Grade 11'], ['12', 'Grade 12'], ['college', 'College or CEGEP'], ['university', 'University'], ['none', 'Not in school']],
+    s3: 'Emergency contact', s3d: 'Someone other than the guardians above, if possible.', relPh: 'e.g. Aunt', phone: 'Phone',
+    s4: 'Consent and review', s4d: 'Check the details, then submit. You can edit them from your account later.', media: 'Photo and video consent', mediaD: 'Photos and video from rehearsals and concerts may appear on the choir’s website, social media and printed programmes. Optional. You can change this at any time.',
+    back: 'Back', continue: 'Continue', submit: 'Submit registration', required: (f) => `Enter the ${f.toLowerCase()}`, emailErr: 'Enter an email like name@example.com',
+    rv: ['Chorister', 'Date of birth', 'Guardian', 'Voice part', 'School', 'Emergency contact'], notSure: 'Not sure yet',
+    received: 'Registration received', doneTitle: (n) => `${n} is registered`, doneBody: (g, e) => `Thanks, ${g}. A confirmation is on its way to ${e}.`,
+    n1t: 'Check your email', n1b: (n) => `You and ${n} will each get an email to create a password for your Choirbook accounts.`, n2t: 'First rehearsal: Thursday, October 22', n2b: '6:30 p.m. at Grace Hall, 41 Linden Street. Please arrive 15 minutes early to meet the section leaders. Bring a water bottle and a pencil.', n3t: 'Section placement', n3b: 'In the first two rehearsals the conductor hears each new singer briefly and places them in a section. There is nothing to prepare.',
+    addCal: 'Add first rehearsal to calendar', added: 'Added to calendar', toSignIn: 'Go to sign in', signIn: 'Sign in' },
+  fr: { over: 'Inscription · saison 2026-2027', title: 'Joindre le chœur', intro: 'L’Ottawa Regional Youth Choir accueille les choristes de 12 à 22 ans. Les répétitions ont lieu le jeudi de 18 h 30 à 20 h 30 à Grace Hall.', progress: 'Progression de l’inscription',
+    steps: ['Choriste', 'Parent', 'Voix et école', 'Contact d’urgence', 'Consentement'],
+    noAudition: 'Aucune audition', noAuditionBody: 'Toute personne inscrite a sa place. Pendant les deux premières répétitions, la cheffe écoute chaque nouvelle voix dans un cadre détendu et choisit le pupitre. Rien à préparer.',
+    s0: 'Choriste', s0d: 'La personne qui se joint au chœur.', first: 'Prénom', last: 'Nom', preferred: 'Nom d’usage', pronouns: 'Pronoms', pronounsPh: 'p. ex. elle', dob: 'Date de naissance', dobHint: 'Avoir de 12 à 22 ans au 1er septembre.', cEmail: 'Courriel du choriste', cEmailHint: 'Chaque choriste a son propre accès à la musique et à l’horaire.',
+    s1: 'Parent ou tuteur', s1d: 'Contact principal pour les formulaires, frais et absences.', fullName: 'Nom complet', relationship: 'Lien', email: 'Courriel', mobile: 'Cellulaire', second: 'Ajouter un deuxième parent', secondD: 'Cette personne aura son propre accès et les mêmes courriels.', rel: ['Parent', 'Tuteur', 'Grand-parent', 'Autre'],
+    s2: 'Voix et école', s2d: 'La voix nous aide à planifier le placement. Vous pourrez la modifier.', voice: 'Voix, si vous la connaissez', voiceHint: 'La voix change beaucoup entre 12 et 22 ans. « Je ne sais pas » est un choix courant.',
+    voices: [['S', 'Soprano', 'Voix aiguë non muée'], ['A', 'Alto', 'Voix grave non muée'], ['T', 'Ténor', 'Voix aiguë muée'], ['B', 'Basse', 'Voix grave muée'], ['N', 'Je ne sais pas', 'Nous le découvrirons ensemble']],
+    school: 'École', grade: 'Année scolaire', choose: 'Choisir…', grades: [['7', '7e année'], ['8', '8e année'], ['9', '9e année'], ['10', '10e année'], ['11', '11e année'], ['12', '12e année'], ['college', 'Collège ou cégep'], ['university', 'Université'], ['none', 'Pas aux études']],
+    s3: 'Contact d’urgence', s3d: 'Une personne autre que les parents, si possible.', relPh: 'p. ex. Tante', phone: 'Téléphone',
+    s4: 'Consentement et vérification', s4d: 'Vérifiez les renseignements, puis envoyez.', media: 'Consentement photo et vidéo', mediaD: 'Des photos et vidéos des répétitions et concerts peuvent paraître sur le site, les réseaux sociaux et les programmes. Facultatif et modifiable en tout temps.',
+    back: 'Retour', continue: 'Continuer', submit: 'Envoyer l’inscription', required: (f) => `Indiquez : ${f.toLowerCase()}`, emailErr: 'Entrez un courriel comme nom@exemple.com',
+    rv: ['Choriste', 'Date de naissance', 'Parent', 'Voix', 'École', 'Contact d’urgence'], notSure: 'Pas encore connue',
+    received: 'Inscription reçue', doneTitle: (n) => `${n} est inscrit`, doneBody: (g, e) => `Merci ${g}. Une confirmation a été envoyée à ${e}.`,
+    n1t: 'Vérifiez vos courriels', n1b: (n) => `Vous et ${n} recevrez chacun un courriel pour créer votre mot de passe.`, n2t: 'Première répétition : jeudi 22 octobre', n2b: '18 h 30 à Grace Hall, 41, rue Linden. Arrivez 15 minutes d’avance. Apportez une bouteille d’eau et un crayon.', n3t: 'Placement', n3b: 'Pendant les deux premières répétitions, la cheffe écoute brièvement chaque nouvelle voix. Rien à préparer.',
+    addCal: 'Ajouter la répétition au calendrier', added: 'Ajouté au calendrier', toSignIn: 'Se connecter', signIn: 'Connexion' },
+};
+const SAMPLE = { cFirst: 'Noah', cLast: 'Kim', cPreferred: '', cPronouns: 'he/him', cDob: '2012-03-08', cEmail: 'noah.kim@example.com', gName: 'Hyejin Kim', gRel: 'Parent', gEmail: 'hyejin.kim@example.com', gPhone: '(613) 555-0147', g2Name: '', g2Email: '', school: 'Hillcrest High School', grade: '9', eName: 'Soo-ah Park', eRel: 'Aunt', ePhone: '(613) 555-0192' };
+const REQ = [['cFirst', 'cLast', 'cDob', 'cEmail'], ['gName', 'gEmail', 'gPhone'], ['school', 'grade'], ['eName', 'ePhone'], []];
+const LABEL = { cFirst: 'first', cLast: 'last', cDob: 'dob', cEmail: 'cEmail', gName: 'fullName', gEmail: 'email', gPhone: 'mobile', school: 'school', grade: 'grade', eName: 'fullName', ePhone: 'phone' };
+class Component extends DCLogic {
+  state = this.initState(this.props);
+  initState(p) {
+    const demo = p.demo;
+    const full = demo === 'voice' || demo === 'review' || demo === 'done';
+    const v = full ? { ...SAMPLE } : { ...Object.fromEntries(Object.keys(SAMPLE).map((k) => [k, ''])), cFirst: 'Noah', cLast: 'Kim', gRel: 'Parent' };
+    return { v, step: demo === 'voice' ? 2 : demo === 'review' ? 4 : 0, voice: 'N', consent: full, second: false, err: {}, done: demo === 'done', cal: false };
+  }
+  componentDidMount() { this.waitDS(); }
+  waitDS() { if (window.ChoirbookDesignSystem_9d7b3b?.FormSection) this.forceUpdate(); else setTimeout(() => this.waitDS(), 60); }
+  componentDidUpdate(prev) { if (prev.demo !== this.props.demo) this.setState(this.initState(this.props)); }
+  renderVals() {
+    const p = this.props, s = this.state;
+    const NS = window.ChoirbookDesignSystem_9d7b3b || {};
+    const h = (C, pr, ...c) => (C ? React.createElement(C, pr, ...c) : null);
+    const lang = p.lang ?? 'en';
+    const X = TX[lang];
+    const mobile = p.device === 'mobile';
+    const on = Object.fromEntries(Object.keys(SAMPLE).map((k) => [k, (e) => this.setState({ v: { ...this.state.v, [k]: e.target.value }, err: { ...this.state.err, [k]: undefined } })]));
+    const validate = () => {
+      const err = {};
+      REQ[s.step].forEach((k) => { if (!String(s.v[k] || '').trim()) err[k] = X.required(X[LABEL[k]]); });
+      ['cEmail', 'gEmail'].forEach((k) => { if (REQ[s.step].includes(k) && s.v[k] && !/^\S+@\S+\.\S+$/.test(s.v[k])) err[k] = X.emailErr; });
+      return err;
+    };
+    const last = s.step === 4;
+    const scrollTop = () => p.scrollTop?.();
+    const voiceLabel = (X.voices.find((x) => x[0] === s.voice) || [])[1];
+    const gradeLabel = (X.grades.find((g) => g[0] === s.v.grade) || [])[1] || '';
+    const cFirst = s.v.cFirst || 'Your chorister';
+    return {
+      X, lang, v: s.v, on, err: s.err,
+      pad: mobile ? '20px 16px 32px' : '36px 24px 48px', cardPad: mobile ? '20px 16px' : '28px 32px',
+      h1: mobile ? '30px' : 'var(--text-display-l)', inputSize: mobile ? 'lg' : 'md',
+      hStart: h(NS.ChoirLogo, { name: 'Ottawa Regional Youth Choir', shortName: 'ORYC', size: mobile ? 28 : 32, hideName: false }),
+      hEnd: h('span', { style: { display: 'flex', alignItems: 'center', gap: 8 } },
+        h(NS.SegmentedControl, { label: 'Language', value: lang, onChange: (l) => p.setLang?.(l), options: [{ value: 'en', label: 'EN' }, { value: 'fr', label: 'FR' }] }),
+        mobile ? null : h(NS.Button, { size: 'sm', variant: 'ghost', onClick: () => p.go?.('login') }, X.signIn)),
+      notDone: !s.done, done: s.done,
+      steps: X.steps.map((label) => ({ label })), step: s.step,
+      goStep: (i) => { if (i < s.step) this.setState({ step: i }); },
+      s0: s.step === 0, s1: s.step === 1, s2: s.step === 2, s3: s.step === 3, s4: last,
+      relOptions: X.rel.map((r) => ({ value: r, label: r })),
+      second: s.second, toggleSecond: (e) => this.setState({ second: e.target.checked }),
+      voice: s.voice, setVoice: (val) => this.setState({ voice: val }),
+      voiceOptions: X.voices.map(([value, label, description]) => ({ value, label, description })),
+      gradeOptions: X.grades.map(([value, label]) => ({ value, label })),
+      consent: s.consent, toggleConsent: (e) => this.setState({ consent: e.target.checked }),
+      review: [
+        [X.rv[0], `${s.v.cFirst} ${s.v.cLast}`.trim() + (s.v.cEmail ? ` · ${s.v.cEmail}` : '')],
+        [X.rv[1], s.v.cDob || '—'],
+        [X.rv[2], `${s.v.gName || '—'}${s.v.gPhone ? ' · ' + s.v.gPhone : ''}`],
+        [X.rv[3], s.voice === 'N' ? X.notSure : voiceLabel],
+        [X.rv[4], [s.v.school, gradeLabel].filter(Boolean).join(' · ') || '—'],
+        [X.rv[5], `${s.v.eName || '—'}${s.v.ePhone ? ' · ' + s.v.ePhone : ''}`],
+      ].map(([k, val]) => ({ k, v: val })),
+      backBtn: s.step > 0 ? h(NS.Button, { variant: 'secondary', size: 'lg', iconStart: 'arrow-left', onClick: () => { this.setState({ step: s.step - 1 }); scrollTop(); } }, X.back) : null,
+      nextLabel: last ? X.submit : X.continue,
+      nextIcon: last ? undefined : 'arrow-right', submitIcon: last ? 'send' : undefined,
+      next: () => {
+        const err = validate();
+        if (Object.keys(err).length) { this.setState({ err }); return; }
+        this.setState(last ? { done: true, err: {} } : { step: s.step + 1, err: {} });
+        scrollTop();
+      },
+      fillSample: () => this.setState({ v: { ...SAMPLE }, err: {} }),
+      doneTitle: X.doneTitle(cFirst), doneBody: X.doneBody((s.v.gName || '').split(' ')[0] || 'there', s.v.gEmail || 'your email'),
+      nextSteps: [
+        { num: '1', bt: 'transparent', title: X.n1t, body: X.n1b(cFirst) },
+        { num: '2', bt: 'var(--border-subtle)', title: X.n2t, body: X.n2b },
+        { num: '3', bt: 'var(--border-subtle)', title: X.n3t, body: X.n3b },
+      ],
+      calLabel: s.cal ? X.added : X.addCal, calIcon: s.cal ? 'calendar-check' : 'plus', calVariant: s.cal ? 'tonal' : 'primary',
+      addCal: () => this.setState({ cal: true }),
+      goLogin: () => p.go?.('login'),
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="choirbook.css">
+<script src="_ds/choirbook-design-system-9d7b3b08-5cc4-4553-b44b-4db9eb92dfdb/_ds_bundle.js"></script>
+</helmet>
+<div style="width:100%; max-width:1200px; margin:0 auto; padding:{{ pad }}; display:flex; flex-direction:column; gap:20px;">
+  <header style="display:flex; flex-wrap:wrap; align-items:flex-end; gap:12px 16px;">
+    <div style="min-width:0; display:flex; flex-direction:column; gap:6px;">
+      <span style="font:700 12px/1.2 var(--font-ui); letter-spacing:var(--tracking-overline); text-transform:uppercase; color:var(--accent-text);">2026–27 season</span>
+      <h1 style="font:500 {{ h1 }}/1.15 var(--font-display); letter-spacing:var(--tracking-display); margin:0;">{{ t.formsFees }}</h1>
+      <p style="margin:0; font-size:15px; color:var(--text-2);">{{ sub }}</p>
+    </div>
+    <sc-if value="{{ isStaff }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex; flex-wrap:wrap; gap:8px; margin-left:auto;">
+        <sc-if value="{{ isFormsTab }}" hint-placeholder-val="{{ true }}">
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" icon-start="plus" on-click="{{ openBuilder }}" hint-size="110px,40px">New form</x-import>
+        </sc-if>
+        <sc-if value="{{ isFeesTab }}" hint-placeholder-val="{{ false }}">
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" variant="secondary" icon-start="download" hint-size="110px,40px">Export</x-import>
+        </sc-if>
+      </div>
+    </sc-if>
+  </header>
+
+  <sc-if value="{{ isStaff }}" hint-placeholder-val="{{ true }}">
+    <div style="max-width:360px;">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.SegmentedControl" full-width="{{ true }}" label="Section" value="{{ tab }}" on-change="{{ setTab }}" options="{{ tabOptions }}" hint-size="100%,38px"></x-import>
+    </div>
+
+    <sc-if value="{{ isFormsTab }}" hint-placeholder-val="{{ true }}">
+      <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap:16px;">
+        <sc-for list="{{ forms }}" as="f" hint-placeholder-count="5">
+          <div style="display:flex; flex-direction:column; gap:14px; padding:18px 20px; background:var(--surface-card); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); box-shadow:var(--shadow-1);">
+            <div style="display:flex; align-items:flex-start; gap:10px;">
+              <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap:4px;">
+                <span style="font:500 19px/1.25 var(--font-display);">{{ f.title }}</span>
+                <span style="font-size:13px; color:var(--text-3);">{{ f.kind }} · due {{ f.due }}{{ f.sigText }}</span>
+              </div>
+              <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Badge" tone="{{ f.tone }}" icon="{{ f.icon }}" hint-size="80px,22px">{{ f.statusLabel }}</x-import>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:6px;">
+              <span style="font-size:14px; color:var(--text-2); font-variant-numeric:var(--numeric-tabular);">{{ f.done }} of {{ f.total }} submitted</span>
+              <div aria-hidden="true" style="height:6px; border-radius:var(--radius-full); background:var(--surface-muted-strong); overflow:hidden;"><div style="height:100%; width:{{ f.pct }}; background:{{ f.bar }}; border-radius:inherit;"></div></div>
+            </div>
+            <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:auto;">
+              <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" size="sm" variant="secondary" icon-start="list-checks" on-click="{{ f.view }}" hint-size="130px,32px">View responses</x-import>
+              <sc-if value="{{ f.canRemind }}" hint-placeholder-val="{{ false }}">
+                <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" size="sm" variant="ghost" icon-start="bell" on-click="{{ f.remind }}" hint-size="120px,32px">{{ f.remindLabel }}</x-import>
+              </sc-if>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isFeesTab }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex; flex-wrap:wrap; gap:16px;">
+        <div style="flex:1 1 200px;"><x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.StatCard" icon="receipt" label="Collected" value="{{ fee.collected }}" context="{{ fee.collectedCtx }}" progress="{{ fee.progress }}" hint-size="100%,120px"></x-import></div>
+        <div style="flex:1 1 200px;"><x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.StatCard" icon="clock" label="Due by Oct 31" value="{{ fee.due }}" context="{{ fee.dueCtx }}" hint-size="100%,120px"></x-import></div>
+        <div style="flex:1 1 200px;"><x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.StatCard" icon="circle-alert" label="Overdue" value="{{ fee.overdue }}" context="{{ fee.overdueCtx }}" hint-size="100%,120px"></x-import></div>
+      </div>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.DataTable" caption="Annual fees" lang="{{ lang }}" columns="{{ feeColumns }}" rows="{{ feeRows }}" get-row-id="{{ getRowId }}" row-label="{{ rowLabel }}" selectable="{{ true }}" searchable="{{ true }}" search-keys="{{ searchKeys }}" search-placeholder="Search chorister or guardian" filters="{{ feeFilters }}" bulk-actions="{{ feeBulk }}" default-sort="{{ feeSort }}" on-row-click="{{ openPayment }}" hint-size="100%,700px"></x-import>
+    </sc-if>
+  </sc-if>
+
+  <sc-if value="{{ isGuardian }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex; flex-wrap:wrap; gap:20px; align-items:flex-start;">
+      <div style="flex:1 1 380px; min-width:0; display:flex; flex-direction:column; gap:20px;">
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Card" title="Forms" padded="{{ false }}" hint-size="100%,360px">
+          <ul style="list-style:none; margin:0; padding:0;">
+            <sc-for list="{{ gForms }}" as="f" hint-placeholder-count="5">
+              <li style="display:flex; flex-wrap:wrap; align-items:center; gap:10px 12px; padding:14px 20px; border-top:1px solid var(--border-subtle);">
+                <div style="flex:1 1 180px; min-width:0;">
+                  <div style="font:600 15px/1.35 var(--font-ui);">{{ f.title }}</div>
+                  <div style="font-size:13px; color:var(--text-3);">{{ f.detail }}</div>
+                </div>
+                <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.FormStatusBadge" status="{{ f.status }}" lang="{{ lang }}" hint-size="90px,22px"></x-import>
+                <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" size="sm" variant="{{ f.variant }}" icon-start="{{ f.btnIcon }}" on-click="{{ f.open }}" hint-size="90px,32px">{{ f.action }}</x-import>
+              </li>
+            </sc-for>
+          </ul>
+        </x-import>
+      </div>
+      <div style="flex:1 1 340px; min-width:0; display:flex; flex-direction:column; gap:20px;">
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Card" title="Fees" padded="{{ false }}" hint-size="100%,240px">
+          <ul style="list-style:none; margin:0; padding:0;">
+            <sc-for list="{{ gFees }}" as="f" hint-placeholder-count="2">
+              <li style="display:flex; flex-wrap:wrap; align-items:center; gap:10px 12px; padding:14px 20px; border-top:1px solid var(--border-subtle);">
+                <div style="flex:1 1 160px; min-width:0;">
+                  <div style="font:600 15px/1.35 var(--font-ui);">{{ f.title }}</div>
+                  <div style="font-size:13px; color:var(--text-3); font-variant-numeric:var(--numeric-tabular);">{{ f.detail }}</div>
+                </div>
+                <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.FeeStatusBadge" status="{{ f.status }}" lang="{{ lang }}" hint-size="70px,22px"></x-import>
+                <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" size="sm" variant="{{ f.variant }}" icon-start="{{ f.btnIcon }}" on-click="{{ f.open }}" hint-size="100px,32px">{{ f.action }}</x-import>
+              </li>
+            </sc-for>
+          </ul>
+        </x-import>
+        <p style="margin:0; font-size:13.5px; color:var(--text-3); text-wrap:pretty;">Need a payment plan or help with fees? Message the choir office. Requests are private.</p>
+      </div>
+    </div>
+  </sc-if>
+</div>
+
+<x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.SideSheet" open="{{ respOpen }}" on-close="{{ close }}" header="{{ respHeader }}" footer="{{ respFooter }}" label="Form responses" close-label="Close" hint-size="0px,0px">
+  <div style="display:flex; flex-direction:column; gap:12px;">
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.SegmentedControl" full-width="{{ true }}" label="Show" value="{{ respFilter }}" on-change="{{ setRespFilter }}" options="{{ respOptions }}" hint-size="100%,38px"></x-import>
+    <ul style="list-style:none; margin:0; padding:0;">
+      <sc-for list="{{ responses }}" as="r" hint-placeholder-count="8">
+        <li style="display:flex; align-items:center; gap:10px; min-height:44px; padding:8px 0; border-bottom:1px solid var(--border-subtle);">
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Avatar" name="{{ r.name }}" size="{{ 28 }}" hint-size="28px,28px"></x-import>
+          <div style="flex:1; min-width:0;">
+            <div style="font:500 14.5px/1.3 var(--font-ui);">{{ r.name }}</div>
+            <div style="font-size:12.5px; color:var(--text-3);">{{ r.detail }}</div>
+          </div>
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.FormStatusBadge" status="{{ r.status }}" lang="{{ lang }}" hint-size="90px,22px"></x-import>
+        </li>
+      </sc-for>
+    </ul>
+  </div>
+</x-import>
+
+<x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Modal" open="{{ builderOpen }}" on-close="{{ close }}" size="lg" title="New form" close-label="Close" footer="{{ builderFooter }}" hint-size="0px,0px">
+  <div style="display:flex; flex-direction:column; gap:20px;">
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.FormRow" hint-size="100%,72px">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="Form title" required="{{ true }}" value="{{ b.title }}" on-change="{{ onB.title }}" hint-size="100%,72px"></x-import>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Select" label="Kind" value="{{ b.kind }}" on-change="{{ onB.kind }}" options="{{ kindOptions }}" hint-size="100%,72px"></x-import>
+    </x-import>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="Instructions for families" optional="{{ true }}" multiline="{{ true }}" rows="{{ 2 }}" value="{{ b.desc }}" on-change="{{ onB.desc }}" hint-size="100%,100px"></x-import>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.FormRow" hint-size="100%,72px">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Select" label="Who fills it in" value="{{ b.who }}" on-change="{{ onB.who }}" options="{{ whoOptions }}" hint-size="100%,72px"></x-import>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.DatePicker" label="Due" value="{{ b.due }}" on-change="{{ setDue }}" locale="{{ locale }}" hint-size="100%,72px"></x-import>
+    </x-import>
+    <div style="display:flex; flex-direction:column; gap:8px;">
+      <span style="font:600 14px/1.3 var(--font-ui);">Questions</span>
+      <ol style="list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px;">
+        <sc-for list="{{ fields }}" as="q" hint-placeholder-count="3">
+          <li style="display:flex; flex-wrap:wrap; align-items:flex-end; gap:10px; padding:12px; border:1px solid var(--border-subtle); border-radius:var(--radius-md); background:var(--surface-muted);">
+            <span style="align-self:center; width:22px; font:600 13px/1 var(--font-ui); color:var(--text-3); font-variant-numeric:var(--numeric-tabular);">{{ q.n }}</span>
+            <div style="flex:2 1 220px; min-width:0;">
+              <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" size="sm" label="{{ q.qLabel }}" value="{{ q.label }}" on-change="{{ q.setLabel }}" hint-size="100%,60px"></x-import>
+            </div>
+            <div style="flex:1 1 150px; min-width:0;">
+              <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Select" size="sm" label="Answer type" value="{{ q.type }}" on-change="{{ q.setType }}" options="{{ typeOptions }}" hint-size="100%,60px"></x-import>
+            </div>
+            <div style="padding-bottom:6px;">
+              <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Checkbox" label="Required" checked="{{ q.required }}" on-change="{{ q.toggleReq }}" hint-size="90px,24px"></x-import>
+            </div>
+            <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.IconButton" icon="trash-2" label="{{ q.removeLabel }}" size="sm" variant="ghost" on-click="{{ q.remove }}" hint-size="32px,32px"></x-import>
+          </li>
+        </sc-for>
+      </ol>
+      <div><x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" size="sm" variant="secondary" icon-start="plus" on-click="{{ addField }}" hint-size="120px,32px">Add question</x-import></div>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Toggle" label="Ask for a guardian signature" description="Adds a typed-name signature with date and time at the end." label-position="end" checked="{{ b.signature }}" on-change="{{ toggleSig }}" hint-size="100%,44px"></x-import>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Toggle" label="Remind families who haven’t finished" description="3 days before the due date, then on the day." label-position="end" checked="{{ b.remind }}" on-change="{{ toggleRemind }}" hint-size="100%,44px"></x-import>
+    </div>
+  </div>
+</x-import>
+
+<x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Modal" open="{{ paymentOpen }}" on-close="{{ close }}" size="sm" title="{{ payTitle }}" close-label="Close" footer="{{ paymentFooter }}" hint-size="0px,0px">
+  <div style="display:flex; flex-direction:column; gap:16px;">
+    <div style="display:flex; flex-wrap:wrap; align-items:center; gap:8px; padding:12px 14px; background:var(--surface-muted); border-radius:var(--radius-md); font-size:14px;">
+      <span style="flex:1; min-width:0;">{{ payRow.guardian }} · {{ payRow.feeAmount }}</span>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.FeeStatusBadge" status="{{ payRow.fees }}" lang="{{ lang }}" hint-size="70px,22px"></x-import>
+    </div>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.FormRow" hint-size="100%,72px">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="Amount" icon-start="receipt" value="{{ pay.amount }}" on-change="{{ onPay.amount }}" input-mode="decimal" hint-size="100%,72px"></x-import>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Select" label="Method" value="{{ pay.method }}" on-change="{{ onPay.method }}" options="{{ methodOptions }}" hint-size="100%,72px"></x-import>
+    </x-import>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.DatePicker" label="Date received" value="{{ pay.date }}" on-change="{{ setPayDate }}" locale="{{ locale }}" hint-size="100%,72px"></x-import>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="Note" optional="{{ true }}" value="{{ pay.note }}" on-change="{{ onPay.note }}" placeholder="e.g. Cheque #1042" hint-size="100%,72px"></x-import>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Checkbox" label="Email a receipt to the guardian" checked="{{ pay.receipt }}" on-change="{{ toggleReceipt }}" hint-size="100%,24px"></x-import>
+  </div>
+</x-import>
+
+<x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.ConfirmDialog" open="{{ waiveOpen }}" title="{{ waiveTitle }}" confirm-label="Waive fee" cancel-label="Keep fee" on-cancel="{{ backToPayment }}" on-confirm="{{ doWaive }}" hint-size="0px,0px">The fee is marked Waived and won’t appear in reminders. Only staff with fee access can see this.</x-import>
+
+<x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Modal" open="{{ signOpen }}" on-close="{{ close }}" size="md" title="Winter Light permission form" close-label="Close" hint-size="0px,0px">
+  <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.ConsentSignature" title="Permission to take part" agree-label="I have read the details and give permission." on-sign="{{ onSign }}" locale="{{ locale }}" required="{{ true }}" hint-size="100%,380px">
+    <p style="margin:0;">I give permission for Ella Martin to take part in the Winter Light dress rehearsal (Friday, December 11) and concert (Saturday, December 12), and to travel with the choir between Grace Hall and Holy Trinity Church.</p>
+  </x-import>
+</x-import>
+
+<x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Modal" open="{{ gPayOpen }}" on-close="{{ close }}" size="sm" title="Pay annual fee" close-label="Close" footer="{{ gPayFooter }}" hint-size="0px,0px">
+  <div style="display:flex; flex-direction:column; gap:16px;">
+    <div style="display:flex; justify-content:space-between; align-items:baseline; gap:12px; padding:14px 16px; background:var(--surface-muted); border-radius:var(--radius-md);"><span style="font-weight:600;">Annual fee 2026–27 · Ella Martin</span><span style="font:500 22px/1 var(--font-display); font-variant-numeric:var(--numeric-tabular);">$390.00</span></div>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="Name on card" auto-complete="cc-name" default-value="Daniel Martin" size="lg" hint-size="100%,72px"></x-import>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="Card number" icon-start="credit-card" input-mode="numeric" auto-complete="cc-number" placeholder="1234 1234 1234 1234" size="lg" hint-size="100%,72px"></x-import>
+    <div style="display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px;">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="Expiry" placeholder="MM / YY" size="lg" hint-size="100%,72px"></x-import>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="CVC" placeholder="123" size="lg" hint-size="100%,72px"></x-import>
+    </div>
+  </div>
+</x-import>
+
+<x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.ToastStack" toasts="{{ toasts }}" on-dismiss="{{ dismissToast }}" hint-size="0px,0px"></x-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const STATUS = { open: ['info', 'clock', 'Open'], overdue: ['error', 'circle-alert', 'Overdue'], closed: ['success', 'check', 'Closed'], draft: ['neutral', 'pencil', 'Draft'] };
+const TYPES = ['Short text', 'Long text', 'Yes or no', 'Multiple choice', 'Date', 'File upload'];
+const money = (n) => '$' + n.toLocaleString('en-CA');
+class Component extends DCLogic {
+  state = this.initState(this.props);
+  initState(p) {
+    const demo = p.demo || '';
+    const d = p.data || {};
+    return {
+      tab: demo === 'fees' || demo === 'payment' ? 'fees' : 'forms',
+      modal: demo === 'builder' ? 'builder' : demo === 'responses' ? 'resp' : demo === 'payment' ? 'payment' : null,
+      formId: demo === 'responses' ? 'medical' : null, respFilter: 'missing',
+      forms: d.forms || [], reminded: {},
+      b: { title: demo === 'builder' ? 'Spring tour interest' : '', kind: 'Permission', desc: demo === 'builder' ? 'Tell us if your chorister would like to join the April tour to Québec City. This is not a commitment.' : '', who: 'guardians', due: '2026-11-20', signature: false, remind: true,
+        fields: demo === 'builder' ? [{ label: 'Would your chorister like to go?', type: 'Yes or no', required: true }, { label: 'Can you help as a chaperone?', type: 'Yes or no', required: false }, { label: 'Anything we should know?', type: 'Long text', required: false }] : [{ label: '', type: 'Short text', required: true }] },
+      fees: Object.fromEntries((d.choristers || []).map((c) => [c.id, c.fees])),
+      payId: demo === 'payment' ? 'ethan.wright' : null,
+      pay: { amount: '390.00', method: 'etransfer', date: '2026-10-15', note: '', receipt: true },
+      gDone: {}, toasts: [],
+    };
+  }
+  componentDidMount() { this.waitDS(); }
+  waitDS() { if (window.ChoirbookDesignSystem_9d7b3b?.DataTable) this.forceUpdate(); else setTimeout(() => this.waitDS(), 60); }
+  componentDidUpdate(prev) { if (prev.demo !== this.props.demo || prev.data !== this.props.data) this.setState(this.initState(this.props)); }
+  toast(title, body) { const id = String(Date.now()); this.setState((s) => ({ toasts: [...s.toasts, { id, tone: 'success', title, children: body, duration: 5000 }] })); }
+  renderVals() {
+    const p = this.props, s = this.state;
+    const NS = window.ChoirbookDesignSystem_9d7b3b || {};
+    const h = (C, pr, ...c) => (C ? React.createElement(C, pr, ...c) : null);
+    const d = p.data || {}, t = p.t || {};
+    const lang = p.lang ?? 'en', locale = lang === 'fr' ? 'fr-CA' : 'en-CA';
+    const mobile = p.device === 'mobile';
+    const staff = (p.role || 'staff') === 'staff';
+    const cs = d.choristers || [];
+    const close = () => this.setState({ modal: null });
+    const forms = s.forms.map((f) => {
+      const [tone, icon, label] = STATUS[f.status];
+      const missing = f.total - f.done;
+      return { ...f, tone, icon, statusLabel: label, sigText: f.signature ? ' · signature' : '', pct: `${Math.round((f.done / f.total) * 100)}%`, bar: f.status === 'overdue' ? 'var(--warning-text)' : 'var(--accent)',
+        canRemind: missing > 0, remindLabel: s.reminded[f.id] ? 'Reminder sent' : `Remind ${missing}`,
+        view: () => this.setState({ modal: 'resp', formId: f.id, respFilter: missing ? 'missing' : 'all' }),
+        remind: () => { if (s.reminded[f.id]) return; this.setState({ reminded: { ...s.reminded, [f.id]: true } }); this.toast('Reminder sent', `${missing} families who haven’t finished ${f.title}.`); } };
+    });
+    const form = s.forms.find((f) => f.id === s.formId) || {};
+    const statusFor = (c, i) => {
+      if (form.id === 'medical') return c.formsMissing === 'Medical information' ? 'overdue' : 'approved';
+      if (form.id === 'media') return c.formsMissing === 'Media consent' ? 'overdue' : 'approved';
+      if (form.id === 'perm') return i % 3 === 0 && i < 66 ? 'submitted' : 'not_started';
+      return form.status === 'draft' ? 'not_started' : 'approved';
+    };
+    const resAll = cs.map((c, i) => ({ name: c.name, status: statusFor(c, i), detail: `${c.part || 'New'} · ${c.guardians[0]?.name}` }));
+    const responses = resAll.filter((r) => s.respFilter === 'all' || (s.respFilter === 'missing' ? ['overdue', 'not_started'].includes(r.status) : !['overdue', 'not_started'].includes(r.status)));
+    const nMissing = resAll.filter((r) => ['overdue', 'not_started'].includes(r.status)).length;
+    const feeRowsAll = cs.map((c) => ({ ...c, fees: s.fees[c.id], guardian: c.guardians[0]?.name, amt: s.fees[c.id] === 'waived' ? 0 : 390 }));
+    const sum = (st) => feeRowsAll.filter((r) => r.fees === st).length * 390;
+    const payRow = feeRowsAll.find((r) => r.id === s.payId) || {};
+    const setB = (k, v) => this.setState((x) => ({ b: { ...x.b, [k]: v } }));
+    const setFields = (fn) => this.setState((x) => ({ b: { ...x.b, fields: fn(x.b.fields) } }));
+    const setPay = (k, v) => this.setState((x) => ({ pay: { ...x.pay, [k]: v } }));
+    const METHOD = { card: 'Card (in app)', etransfer: 'Interac e-Transfer', cheque: 'Cheque', cash: 'Cash' };
+    const gDone = s.gDone;
+    return {
+      t, lang, locale, isStaff: staff, isGuardian: !staff,
+      pad: mobile ? '16px 16px 32px' : p.device === 'tablet' ? '24px 24px 48px' : '28px 32px 56px',
+      h1: mobile ? '28px' : 'var(--text-h1)',
+      sub: staff ? (s.tab === 'forms' ? `${forms.filter((f) => f.status !== 'closed').length} forms open · ${s.forms.reduce((n, f) => n + f.total - f.done, 0)} responses missing` : `Annual fee $390 per chorister · ${cs.length} choristers`) : 'Everything to sign or pay for Ella this season.',
+      tab: s.tab, setTab: (v) => this.setState({ tab: v }), isFormsTab: s.tab === 'forms', isFeesTab: s.tab === 'fees',
+      tabOptions: [{ value: 'forms', label: 'Forms', icon: 'clipboard-list' }, { value: 'fees', label: 'Fees', icon: 'receipt' }],
+      forms,
+      respOpen: s.modal === 'resp', close,
+      respHeader: h('div', null, h('h2', { style: { margin: 0, font: '500 22px/1.25 var(--font-display)' } }, form.title), h('p', { style: { margin: '4px 0 0', fontSize: 14, color: 'var(--text-3)' } }, `${form.done} of ${form.total} submitted · due ${form.due}`)),
+      respFooter: nMissing ? [h(NS.Button, { key: 'r', iconStart: 'bell', onClick: () => { close(); this.toast('Reminder sent', `${nMissing} families who haven’t finished ${form.title}.`); } }, `Remind ${nMissing} families`), h(NS.Button, { key: 'd', variant: 'ghost', iconStart: 'download' }, 'Download CSV')] : [h(NS.Button, { key: 'd', variant: 'secondary', iconStart: 'download' }, 'Download CSV')],
+      respFilter: s.respFilter, setRespFilter: (v) => this.setState({ respFilter: v }),
+      respOptions: [{ value: 'missing', label: `Missing ${nMissing}` }, { value: 'done', label: 'Submitted' }, { value: 'all', label: 'All' }],
+      responses,
+      builderOpen: s.modal === 'builder', openBuilder: () => this.setState({ modal: 'builder' }),
+      b: s.b, onB: Object.fromEntries(['title', 'kind', 'desc', 'who'].map((k) => [k, (e) => setB(k, e.target.value)])),
+      setDue: (v) => setB('due', v), toggleSig: (e) => setB('signature', e.target.checked), toggleRemind: (e) => setB('remind', e.target.checked),
+      kindOptions: ['Permission', 'Consent', 'Medical', 'Survey', 'Agreement'],
+      whoOptions: [{ value: 'guardians', label: 'Guardians' }, { value: 'choristers', label: 'Choristers' }, { value: 'both', label: 'Guardians and choristers' }],
+      typeOptions: TYPES,
+      fields: s.b.fields.map((q, i) => ({ ...q, n: i + 1, qLabel: `Question ${i + 1}`, removeLabel: `Remove question ${i + 1}`,
+        setLabel: (e) => { const v = e.target.value; setFields((fs) => fs.map((y, j) => (j === i ? { ...y, label: v } : y))); },
+        setType: (e) => { const v = e.target.value; setFields((fs) => fs.map((y, j) => (j === i ? { ...y, type: v } : y))); },
+        toggleReq: (e) => { const v = e.target.checked; setFields((fs) => fs.map((y, j) => (j === i ? { ...y, required: v } : y))); },
+        remove: () => setFields((fs) => fs.filter((_, j) => j !== i)) })),
+      addField: () => setFields((fs) => [...fs, { label: '', type: 'Short text', required: false }]),
+      builderFooter: [h(NS.Button, { key: 'd', variant: 'ghost', onClick: () => { this.setState((x) => ({ forms: [{ id: 'n' + Date.now(), title: x.b.title || 'Untitled form', kind: x.b.kind, due: 'Nov 20', status: 'draft', done: 0, total: cs.length }, ...x.forms], modal: null })); this.toast('Draft saved', 'Families can’t see it until you publish it.'); }, style: { marginRight: 'auto' } }, 'Save draft'), h(NS.Button, { key: 'c', variant: 'secondary', onClick: close }, 'Cancel'), h(NS.Button, { key: 'p', iconStart: 'send', disabled: !s.b.title.trim(), onClick: () => { this.setState((x) => ({ forms: [{ id: 'n' + Date.now(), title: x.b.title, kind: x.b.kind, due: 'Nov 20', status: 'open', done: 0, total: cs.length, signature: x.b.signature }, ...x.forms], modal: null })); this.toast('Form published', `${cs.length} families can fill it in now.`); } }, 'Publish form')],
+      fee: { collected: money(sum('paid')), collectedCtx: `${feeRowsAll.filter((r) => r.fees === 'paid').length} of ${cs.length} paid`, progress: feeRowsAll.filter((r) => r.fees === 'paid').length / cs.length, due: money(sum('due')), dueCtx: `${feeRowsAll.filter((r) => r.fees === 'due').length} families`, overdue: money(sum('overdue')), overdueCtx: `${feeRowsAll.filter((r) => r.fees === 'overdue').length} families · was due Sep 30` },
+      feeColumns: [
+        { key: 'name', header: 'Chorister', sortable: true, sortValue: (r) => r.last + r.first, render: (r) => h('span', { style: { display: 'flex', alignItems: 'center', gap: 10 } }, h(NS.Avatar, { name: r.name, size: 28 }), h('span', { style: { fontWeight: 600 } }, r.name)) },
+        { key: 'guardian', header: 'Guardian', sortable: true },
+        { key: 'amt', header: 'Amount', align: 'right', sortable: true, render: (r) => money(r.amt) },
+        { key: 'fees', header: 'Status', sortable: true, sortValue: (r) => ({ overdue: 0, due: 1, paid: 2, waived: 3 })[r.fees], render: (r) => h(NS.FeeStatusBadge, { status: r.fees, lang }) },
+        { key: 'method', header: 'Paid by', render: (r) => (r.fees === 'paid' ? (r.paidBy || (r.id.length % 3 ? 'Card (in app)' : 'Interac e-Transfer')) : '—') },
+      ],
+      feeRows: feeRowsAll, getRowId: (r) => r.id, rowLabel: (r) => r.name, searchKeys: ['name', 'guardian'], feeSort: { key: 'fees', dir: 'asc' },
+      feeFilters: [{ id: 'st', label: 'Status', options: ['overdue', 'due', 'paid'].map((v) => ({ value: v, label: v[0].toUpperCase() + v.slice(1), count: feeRowsAll.filter((r) => r.fees === v).length })), match: (r, v) => r.fees === v }],
+      feeBulk: (ids) => [h(NS.Button, { key: 'r', size: 'sm', variant: 'secondary', iconStart: 'bell', onClick: () => this.toast('Reminder sent', `${ids.length} families.`) }, 'Send reminder')],
+      openPayment: (r) => this.setState({ modal: 'payment', payId: r.id, pay: { amount: '390.00', method: 'etransfer', date: '2026-10-15', note: '', receipt: true } }),
+      paymentOpen: s.modal === 'payment', payTitle: `Record payment · ${payRow.name || ''}`, payRow,
+      pay: s.pay, onPay: Object.fromEntries(['amount', 'method', 'note'].map((k) => [k, (e) => setPay(k, e.target.value)])),
+      setPayDate: (v) => setPay('date', v), toggleReceipt: (e) => setPay('receipt', e.target.checked),
+      methodOptions: Object.entries(METHOD).map(([value, label]) => ({ value, label })),
+      paymentFooter: [
+        h(NS.Button, { key: 'w', variant: 'ghost', onClick: () => this.setState({ modal: 'waive' }), style: { marginRight: 'auto' } }, 'Waive fee'),
+        h(NS.Button, { key: 'c', variant: 'secondary', onClick: close }, 'Cancel'),
+        h(NS.Button, { key: 's', iconStart: 'check', disabled: payRow.fees === 'paid', onClick: () => { this.setState((x) => ({ modal: null, fees: { ...x.fees, [payRow.id]: 'paid' } })); this.toast('Payment recorded', `${METHOD[s.pay.method]} · $${s.pay.amount}${s.pay.receipt ? ` · receipt emailed to ${payRow.guardian}` : ''}.`); } }, 'Record payment'),
+      ],
+      waiveOpen: s.modal === 'waive', waiveTitle: `Waive ${payRow.first || ''}’s fee?`, backToPayment: () => this.setState({ modal: 'payment' }),
+      doWaive: () => { this.setState((x) => ({ modal: null, fees: { ...x.fees, [payRow.id]: 'waived' } })); this.toast('Fee waived', payRow.name); },
+      gForms: [
+        { id: 'perm', title: 'Winter Light permission form', detail: 'Due Monday, November 30', status: gDone.perm ? 'submitted' : 'not_started', action: gDone.perm ? 'View' : 'Sign', btnIcon: gDone.perm ? 'eye' : 'signature', variant: gDone.perm ? 'ghost' : 'primary', open: () => !gDone.perm && this.setState({ modal: 'sign' }) },
+        { id: 'medical', title: 'Medical information 2026–27', detail: 'Submitted Sep 4 · you can update it any time', status: 'approved', action: 'Update', btnIcon: 'pencil', variant: 'ghost' },
+        { id: 'media', title: 'Photo and video consent', detail: 'Consent given Sep 4', status: 'approved', action: 'Change', btnIcon: 'pencil', variant: 'ghost' },
+        { id: 'reg', title: 'Registration 2026–27', detail: 'Submitted Aug 28', status: 'approved', action: 'View', btnIcon: 'eye', variant: 'ghost' },
+        { id: 'conduct', title: 'Code of conduct', detail: 'Signed by Ella and Daniel, Aug 28', status: 'approved', action: 'View', btnIcon: 'eye', variant: 'ghost' },
+      ],
+      gFees: [
+        { title: 'Annual fee 2026–27', detail: gDone.fee ? '$390.00 · paid just now' : '$390.00 · due Saturday, October 31', status: gDone.fee ? 'paid' : 'due', action: gDone.fee ? 'Receipt' : 'Pay $390', btnIcon: gDone.fee ? 'download' : 'credit-card', variant: gDone.fee ? 'ghost' : 'primary', open: () => !gDone.fee && this.setState({ modal: 'gpay' }) },
+        { title: 'Annual fee 2025–26', detail: '$375.00 · paid Sep 12, 2025', status: 'paid', action: 'Receipt', btnIcon: 'download', variant: 'ghost', open: () => this.toast('Receipt downloaded', 'ORYC-2025-0311.pdf') },
+      ],
+      signOpen: s.modal === 'sign', onSign: () => setTimeout(() => { this.setState((x) => ({ modal: null, gDone: { ...x.gDone, perm: true } })); this.toast('Permission form signed', 'A copy was emailed to you.'); }, 600),
+      gPayOpen: s.modal === 'gpay',
+      gPayFooter: [h(NS.Button, { key: 'c', variant: 'secondary', onClick: close }, 'Cancel'), h(NS.Button, { key: 'p', iconStart: 'lock', onClick: () => { this.setState((x) => ({ modal: null, gDone: { ...x.gDone, fee: true } })); this.toast('Payment received', 'Receipt ORYC-2026-0418 was emailed to you.'); } }, 'Pay $390.00')],
+      toasts: s.toasts, dismissToast: (id) => this.setState((x) => ({ toasts: x.toasts.filter((tt) => tt.id !== id) })),
+    };
+  }
+}
+</script>
+</body>
+</html>

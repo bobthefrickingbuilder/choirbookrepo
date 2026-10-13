@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="choirbook.css">
+<script src="_ds/choirbook-design-system-9d7b3b08-5cc4-4553-b44b-4db9eb92dfdb/_ds_bundle.js"></script>
+</helmet>
+<div style="width:100%; max-width:1200px; margin:0 auto; padding:{{ pad }}; display:flex; flex-direction:column; gap:20px;">
+  <header style="display:flex; flex-wrap:wrap; align-items:flex-end; gap:12px 16px;">
+    <div style="min-width:0; display:flex; flex-direction:column; gap:6px;">
+      <span style="font:700 12px/1.2 var(--font-ui); letter-spacing:var(--tracking-overline); text-transform:uppercase; color:var(--accent-text);">Fall term 2026 · up to Oct 8</span>
+      <h1 style="font:500 var(--text-h1)/var(--lh-h1) var(--font-display); letter-spacing:var(--tracking-display); margin:0;">{{ t.reports }}</h1>
+    </div>
+    <sc-if value="{{ notBoard }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex; flex-wrap:wrap; gap:8px; margin-left:auto;">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" variant="secondary" icon-start="printer" on-click="{{ print }}" hint-size="90px,40px">Print</x-import>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" icon-start="download" on-click="{{ exportCsv }}" hint-size="130px,40px">Export CSV</x-import>
+    </div>
+    </sc-if>
+  </header>
+
+  <div style="display:flex; flex-wrap:wrap; align-items:flex-end; gap:12px 16px;">
+    <div style="flex:1 1 360px; max-width:620px;">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.SegmentedControl" full-width="{{ true }}" label="Report" value="{{ report }}" on-change="{{ setReport }}" options="{{ reportOptions }}" hint-size="100%,38px"></x-import>
+    </div>
+    <sc-if value="{{ notBoard }}" hint-placeholder-val="{{ true }}">
+    <div style="width:200px;"><x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Select" size="sm" label="Period" value="{{ period }}" on-change="{{ setPeriod }}" options="{{ periodOptions }}" hint-size="200px,56px"></x-import></div>
+    <div style="width:170px;"><x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Select" size="sm" label="Section" value="{{ section }}" on-change="{{ setSection }}" options="{{ sectionOptions }}" hint-size="170px,56px"></x-import></div>
+    </sc-if>
+  </div>
+
+  <sc-if value="{{ isAtt }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex; flex-wrap:wrap; gap:16px;">
+      <div style="flex:1 1 200px;"><x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.StatCard" icon="user-check" label="Attendance rate" value="{{ att.rate }}" unit="%" progress="{{ att.progress }}" context="{{ att.rateCtx }}" hint-size="100%,120px"></x-import></div>
+      <div style="flex:1 1 200px;"><x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.StatCard" icon="clock" label="Late arrivals" value="{{ att.late }}" context="across 5 rehearsals" hint-size="100%,120px"></x-import></div>
+      <div style="flex:1 1 200px;"><x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.StatCard" icon="circle-alert" label="At the absence limit" value="{{ att.atLimit }}" context="3 absences allowed per term" hint-size="100%,120px"></x-import></div>
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:20px; align-items:stretch;">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Card" title="By rehearsal" style="flex:1.4 1 420px; min-width:0;" hint-size="100%,300px">
+        <div role="img" aria-label="{{ att.chartLabel }}" style="display:grid; grid-template-columns:repeat(5, minmax(0,1fr)); gap:14px; align-items:end; height:200px; padding-top:8px;">
+          <sc-for list="{{ att.byRehearsal }}" as="r" hint-placeholder-count="5">
+            <div style="height:100%; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; gap:6px;">
+              <span style="font:600 13px/1 var(--font-ui); font-variant-numeric:var(--numeric-tabular);">{{ r.pct }}%</span>
+              <div style="width:100%; max-width:56px; height:{{ r.h }}; display:flex; flex-direction:column; border-radius:var(--radius-sm) var(--radius-sm) 0 0; overflow:hidden;">
+                <div style="flex:{{ r.late }} 0 0; background:var(--warning-text); opacity:.55;"></div>
+                <div style="flex:{{ r.present }} 0 0; background:var(--accent);"></div>
+              </div>
+              <span style="font-size:12.5px; color:var(--text-3); font-variant-numeric:var(--numeric-tabular);">{{ r.label }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:14px; margin-top:12px; font-size:13px; color:var(--text-2);">
+          <span style="display:flex; align-items:center; gap:6px;"><span style="width:10px; height:10px; border-radius:2px; background:var(--accent);"></span>Present</span>
+          <span style="display:flex; align-items:center; gap:6px;"><span style="width:10px; height:10px; border-radius:2px; background:var(--warning-text); opacity:.55;"></span>Late</span>
+        </div>
+      </x-import>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Card" title="By section" style="flex:1 1 300px; min-width:0;" hint-size="100%,300px">
+        <ul style="list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:14px;">
+          <sc-for list="{{ att.bySection }}" as="s" hint-placeholder-count="4">
+            <li style="display:flex; align-items:center; gap:12px;">
+              <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.VoicePartBadge" part="{{ s.key }}" lang="{{ lang }}" hint-size="24px,22px"></x-import>
+              <span style="width:5.5rem; font-size:14px;">{{ s.label }}</span>
+              <div aria-hidden="true" style="flex:1; height:8px; border-radius:var(--radius-full); background:var(--surface-muted-strong); overflow:hidden;"><div style="height:100%; width:{{ s.w }}; background:var(--voice-{{ s.lower }}); border-radius:inherit;"></div></div>
+              <span style="width:3rem; text-align:right; font:600 14px/1 var(--font-ui); font-variant-numeric:var(--numeric-tabular);">{{ s.rate }}%</span>
+            </li>
+          </sc-for>
+        </ul>
+      </x-import>
+    </div>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.DataTable" caption="Attendance by chorister" lang="{{ lang }}" columns="{{ attColumns }}" rows="{{ attRows }}" get-row-id="{{ getRowId }}" searchable="{{ true }}" search-keys="{{ searchKeys }}" search-placeholder="Search chorister" default-sort="{{ attSort }}" compact="{{ true }}" on-row-click="{{ openRoster }}" hint-size="100%,560px"></x-import>
+  </sc-if>
+
+  <sc-if value="{{ isFees }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex; flex-wrap:wrap; gap:20px; align-items:stretch;">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Card" title="Annual fees" style="flex:1 1 380px; min-width:0;" hint-size="100%,260px">
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          <span style="font:500 36px/1 var(--font-display); font-variant-numeric:var(--numeric-tabular);">{{ fee.collected }} <small style="font:500 15px var(--font-ui); color:var(--text-3);">of {{ fee.expected }}</small></span>
+          <div role="img" aria-label="{{ fee.aria }}" style="display:flex; height:14px; border-radius:var(--radius-full); overflow:hidden; gap:2px;">
+            <sc-for list="{{ fee.parts }}" as="f" hint-placeholder-count="3"><span style="flex:{{ f.n }} 0 0; background:{{ f.color }};"></span></sc-for>
+          </div>
+          <ul style="list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px;">
+            <sc-for list="{{ fee.parts }}" as="f" hint-placeholder-count="3">
+              <li style="display:flex; align-items:center; gap:10px; font-size:14px;"><span style="width:10px; height:10px; border-radius:2px; background:{{ f.color }};"></span><span style="flex:1;">{{ f.label }}</span><span style="font-variant-numeric:var(--numeric-tabular); color:var(--text-2);">{{ f.n }} · {{ f.amount }}</span></li>
+            </sc-for>
+          </ul>
+        </div>
+      </x-import>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Card" title="Form completion" style="flex:1.2 1 420px; min-width:0;" hint-size="100%,260px">
+        <ul style="list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:14px;">
+          <sc-for list="{{ formRows }}" as="f" hint-placeholder-count="5">
+            <li style="display:flex; flex-direction:column; gap:6px;">
+              <span style="display:flex; gap:10px; font-size:14px;"><span style="flex:1; min-width:0;">{{ f.title }}</span><span style="font-variant-numeric:var(--numeric-tabular); color:var(--text-2);">{{ f.done }} / {{ f.total }}</span></span>
+              <div aria-hidden="true" style="height:8px; border-radius:var(--radius-full); background:var(--surface-muted-strong); overflow:hidden;"><div style="height:100%; width:{{ f.pct }}; background:{{ f.bar }}; border-radius:inherit;"></div></div>
+            </li>
+          </sc-for>
+        </ul>
+      </x-import>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isBoard }}" hint-placeholder-val="{{ false }}">
+    <dc-import name="Board Report" data="{{ data }}" lang="{{ lang }}" device="{{ device }}" demo="{{ demo }}" hint-size="100%,1600px"></dc-import>
+  </sc-if>
+
+  <sc-if value="{{ isEnrol }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex; flex-wrap:wrap; gap:16px;">
+      <div style="flex:1 1 200px;"><x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.StatCard" icon="users" label="Choristers" value="{{ en.total }}" context="{{ en.newCtx }}" hint-size="100%,120px"></x-import></div>
+      <div style="flex:1 1 200px;"><x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.StatCard" icon="repeat" label="Returning" value="{{ en.returning }}" unit="%" context="came back from last season" hint-size="100%,120px"></x-import></div>
+      <div style="flex:1 1 200px;"><x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.StatCard" icon="graduation-cap" label="Schools" value="{{ en.schools }}" context="plus 2 colleges" hint-size="100%,120px"></x-import></div>
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:20px; align-items:stretch;">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Card" title="By age" style="flex:1.3 1 420px; min-width:0;" hint-size="100%,280px">
+        <div role="img" aria-label="{{ en.ageLabel }}" style="display:grid; grid-template-columns:repeat(11, minmax(0,1fr)); gap:6px; align-items:end; height:180px;">
+          <sc-for list="{{ en.ages }}" as="a" hint-placeholder-count="11">
+            <div style="height:100%; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; gap:4px;">
+              <span style="font:600 12px/1 var(--font-ui); font-variant-numeric:var(--numeric-tabular);">{{ a.n }}</span>
+              <div style="width:100%; height:{{ a.h }}; background:var(--accent); border-radius:var(--radius-sm) var(--radius-sm) 0 0;"></div>
+              <span style="font-size:12px; color:var(--text-3);">{{ a.age }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </x-import>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Card" title="Years in the choir" style="flex:1 1 300px; min-width:0;" hint-size="100%,280px">
+        <ul style="list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:12px;">
+          <sc-for list="{{ en.years }}" as="y" hint-placeholder-count="6">
+            <li style="display:flex; align-items:center; gap:12px; font-size:14px;">
+              <span style="width:5.5rem;">{{ y.label }}</span>
+              <div aria-hidden="true" style="flex:1; height:8px; border-radius:var(--radius-full); background:var(--surface-muted-strong); overflow:hidden;"><div style="height:100%; width:{{ y.w }}; background:var(--accent); border-radius:inherit;"></div></div>
+              <span style="width:2rem; text-align:right; font-variant-numeric:var(--numeric-tabular);">{{ y.n }}</span>
+            </li>
+          </sc-for>
+        </ul>
+      </x-import>
+    </div>
+  </sc-if>
+</div>
+<x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.ToastStack" toasts="{{ toasts }}" on-dismiss="{{ dismissToast }}" hint-size="0px,0px"></x-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const money = (n) => '$' + n.toLocaleString('en-CA');
+class Component extends DCLogic {
+  state = { report: this.props.demo === 'fees' ? 'fees' : this.props.demo === 'enrol' ? 'enrol' : (this.props.demo || '').startsWith('board') ? 'board' : 'att', period: 'fall', section: 'all', toasts: [] };
+  componentDidMount() { this.waitDS(); }
+  waitDS() { if (window.ChoirbookDesignSystem_9d7b3b?.StatCard) this.forceUpdate(); else setTimeout(() => this.waitDS(), 60); }
+  componentDidUpdate(prev) { if (prev.demo !== this.props.demo) this.setState({ report: this.props.demo === 'fees' ? 'fees' : this.props.demo === 'enrol' ? 'enrol' : (this.props.demo || '').startsWith('board') ? 'board' : 'att' }); }
+  toast(title, body) { const id = String(Date.now()); this.setState((s) => ({ toasts: [...s.toasts, { id, tone: 'success', title, children: body, duration: 5000 }] })); }
+  renderVals() {
+    const p = this.props, s = this.state;
+    const NS = window.ChoirbookDesignSystem_9d7b3b || {};
+    const h = (C, pr, ...c) => (C ? React.createElement(C, pr, ...c) : null);
+    const d = p.data || {}, t = p.t || {};
+    const lang = p.lang ?? 'en', locale = lang === 'fr' ? 'fr-CA' : 'en-CA';
+    const mobile = p.device === 'mobile';
+    const all = d.choristers || [];
+    const placed = all.filter((c) => c.section && (s.section === 'all' || c.section === s.section));
+    const dates = d.rehearsalDates || [];
+    const fmt = (iso) => new Intl.DateTimeFormat(locale, { month: 'short', day: 'numeric' }).format(new Date(iso + 'T12:00'));
+    const byRehearsal = dates.map((iso, i) => {
+      const pr = placed.filter((c) => c.recent[i] === 'present').length, lt = placed.filter((c) => c.recent[i] === 'late').length;
+      const pct = Math.round(((pr + lt) / Math.max(placed.length, 1)) * 100);
+      return { label: fmt(iso), present: pr, late: lt, pct, h: `${Math.max(8, (pct - 60) * 2.5)}%` };
+    });
+    const rate = Math.round(byRehearsal.reduce((n, r) => n + r.pct, 0) / Math.max(byRehearsal.length, 1));
+    const bySection = ['S', 'A', 'T', 'B'].map((k) => {
+      const m = all.filter((c) => c.section === k);
+      const r = Math.round(m.reduce((n, c) => n + (c.rate || 0), 0) / Math.max(m.length, 1));
+      return { key: k, lower: k.toLowerCase(), label: d.sections?.[k]?.[lang], rate: r, w: `${r}%` };
+    });
+    const ST = (c, st) => c.recent.filter((x) => x === st).length;
+    const fees = { paid: all.filter((c) => c.fees === 'paid').length, due: all.filter((c) => c.fees === 'due').length, overdue: all.filter((c) => c.fees === 'overdue').length };
+    const ageCounts = Array.from({ length: 11 }, (_, i) => all.filter((c) => c.age === 12 + i).length);
+    const maxAge = Math.max(...ageCounts, 1);
+    const yearCounts = [1, 2, 3, 4, 5, 6].map((y) => placed.filter((c) => (y === 6 ? c.years >= 6 : c.years === y)).length);
+    const maxY = Math.max(...yearCounts, 1);
+    return {
+      t, lang,
+      pad: mobile ? '16px 16px 32px' : p.device === 'tablet' ? '24px 24px 48px' : '28px 32px 56px',
+      report: s.report, setReport: (v) => this.setState({ report: v }),
+      reportOptions: [{ value: 'att', label: 'Attendance', icon: 'clipboard-check' }, { value: 'fees', label: 'Fees and forms', icon: 'receipt' }, { value: 'enrol', label: 'Enrolment', icon: 'users' }, { value: 'board', label: 'Board report', icon: 'file-text' }],
+      period: s.period, setPeriod: (e) => this.setState({ period: e.target.value }),
+      periodOptions: [{ value: 'fall', label: 'Fall term 2026' }, { value: 'month', label: 'October 2026' }, { value: 'season', label: 'Whole season' }, { value: 'last', label: '2025–26 season' }],
+      section: s.section, setSection: (e) => this.setState({ section: e.target.value }),
+      sectionOptions: [{ value: 'all', label: 'All sections' }, ...['S', 'A', 'T', 'B'].map((k) => ({ value: k, label: d.sections?.[k]?.[lang] }))],
+      isAtt: s.report === 'att', isFees: s.report === 'fees', isEnrol: s.report === 'enrol', isBoard: s.report === 'board', notBoard: s.report !== 'board', data: d, device: p.device, demo: p.demo,
+      att: { rate, progress: rate / 100, rateCtx: `${placed.length} choristers · 5 rehearsals`, late: placed.reduce((n, c) => n + ST(c, 'late'), 0), atLimit: placed.filter((c) => c.absences >= (d.stats?.threshold ?? 3)).length,
+        byRehearsal, bySection, chartLabel: byRehearsal.map((r) => `${r.label} ${r.pct}%`).join(', ') },
+      attColumns: [
+        { key: 'name', header: 'Chorister', sortable: true, sortValue: (r) => r.last, render: (r) => h('span', { style: { fontWeight: 600 } }, r.name) },
+        { key: 'section', header: 'Section', sortable: true, render: (r) => h(NS.VoicePartBadge, { part: r.section, lang }) },
+        { key: 'rate', header: 'Rate', align: 'right', sortable: true, render: (r) => `${r.rate}%` },
+        { key: 'p', header: 'Present', align: 'right', sortable: true },
+        { key: 'l', header: 'Late', align: 'right', sortable: true },
+        { key: 'a', header: 'Absent', align: 'right', sortable: true, render: (r) => r.a >= (d.stats?.threshold ?? 3) ? h(NS.Badge, { tone: 'error', icon: 'circle-alert' }, `${r.a} · at limit`) : String(r.a) },
+        { key: 'e', header: 'Excused', align: 'right', sortable: true },
+      ],
+      attRows: placed.map((c) => ({ ...c, p: ST(c, 'present'), l: ST(c, 'late'), a: ST(c, 'absent'), e: ST(c, 'excused') })),
+      getRowId: (r) => r.id, searchKeys: ['name'], attSort: { key: 'rate', dir: 'asc' },
+      openRoster: (r) => p.go?.('roster', r.id),
+      fee: { collected: money(fees.paid * 390), expected: money(all.length * 390), aria: `Paid ${fees.paid}, due ${fees.due}, overdue ${fees.overdue}`,
+        parts: [{ label: 'Paid', n: fees.paid, amount: money(fees.paid * 390), color: 'var(--success-text)' }, { label: 'Due Oct 31', n: fees.due, amount: money(fees.due * 390), color: 'var(--warning-text)' }, { label: 'Overdue', n: fees.overdue, amount: money(fees.overdue * 390), color: 'var(--error-text)' }] },
+      formRows: (d.forms || []).map((f) => ({ ...f, pct: `${Math.round((f.done / f.total) * 100)}%`, bar: f.done === f.total ? 'var(--success-text)' : f.status === 'overdue' ? 'var(--warning-text)' : 'var(--accent)' })),
+      en: { total: all.length, newCtx: `${all.filter((c) => !c.section).length} new this month`, returning: 78, schools: new Set(all.filter((c) => c.age <= 17).map((c) => c.school)).size,
+        ages: ageCounts.map((n, i) => ({ age: 12 + i, n, h: `${(n / maxAge) * 80 + 4}%` })), ageLabel: ageCounts.map((n, i) => `age ${12 + i}: ${n}`).join(', '),
+        years: yearCounts.map((n, i) => ({ label: i === 5 ? '6 or more' : `${i + 1} ${i ? 'years' : 'year'}`, n, w: `${(n / maxY) * 100}%` })) },
+      print: () => window.print(),
+      exportCsv: () => this.toast('Report exported', s.report === 'att' ? 'attendance-fall-2026.csv' : s.report === 'fees' ? 'fees-forms-2026-27.csv' : 'enrolment-2026-27.csv'),
+      toasts: s.toasts, dismissToast: (id) => this.setState((x) => ({ toasts: x.toasts.filter((tt) => tt.id !== id) })),
+    };
+  }
+}
+</script>
+</body>
+</html>

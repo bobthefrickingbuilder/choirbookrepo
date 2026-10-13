@@ -1,0 +1,17 @@
+.cb-checkin{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:14px 16px;min-height:80px;padding:12px 16px;background:var(--surface-card);border-bottom:1px solid var(--border-subtle)}
+.cb-checkin__name{font:600 17px/1.25 var(--font-ui);color:var(--text-1)}
+.cb-checkin__sub{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;margin-top:4px;font:400 13.5px/1.35 var(--font-ui);color:var(--text-3);font-variant-numeric:var(--numeric-tabular)}
+.cb-checkin__note{display:inline-flex;align-items:center;gap:5px;color:var(--text-2)}
+.cb-checkin__opts{display:flex;gap:8px}
+.cb-ci{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:84px;min-height:var(--tap-checkin);padding:6px 8px;border:1.5px solid var(--border-default);border-radius:var(--radius-lg);background:var(--surface-card);color:var(--text-2);font:600 13px/1.15 var(--font-ui);text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background-color var(--duration-fast) var(--ease-standard),border-color var(--duration-fast) var(--ease-standard),color var(--duration-fast) var(--ease-standard)}
+.cb-ci:hover{border-color:var(--border-control);background:var(--surface-muted);color:var(--text-1)}
+.cb-ci:active{background:var(--surface-muted-strong)}
+.cb-ci:disabled{cursor:not-allowed;opacity:.5}
+.cb-ci[aria-checked="true"]{font-weight:700}
+.cb-ci--present[aria-checked="true"]{background:var(--att-present-solid);border-color:var(--att-present-solid);color:var(--att-present-on)}
+.cb-ci--late[aria-checked="true"]{background:var(--att-late-solid);border-color:var(--att-late-solid);color:var(--att-late-on)}
+.cb-ci--absent[aria-checked="true"]{background:var(--att-absent-solid);border-color:var(--att-absent-solid);color:var(--att-absent-on)}
+.cb-ci--excused[aria-checked="true"]{background:var(--att-excused-solid);border-color:var(--att-excused-solid);color:var(--att-excused-on)}
+.cb-checkin--compact .cb-ci{min-width:52px;min-height:52px;padding:4px}
+.cb-checkin--compact .cb-ci__label{font-size:11px}
+@media (max-width:719px){.cb-checkin{grid-template-columns:auto minmax(0,1fr)}.cb-checkin__opts{grid-column:1/-1}.cb-checkin__opts .cb-ci{flex:1;min-width:0}}

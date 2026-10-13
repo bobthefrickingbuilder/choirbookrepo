@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="choirbook.css">
+<script src="_ds/choirbook-design-system-9d7b3b08-5cc4-4553-b44b-4db9eb92dfdb/_ds_bundle.js"></script>
+</helmet>
+<div style="flex:1; width:100%; max-width:1200px; margin:0 auto; padding:{{ pad }}; display:flex; flex-direction:column; gap:20px;">
+  <sc-if value="{{ showHeader }}" hint-placeholder-val="{{ true }}">
+    <header style="display:flex; flex-wrap:wrap; align-items:flex-end; gap:12px 16px;">
+      <div style="min-width:0; display:flex; flex-direction:column; gap:6px;">
+        <h1 style="font:500 {{ h1 }}/1.15 var(--font-display); letter-spacing:var(--tracking-display); margin:0;">{{ t.messages }}</h1>
+        <p style="margin:0; font-size:15px; color:var(--text-2); text-wrap:pretty;">Messages go to the choir office. Staff reply here and by email, usually within two days.</p>
+      </div>
+      <div style="display:flex; gap:8px; margin-left:auto;">
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" icon-start="pen-line" on-click="{{ openNew }}" hint-size="140px,40px">New message</x-import>
+      </div>
+    </header>
+  </sc-if>
+
+  <div style="flex:1; min-height:{{ paneH }}; display:grid; grid-template-columns:{{ cols }}; background:var(--surface-card); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); box-shadow:var(--shadow-1); overflow:hidden;">
+    <sc-if value="{{ showList }}" hint-placeholder-val="{{ true }}">
+      <div style="min-width:0; display:flex; flex-direction:column; border-right:1px solid var(--border-subtle);">
+        <sc-if value="{{ isOffice }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:12px; border-bottom:1px solid var(--border-subtle);">
+            <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.SegmentedControl" full-width="{{ true }}" label="Filter" value="{{ filter }}" on-change="{{ setFilter }}" options="{{ filterOptions }}" hint-size="100%,38px"></x-import>
+          </div>
+        </sc-if>
+        <ul style="list-style:none; margin:0; padding:0; overflow-y:auto; flex:1;">
+          <sc-for list="{{ threads }}" as="th" hint-placeholder-count="5">
+            <li>
+              <button type="button" onClick="{{ th.open }}" aria-current="{{ th.current }}" style="width:100%; display:flex; gap:12px; align-items:flex-start; padding:14px 16px; border:0; border-bottom:1px solid var(--border-subtle); background:{{ th.bg }}; text-align:left; cursor:pointer; font:inherit; color:inherit;">
+                <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Avatar" name="{{ th.who }}" size="{{ 36 }}" hint-size="36px,36px"></x-import>
+                <span style="flex:1; min-width:0; display:flex; flex-direction:column; gap:3px;">
+                  <span style="display:flex; align-items:baseline; gap:8px;">
+                    <span style="flex:1; min-width:0; font:{{ th.weight }} 14.5px/1.3 var(--font-ui); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ th.who }}</span>
+                    <span style="flex:none; font-size:12.5px; color:var(--text-3);">{{ th.updated }}</span>
+                  </span>
+                  <span style="font:{{ th.weight }} 14px/1.35 var(--font-ui); color:var(--text-1);">{{ th.subject }}</span>
+                  <span style="font-size:13px; color:var(--text-3); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ th.preview }}</span>
+                  <span style="display:flex; flex-wrap:wrap; gap:6px; margin-top:4px;">
+                    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Badge" tone="neutral" hint-size="60px,22px">{{ th.topic }}</x-import>
+                    <sc-if value="{{ th.unread }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Badge" tone="accent" icon="circle-dot" hint-size="60px,22px">New</x-import></sc-if>
+                    <sc-if value="{{ th.resolved }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Badge" tone="success" icon="check" hint-size="70px,22px">Resolved</x-import></sc-if>
+                    <sc-if value="{{ th.showAssignee }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Badge" tone="{{ th.assignTone }}" icon="user" hint-size="90px,22px">{{ th.assigneeLabel }}</x-import></sc-if>
+                  </span>
+                </span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+        <sc-if value="{{ noThreads }}" hint-placeholder-val="{{ false }}">
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.EmptyState" icon="inbox" title="Nothing here" size="sm" hint-size="100%,200px">Messages in this view will appear here.</x-import>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ showThread }}" hint-placeholder-val="{{ true }}">
+      <div style="min-width:0; display:flex; flex-direction:column;">
+        <div style="display:flex; flex-wrap:wrap; align-items:center; gap:10px 14px; padding:14px 18px; border-bottom:1px solid var(--border-subtle);">
+          <sc-if value="{{ mobile }}" hint-placeholder-val="{{ false }}">
+            <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.IconButton" icon="arrow-left" label="Back to messages" on-click="{{ back }}" hint-size="40px,40px"></x-import>
+          </sc-if>
+          <div style="flex:1 1 220px; min-width:0;">
+            <h2 style="margin:0; font:500 20px/1.25 var(--font-display);">{{ cur.subject }}</h2>
+            <span style="font-size:13px; color:var(--text-3);">{{ cur.meta }}</span>
+          </div>
+          <sc-if value="{{ isOffice }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+              <div style="width:190px;">
+                <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Select" size="sm" label="Assigned to" value="{{ cur.assigneeVal }}" on-change="{{ assign }}" options="{{ staffOptions }}" hint-size="190px,56px"></x-import>
+              </div>
+              <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" size="sm" variant="secondary" icon-start="{{ cur.resolveIcon }}" on-click="{{ toggleResolved }}" hint-size="130px,32px">{{ cur.resolveLabel }}</x-import>
+            </div>
+          </sc-if>
+        </div>
+        <div style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:14px; padding:18px; background:var(--bg-app);">
+          <sc-for list="{{ cur.messages }}" as="m" hint-placeholder-count="2">
+            <div style="display:flex; flex-direction:column; align-items:{{ m.align }}; gap:4px;">
+              <span style="font:600 12.5px/1.3 var(--font-ui); color:var(--text-3);">{{ m.from }} · {{ m.at }}</span>
+              <div style="max-width:min(560px, 92%); padding:12px 14px; border-radius:var(--radius-lg); background:{{ m.bg }}; border:1px solid {{ m.bd }}; font:400 14.5px/1.5 var(--font-ui); color:var(--text-1); text-wrap:pretty;">{{ m.text }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:10px; padding:14px 18px; border-top:1px solid var(--border-subtle);">
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="{{ replyLabel }}" multiline="{{ true }}" rows="{{ 2 }}" value="{{ draft }}" on-change="{{ onDraft }}" placeholder="Write a reply" hint-size="100%,100px"></x-import>
+          <div style="display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+            <span style="flex:1 1 200px; font-size:13px; color:var(--text-3);">{{ replyHint }}</span>
+            <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" icon-start="send" on-click="{{ send }}" disabled="{{ noDraft }}" hint-size="100px,40px">Send</x-import>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+</div>
+
+<x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Modal" open="{{ newOpen }}" on-close="{{ closeNew }}" size="sm" title="Message the choir office" close-label="Close" footer="{{ newFooter }}" hint-size="0px,0px">
+  <div style="display:flex; flex-direction:column; gap:16px;">
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Select" label="Topic" value="{{ n.topic }}" on-change="{{ onN.topic }}" options="{{ topicOptions }}" hint-size="100%,72px"></x-import>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="Subject" required="{{ true }}" value="{{ n.subject }}" on-change="{{ onN.subject }}" hint-size="100%,72px"></x-import>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="Message" required="{{ true }}" multiline="{{ true }}" rows="{{ 4 }}" value="{{ n.text }}" on-change="{{ onN.text }}" hint="{{ newHint }}" hint-size="100%,140px"></x-import>
+  </div>
+</x-import>
+
+<x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.ToastStack" toasts="{{ toasts }}" on-dismiss="{{ dismissToast }}" hint-size="0px,0px"></x-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = this.initState(this.props);
+  initState(p) {
+    const role = p.role || 'office';
+    const mine = (p.data?.threads || []).filter((t) => role === 'office' || (role === 'guardian' ? t.from === 'Daniel Martin' : t.from === 'Ella Martin'));
+    const sel = p.demo && mine.find((t) => t.id === p.demo) ? p.demo : p.device === 'mobile' ? null : mine[0]?.id;
+    return { threads: p.data?.threads || [], selId: sel, filter: 'open', draft: '', modal: p.demo === 'new' ? 'new' : null, n: { topic: 'General', subject: '', text: '' }, toasts: [] };
+  }
+  componentDidMount() { this.waitDS(); }
+  waitDS() { if (window.ChoirbookDesignSystem_9d7b3b?.Avatar) this.forceUpdate(); else setTimeout(() => this.waitDS(), 60); }
+  componentDidUpdate(prev) { if (prev.demo !== this.props.demo || prev.data !== this.props.data) this.setState(this.initState(this.props)); }
+  toast(title, body) { const id = String(Date.now()); this.setState((s) => ({ toasts: [...s.toasts, { id, tone: 'success', title, children: body, duration: 5000 }] })); }
+  patch(id, fn) { this.setState((s) => ({ threads: s.threads.map((t) => (t.id === id ? fn(t) : t)) })); }
+  renderVals() {
+    const p = this.props, s = this.state;
+    const NS = window.ChoirbookDesignSystem_9d7b3b || {};
+    const h = (C, pr, ...c) => (C ? React.createElement(C, pr, ...c) : null);
+    const d = p.data || {}, t = p.t || {};
+    const role = p.role || 'office', office = role === 'office';
+    const mobile = p.device === 'mobile';
+    const me = office ? d.users?.staff?.name : role === 'guardian' ? 'Daniel Martin' : 'Ella Martin';
+    let list = s.threads.filter((x) => office || x.from === me);
+    if (office) list = list.filter((x) => s.filter === 'unassigned' ? !x.assignee && x.status === 'open' : s.filter === 'mine' ? x.assignee === me && x.status === 'open' : s.filter === 'resolved' ? x.status === 'resolved' : x.status === 'open');
+    const cur0 = s.threads.find((x) => x.id === s.selId);
+    const cnt = (f) => s.threads.filter(f).length;
+    const threads = list.map((x) => {
+      const last = x.messages[x.messages.length - 1];
+      return {
+        ...x, who: office ? x.from : x.assignee || 'Choir office', preview: last.text, weight: x.unread ? '700' : '500',
+        current: x.id === s.selId ? 'true' : undefined, bg: x.id === s.selId ? 'var(--accent-subtle)' : 'transparent',
+        resolved: x.status === 'resolved', showAssignee: office && x.status === 'open', assignTone: x.assignee ? 'slate' : 'warning', assigneeLabel: x.assignee || 'Unassigned',
+        open: () => { this.setState({ selId: x.id, draft: '' }); if (x.unread) this.patch(x.id, (y) => ({ ...y, unread: false })); },
+      };
+    });
+    const cur = cur0 ? {
+      ...cur0,
+      meta: office ? `${cur0.from} · ${cur0.fromRole === 'guardian' ? 'guardian of ' + cur0.about : 'chorister'} · ${cur0.topic}` : `${cur0.topic} · ${cur0.assignee ? 'Answered by ' + cur0.assignee : 'Waiting for the office'}`,
+      assigneeVal: cur0.assignee || '', resolveIcon: cur0.status === 'resolved' ? 'rotate-ccw' : 'check', resolveLabel: cur0.status === 'resolved' ? 'Reopen' : 'Mark resolved',
+      messages: cur0.messages.map((m) => {
+        const mineMsg = office ? m.role === 'staff' : m.from === me;
+        return { ...m, align: mineMsg ? 'flex-end' : 'flex-start', bg: mineMsg ? 'var(--accent-subtle)' : 'var(--surface-card)', bd: mineMsg ? 'var(--accent-subtle-strong)' : 'var(--border-subtle)' };
+      }),
+    } : { messages: [] };
+    const showThread = !!cur0 && (!mobile || !!s.selId);
+    const showList = !mobile || !s.selId;
+    const close = () => this.setState({ modal: null });
+    return {
+      t, mobile, isOffice: office, showHeader: !office && !(mobile && s.selId),
+      pad: office ? '0' : mobile ? '16px 16px 24px' : p.device === 'tablet' ? '24px 24px 40px' : '28px 32px 48px',
+      h1: mobile ? '28px' : 'var(--text-h1)',
+      paneH: mobile ? '520px' : '620px',
+      cols: mobile ? 'minmax(0,1fr)' : 'minmax(260px, 360px) minmax(0,1fr)',
+      showList, showThread, back: () => this.setState({ selId: null }),
+      filter: s.filter, setFilter: (v) => this.setState({ filter: v }),
+      filterOptions: [{ value: 'open', label: `Open ${cnt((x) => x.status === 'open')}` }, { value: 'unassigned', label: `Unassigned ${cnt((x) => !x.assignee && x.status === 'open')}` }, { value: 'mine', label: 'Mine' }, { value: 'resolved', label: 'Resolved' }],
+      threads, noThreads: threads.length === 0, cur,
+      staffOptions: [{ value: '', label: 'Unassigned' }, ...(d.staff || []).filter((u) => u.status === 'active').map((u) => ({ value: u.name, label: u.name }))],
+      assign: (e) => { const v = e.target.value || null; this.patch(cur0.id, (y) => ({ ...y, assignee: v })); if (v) this.toast('Conversation assigned', `${v} will get an email about it.`); },
+      toggleResolved: () => this.patch(cur0.id, (y) => ({ ...y, status: y.status === 'resolved' ? 'open' : 'resolved' })),
+      replyLabel: office ? `Reply to ${cur0?.from || ''}` : 'Reply',
+      replyHint: office ? `${cur0?.from || 'They'} will get this by email and in the app.` : 'The office is notified by email.',
+      draft: s.draft, onDraft: (e) => this.setState({ draft: e.target.value }), noDraft: !s.draft.trim(),
+      send: () => {
+        if (!s.draft.trim() || !cur0) return;
+        const msg = { from: me, role: office ? 'staff' : role, at: 'Just now', text: s.draft.trim() };
+        this.patch(cur0.id, (y) => ({ ...y, messages: [...y.messages, msg], updated: 'Just now', assignee: office && !y.assignee ? me : y.assignee }));
+        this.setState({ draft: '' });
+      },
+      openNew: () => this.setState({ modal: 'new', n: { topic: 'General', subject: '', text: '' } }), closeNew: close, newOpen: s.modal === 'new',
+      n: s.n, onN: Object.fromEntries(['topic', 'subject', 'text'].map((k) => [k, (e) => { const v = e.target.value; this.setState((x) => ({ n: { ...x.n, [k]: v } })); }])),
+      topicOptions: ['General', 'Absence or lateness', 'Medical', 'Music', 'Fees', 'Events'],
+      newHint: role === 'guardian' ? 'Reporting an absence? Use Report an absence on the home screen instead.' : 'A staff member will reply here.',
+      newFooter: [h(NS.Button, { key: 'c', variant: 'secondary', onClick: close }, 'Cancel'), h(NS.Button, { key: 's', iconStart: 'send', disabled: !s.n.subject.trim() || !s.n.text.trim(), onClick: () => {
+        const id = 'n' + Date.now();
+        const th = { id, subject: s.n.subject.trim(), topic: s.n.topic, from: me, fromRole: role, about: 'Ella Martin', assignee: null, status: 'open', unread: false, updated: 'Just now', messages: [{ from: me, role, at: 'Just now', text: s.n.text.trim() }] };
+        this.setState((x) => ({ threads: [th, ...x.threads], selId: id, modal: null }));
+        this.toast('Message sent', 'The choir office will reply here.');
+      } }, 'Send message')],
+      toasts: s.toasts, dismissToast: (id) => this.setState((x) => ({ toasts: x.toasts.filter((tt) => tt.id !== id) })),
+    };
+  }
+}
+</script>
+</body>
+</html>

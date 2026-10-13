@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="choirbook.css">
+<script src="_ds/choirbook-design-system-9d7b3b08-5cc4-4553-b44b-4db9eb92dfdb/_ds_bundle.js"></script>
+</helmet>
+<div style="flex:1; display:flex; flex-direction:column;">
+<sc-if value="{{ notSubmitted }}" hint-placeholder-val="{{ true }}">
+  <div style="flex:1; width:100%; max-width:1200px; margin:0 auto; padding:{{ pad }}; display:flex; flex-direction:column; gap:16px;">
+    <header style="display:flex; flex-wrap:wrap; align-items:flex-end; gap:12px 16px; margin-bottom:8px;">
+      <div style="min-width:0; display:flex; flex-direction:column; gap:6px;">
+        <span style="font:700 12px/1.2 var(--font-ui); letter-spacing:var(--tracking-overline); text-transform:uppercase; color:var(--accent-text);">{{ X.over }}</span>
+        <h1 style="font:500 var(--text-h1)/var(--lh-h1) var(--font-display); letter-spacing:var(--tracking-display); margin:0;">{{ t.attendance }}</h1>
+        <p style="margin:0; font-size:15px; color:var(--text-2); text-wrap:pretty;">{{ X.sub }}</p>
+      </div>
+      <div style="display:flex; flex-wrap:wrap; gap:8px; margin-left:auto;">
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" variant="secondary" icon-start="check-check" on-click="{{ askRest }}" disabled="{{ noneLeft }}" hint-size="200px,40px">{{ X.markRest }}</x-import>
+      </div>
+    </header>
+
+    <div style="position:sticky; top:0; z-index:5; flex:none; display:flex; flex-wrap:wrap; align-items:center; gap:10px 14px; padding:12px 16px; background:var(--surface-card); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); box-shadow:var(--shadow-1);">
+      <div style="flex:1 1 220px; max-width:320px;">
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.SearchField" size="md" value="{{ query }}" on-change="{{ onQuery }}" placeholder="{{ X.find }}" label="{{ X.find }}" hint-size="100%,40px"></x-import>
+      </div>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.SegmentedControl" label="{{ X.section }}" value="{{ filter }}" on-change="{{ onFilter }}" options="{{ filterOptions }}" hint-size="280px,38px"></x-import>
+      <div role="status" aria-live="polite" style="display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-left:auto;">
+        <sc-for list="{{ tallies }}" as="c" hint-placeholder-count="4">
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.AttendanceBadge" status="{{ c.status }}" lang="{{ lang }}" hint-size="90px,22px">{{ c.label }}</x-import>
+        </sc-for>
+      </div>
+    </div>
+
+    <sc-for list="{{ groups }}" as="g" hint-placeholder-count="4">
+      <section aria-label="{{ g.label }}" style="flex:none; border:1px solid var(--border-subtle); border-radius:var(--radius-lg); overflow:hidden; box-shadow:var(--shadow-1); background:var(--surface-card);">
+        <div style="display:flex; flex-wrap:wrap; align-items:center; gap:10px; padding:10px 16px; background:var(--surface-muted); border-bottom:1px solid var(--border-default);">
+          <sc-if value="{{ g.placed }}" hint-placeholder-val="{{ true }}">
+            <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.VoicePartBadge" part="{{ g.key }}" lang="{{ lang }}" hint-size="22px,22px"></x-import>
+          </sc-if>
+          <sc-if value="{{ g.unplaced }}" hint-placeholder-val="{{ false }}">
+            <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Icon" name="user-plus" size="{{ 18 }}" style="color:var(--info-text);" hint-size="18px,18px"></x-import>
+          </sc-if>
+          <span style="font:600 12px/1.2 var(--font-ui); letter-spacing:.06em; text-transform:uppercase; color:var(--text-2);">{{ g.label }} · {{ g.total }}</span>
+          <span style="margin-left:auto; font:600 13px/1.2 var(--font-ui); color:var(--text-3); font-variant-numeric:var(--numeric-tabular);">{{ g.marked }} / {{ g.total }} {{ X.marked }}</span>
+        </div>
+        {{ g.rowsNode }}
+      </section>
+    </sc-for>
+    <sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}">
+      <div style="background:var(--surface-card); border:1px solid var(--border-subtle); border-radius:var(--radius-lg);">
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.EmptyState" icon="search" title="{{ X.noMatch }}" size="sm" hint-size="100%,200px">{{ X.noMatchBody }}</x-import>
+      </div>
+    </sc-if>
+  </div>
+
+  <div style="position:sticky; bottom:0; z-index:6; border-top:1px solid var(--border-subtle); background:var(--surface-card); box-shadow:0 -6px 16px -8px rgb(50 36 16 / .12);">
+    <div style="max-width:1200px; margin:0 auto; display:flex; flex-wrap:wrap; align-items:center; gap:12px 20px; padding:12px {{ gutter }};">
+      <div style="flex:1 1 260px; min-width:0; display:flex; flex-direction:column; gap:6px;">
+        <span style="font:600 15px/1.3 var(--font-ui); font-variant-numeric:var(--numeric-tabular);">{{ markedCount }} {{ X.of }} {{ totalCount }} {{ X.marked }}</span>
+        <div aria-hidden="true" style="height:6px; border-radius:var(--radius-full); background:var(--surface-muted-strong); overflow:hidden;">
+          <div style="height:100%; width:{{ pct }}; border-radius:inherit; background:var(--accent); transition:width var(--duration-slow) var(--ease-standard);"></div>
+        </div>
+        <span style="font-size:13px; color:var(--text-3);">{{ footerHint }}</span>
+      </div>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" size="lg" icon-start="check" on-click="{{ submit }}" hint-size="220px,48px">{{ t.submitAttendance }}</x-import>
+    </div>
+  </div>
+
+  <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.ConfirmDialog" open="{{ confirmOpen }}" tone="default" title="{{ X.restTitle }}" confirm-label="{{ restConfirm }}" cancel-label="{{ X.cancel }}" on-cancel="{{ closeRest }}" on-confirm="{{ markRest }}" hint-size="0px,0px">{{ restBody }}</x-import>
+</sc-if>
+
+<sc-if value="{{ submitted }}" hint-placeholder-val="{{ false }}">
+  <div style="flex:1; width:100%; max-width:640px; margin:0 auto; padding:{{ pad }}; display:flex; flex-direction:column; justify-content:center;">
+    <div style="display:flex; flex-direction:column; gap:20px; padding:28px; background:var(--surface-card); border:1px solid var(--border-subtle); border-radius:var(--radius-xl); box-shadow:var(--shadow-2); animation:cb-rise-in var(--duration-slow) var(--ease-enter);">
+      <span aria-hidden="true" style="width:48px; height:48px; border-radius:var(--radius-full); display:grid; place-items:center; background:var(--success-subtle); color:var(--success-text); border:1px solid var(--success-border);">
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Icon" name="check" size="{{ 24 }}" stroke-width="{{ 2.5 }}" hint-size="24px,24px"></x-import>
+      </span>
+      <div style="display:flex; flex-direction:column; gap:6px;">
+        <h1 style="font:500 var(--text-h2)/var(--lh-h2) var(--font-display); margin:0;">{{ X.doneTitle }}</h1>
+        <p style="margin:0; color:var(--text-2);">{{ X.doneBody }}</p>
+      </div>
+      <div style="display:flex; flex-wrap:wrap; gap:6px;">
+        <sc-for list="{{ tallies }}" as="c" hint-placeholder-count="4">
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.AttendanceBadge" status="{{ c.status }}" size="md" lang="{{ lang }}" hint-size="100px,26px">{{ c.label }}</x-import>
+        </sc-for>
+      </div>
+      <sc-if value="{{ lucasAlert }}" hint-placeholder-val="{{ false }}">
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.AlertCard" tone="error" title="{{ X.lucasTitle }}" actions="{{ lucasActions }}" hint-size="100%,120px">{{ X.lucasBody }}</x-import>
+      </sc-if>
+      <div style="display:flex; flex-wrap:wrap; gap:8px;">
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" icon-start="house" on-click="{{ exit }}" hint-size="140px,40px">{{ t.backHome }}</x-import>
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" variant="secondary" icon-start="pencil" on-click="{{ edit }}" hint-size="160px,40px">{{ X.edit }}</x-import>
+      </div>
+    </div>
+  </div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const norm = (s) => (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+const ord = (n) => `${n}${n === 1 ? 'st' : n === 2 ? 'nd' : n === 3 ? 'rd' : 'th'} year`;
+const TX = {
+  en: { over: 'Thursday, October 15 · 6:30 p.m.', sub: 'Rehearsal 6 · Grace Hall. Absences reported by guardians are already marked Excused.', markRest: 'Mark remaining present', find: 'Find a chorister', section: 'Section', all: 'All', new: 'New', marked: 'marked', of: 'of', newGroup: 'New · awaiting placement', firstReh: 'First rehearsal · voice part not set', reported: 'Reported by', noMatch: 'No choristers match', noMatchBody: 'Check the spelling or clear the section filter.', restTitle: 'Mark everyone else present?', cancel: 'Cancel', present: 'Present', late: 'Late', absent: 'Absent', excused: 'Excused', unmarked: 'Not marked',
+    hintLeft: (n) => `${n} not marked yet. Anyone left unmarked is recorded as absent.`, hintDone: 'Everyone is marked. Ready to submit.', restBody: (n) => `${n} choristers have no mark yet. You can still change anyone afterwards.`, restConfirm: (n) => `Mark ${n} present`,
+    doneTitle: 'Attendance submitted', doneBody: 'Saved at 6:52 p.m. You can make changes until midnight.', lucasTitle: 'Lucas Bergeron is now over the absence limit', lucasBody: '4 of 3 allowed absences this term. His guardian has not been contacted yet.', contact: 'Message guardian', edit: 'Edit attendance' },
+  fr: { over: 'Jeudi 15 octobre · 18 h 30', sub: 'Répétition 6 · Grace Hall. Les absences signalées par les parents sont déjà notées Motivé.', markRest: 'Marquer les autres présents', find: 'Trouver un choriste', section: 'Pupitre', all: 'Tous', new: 'Nouv.', marked: 'notés', of: 'sur', newGroup: 'Nouveaux · à placer', firstReh: 'Première répétition · pupitre à définir', reported: 'Signalée par', noMatch: 'Aucun choriste trouvé', noMatchBody: 'Vérifiez l’orthographe ou retirez le filtre.', restTitle: 'Marquer tous les autres présents ?', cancel: 'Annuler', present: 'Présents', late: 'En retard', absent: 'Absents', excused: 'Motivés', unmarked: 'Non notés',
+    hintLeft: (n) => `${n} pas encore notés. Toute personne non notée sera inscrite absente.`, hintDone: 'Tout le monde est noté.', restBody: (n) => `${n} choristes ne sont pas encore notés.`, restConfirm: (n) => `Marquer ${n} présents`,
+    doneTitle: 'Présences soumises', doneBody: 'Enregistrées à 18 h 52. Modifiables jusqu’à minuit.', lucasTitle: 'Lucas Bergeron dépasse la limite d’absences', lucasBody: '4 absences sur 3 permises ce trimestre. Son parent n’a pas encore été contacté.', contact: 'Écrire au parent', edit: 'Modifier les présences' },
+};
+class Component extends DCLogic {
+  state = this.initState(this.props);
+  initState(p) {
+    const d = p.data || {};
+    const marks = {};
+    (d.reportedAbsences || []).forEach((a) => { marks[a.id] = 'excused'; });
+    if (p.demo === 'midway' || p.demo === 'submitted') {
+      const cs = d.choristers || [];
+      cs.forEach((c, i) => {
+        if (marks[c.id]) return;
+        if (c.section === 'S' || (c.section === 'A' && i % 5 !== 2)) marks[c.id] = 'present';
+      });
+      marks['lily.nguyen'] = 'late'; marks['camille.dube'] = 'late';
+      if (p.demo === 'submitted') cs.forEach((c) => { if (!marks[c.id]) marks[c.id] = c.id === 'lucas.bergeron' ? 'absent' : 'present'; });
+    }
+    return { marks, query: '', filter: 'all', submitted: p.demo === 'submitted', confirm: false };
+  }
+  componentDidMount() { this.waitDS(); }
+  waitDS() { if (window.ChoirbookDesignSystem_9d7b3b?.CheckInRow) this.forceUpdate(); else setTimeout(() => this.waitDS(), 60); }
+  componentDidUpdate(prev) { if (prev.demo !== this.props.demo) this.setState(this.initState(this.props)); }
+  renderVals() {
+    const p = this.props, s = this.state;
+    const NS = window.ChoirbookDesignSystem_9d7b3b || {};
+    const h = (C, pr, ...c) => (C ? React.createElement(C, pr, ...c) : null);
+    const d = p.data || {}, t = p.t || {};
+    const lang = p.lang ?? 'en';
+    const X = TX[lang];
+    const dev = p.device || 'tablet';
+    const reported = Object.fromEntries((d.reportedAbsences || []).map((a) => [a.id, a]));
+    const all = (d.choristers || []).slice().sort((a, b) => a.last.localeCompare(b.last));
+    const q = norm(s.query.trim());
+    const st = (c) => s.marks[c.id] || 'unmarked';
+    const count = (v) => all.filter((c) => st(c) === v).length;
+    const total = all.length, unmarked = count('unmarked'), marked = total - unmarked;
+    const defs = [...['S', 'A', 'T', 'B'].map((k) => ({ key: k, label: d.sections?.[k]?.[lang], placed: true, members: all.filter((c) => c.section === k) })), { key: 'U', label: X.newGroup, placed: false, members: all.filter((c) => !c.section) }];
+    const groups = defs.filter((g) => s.filter === 'all' || s.filter === g.key).map((g) => {
+      const rows = g.members.filter((c) => !q || norm(c.name).includes(q)).map((c) => {
+        const rep = reported[c.id];
+        return {
+          name: c.name, part: c.part || undefined, status: st(c),
+          detail: c.section ? ord(c.years) : X.firstReh,
+          note: rep ? `${rep.reason} · ${X.reported.toLowerCase()} ${rep.by}` : undefined,
+          noteIcon: rep ? 'calendar-x' : undefined,
+          onChange: (v) => this.setState((x) => ({ marks: { ...x.marks, [c.id]: v === 'unmarked' ? undefined : v } })),
+        };
+      });
+      const rowsNode = h(React.Fragment, null, rows.map((r) => h(NS.CheckInRow, { key: r.name, ...r, lang, compact: dev === 'mobile' })));
+      return { key: g.key, label: g.label, placed: g.placed, unplaced: !g.placed, total: g.members.length, marked: g.members.filter((c) => st(c) !== 'unmarked').length, rows, rowsNode };
+    }).filter((g) => g.rows.length);
+    const tallies = ['present', 'late', 'absent', 'excused'].map((k) => ({ status: k, label: `${count(k)} ${X[k].toLowerCase()}` }));
+    const filterOptions = [{ value: 'all', label: X.all }, ...['S', 'A', 'T', 'B'].map((k) => ({ value: k, label: k })), { value: 'U', label: X.new }];
+    const lucas = s.marks['lucas.bergeron'];
+    return {
+      t, X, lang,
+      pad: dev === 'desktop' ? '28px 32px 32px' : dev === 'mobile' ? '16px 16px 24px' : '24px 24px 24px',
+      gutter: dev === 'desktop' ? '32px' : dev === 'mobile' ? '16px' : '24px',
+      compact: dev === 'mobile',
+      notSubmitted: !s.submitted, submitted: s.submitted,
+      query: s.query, onQuery: (v) => this.setState({ query: v }),
+      filter: s.filter, onFilter: (v) => this.setState({ filter: v }), filterOptions,
+      tallies, groups, noResults: groups.length === 0,
+      markedCount: marked, totalCount: total, pct: `${Math.round((marked / Math.max(total, 1)) * 100)}%`,
+      footerHint: unmarked ? X.hintLeft(unmarked) : X.hintDone,
+      noneLeft: unmarked === 0,
+      askRest: () => this.setState({ confirm: true }), closeRest: () => this.setState({ confirm: false }),
+      confirmOpen: s.confirm, restBody: X.restBody(unmarked), restConfirm: X.restConfirm(unmarked),
+      markRest: () => this.setState((x) => { const m = { ...x.marks }; all.forEach((c) => { if (!m[c.id]) m[c.id] = 'present'; }); return { marks: m, confirm: false }; }),
+      submit: () => this.setState({ submitted: true }),
+      edit: () => this.setState({ submitted: false }),
+      exit: () => p.go?.('staff-home'),
+      lucasAlert: !lucas || lucas === 'absent',
+      lucasActions: h(NS.Button, { size: 'sm', variant: 'secondary', iconStart: 'mail', onClick: () => p.go?.('roster', 'lucas.bergeron') }, X.contact),
+    };
+  }
+}
+</script>
+</body>
+</html>

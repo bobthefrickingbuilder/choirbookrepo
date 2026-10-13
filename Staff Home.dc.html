@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="choirbook.css">
+<script src="_ds/choirbook-design-system-9d7b3b08-5cc4-4553-b44b-4db9eb92dfdb/_ds_bundle.js"></script>
+</helmet>
+<div style="width:100%; max-width:1200px; margin:0 auto; padding:{{ pad }}; display:flex; flex-direction:column; gap:24px;">
+  <header style="display:flex; flex-wrap:wrap; align-items:flex-end; gap:12px 16px;">
+    <div style="min-width:0; display:flex; flex-direction:column; gap:6px;">
+      <span style="font:700 12px/1.2 var(--font-ui); letter-spacing:var(--tracking-overline); text-transform:uppercase; color:var(--accent-text);">{{ X.over }}</span>
+      <h1 style="font:500 var(--text-h1)/var(--lh-h1) var(--font-display); letter-spacing:var(--tracking-display); margin:0;">{{ t.today }}</h1>
+      <p style="margin:0; font-size:15px; color:var(--text-2);">{{ X.sub }}</p>
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:8px; margin-left:auto;">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" variant="secondary" icon-start="megaphone" on-click="{{ goComms }}" hint-size="190px,40px">{{ t.sendAnnouncement }}</x-import>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" variant="secondary" icon-start="plus" on-click="{{ goCalendar }}" hint-size="120px,40px">{{ t.addEvent }}</x-import>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" variant="secondary" icon-start="file-text" on-click="{{ goBoard }}" hint-size="150px,40px">Board report</x-import>
+    </div>
+  </header>
+
+  <section aria-label="{{ X.summary }}" style="display:flex; flex-wrap:wrap; gap:16px;">
+    <div style="flex:1 1 200px; min-width:0;">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.StatCard" icon="users" label="{{ X.choristers }}" value="{{ data.stats.placed }}" delta="{{ X.newDelta }}" trend="up" context="{{ X.newCtx }}" hint-size="100%,120px"></x-import>
+    </div>
+    <div style="flex:2 1 380px; min-width:0; display:flex; flex-direction:column; gap:12px; padding:16px 20px 18px; background:var(--surface-card); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); box-shadow:var(--shadow-1);">
+      <span style="display:flex; align-items:center; gap:8px; font:600 13px/1.3 var(--font-ui); color:var(--text-2);">
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Icon" name="mic-vocal" size="{{ 18 }}" style="color:var(--text-3);" hint-size="18px,18px"></x-import>{{ X.bySection }}
+      </span>
+      <div style="display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:12px;">
+        <sc-for list="{{ sections }}" as="s" hint-placeholder-count="4">
+          <div style="display:flex; align-items:center; gap:10px; min-width:0;">
+            <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.VoicePartBadge" part="{{ s.key }}" size="lg" lang="{{ lang }}" hint-size="32px,32px"></x-import>
+            <span style="display:flex; flex-direction:column; min-width:0; line-height:1.15;">
+              <span style="font:500 26px/1.05 var(--font-display); font-variant-numeric:var(--numeric-tabular);">{{ s.count }}</span>
+              <span style="font-size:13px; color:var(--text-3);">{{ s.label }}</span>
+            </span>
+          </div>
+        </sc-for>
+      </div>
+      <div role="img" aria-label="{{ sectionAria }}" style="display:flex; gap:3px; height:6px; border-radius:var(--radius-full); overflow:hidden;">
+        <sc-for list="{{ sections }}" as="s" hint-placeholder-count="4">
+          <span style="flex:{{ s.count }} 1 0; background:var(--voice-{{ s.lower }});"></span>
+        </sc-for>
+      </div>
+    </div>
+    <div style="flex:1 1 200px; min-width:0;">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.StatCard" icon="user-check" label="{{ X.attendanceTerm }}" value="{{ data.stats.attendanceRate }}" unit="%" progress="{{ 0.91 }}" delta="{{ data.stats.attendanceDelta }}" trend="up" good="{{ true }}" context="{{ X.vsLast }}" hint-size="100%,120px"></x-import>
+    </div>
+  </section>
+
+  <div style="display:flex; flex-wrap:wrap; gap:20px; align-items:flex-start;">
+    <div style="flex:2 1 540px; min-width:0; display:flex; flex-direction:column; gap:20px;">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.NextRehearsalCard" overline="{{ X.nextOver }}" when="{{ X.tonight }}" date="{{ data.rehearsal.date }}" start="{{ data.rehearsal.start }}" end="{{ data.rehearsal.end }}" call-time="{{ data.rehearsal.callTime }}" location="{{ data.rehearsal.location }}" address="{{ data.rehearsal.address }}" map-href="#" bring="{{ data.rehearsal.bring }}" pieces="{{ data.rehearsal.pieces }}" countdown="{{ X.countdown }}" status="{{ expectedBadge }}" actions="{{ nextActions }}" locale="{{ locale }}" hint-size="100%,360px"></x-import>
+
+      <div style="display:flex; flex-wrap:wrap; gap:20px; align-items:flex-start;">
+        <div style="flex:1.1 1 300px; min-width:0;">
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Card" title="{{ X.runningOrder }}" padded="{{ false }}" hint-size="100%,420px">
+            <div style="display:flex; gap:10px; align-items:flex-start; margin:16px 20px 4px; padding:12px 14px; border-radius:var(--radius-md); background:var(--surface-muted);">
+              <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Icon" name="star" size="{{ 18 }}" style="color:var(--text-3); margin-top:2px; flex:none;" hint-size="18px,18px"></x-import>
+              <div style="min-width:0;">
+                <div style="font:600 12px/1.3 var(--font-ui); color:var(--text-3); margin-bottom:2px;">{{ X.dress }}</div>
+                <div style="font:500 15px/1.4 var(--font-ui); color:var(--text-1); text-wrap:pretty;">{{ data.rehearsal.dress }}</div>
+              </div>
+            </div>
+            <ol style="list-style:none; margin:0; padding:8px 20px 12px;">
+              <sc-for list="{{ data.rehearsal.runningOrder }}" as="r" hint-placeholder-count="7">
+                <li style="display:grid; grid-template-columns:3rem minmax(0,1fr); gap:12px; padding:10px 0; border-bottom:1px solid var(--border-subtle);">
+                  <span style="font:600 14px/1.4 var(--font-ui); color:var(--text-3); font-variant-numeric:var(--numeric-tabular);">{{ r.time }}</span>
+                  <span style="display:flex; flex-direction:column; min-width:0;">
+                    <span style="font:500 15px/1.4 var(--font-ui); color:var(--text-1);">{{ r.item }}</span>
+                    <span style="font-size:13px; color:var(--text-3);">{{ r.who }}</span>
+                  </span>
+                </li>
+              </sc-for>
+            </ol>
+          </x-import>
+        </div>
+        <div style="flex:1 1 280px; min-width:0;">
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Card" title="{{ X.reported }}" action="{{ absentCountBadge }}" padded="{{ false }}" hint-size="100%,280px">
+            <ul style="list-style:none; margin:0; padding:4px 20px 8px;">
+              <sc-for list="{{ absences }}" as="a" hint-placeholder-count="3">
+                <li style="display:flex; align-items:flex-start; gap:12px; padding:12px 0; border-bottom:1px solid var(--border-subtle);">
+                  <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Avatar" name="{{ a.name }}" size="{{ 32 }}" hint-size="32px,32px"></x-import>
+                  <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap:3px;">
+                    <span style="display:flex; flex-wrap:wrap; align-items:center; gap:6px;">
+                      <span style="font:600 14.5px/1.3 var(--font-ui);">{{ a.name }}</span>
+                      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.VoicePartBadge" part="{{ a.part }}" lang="{{ lang }}" hint-size="28px,22px"></x-import>
+                    </span>
+                    <span style="font:500 14px/1.35 var(--font-ui); color:var(--text-1);">{{ a.reason }}</span>
+                    <span style="font-size:13px; color:var(--text-3);">{{ X.reportedBy }} {{ a.by }} · {{ a.when }}</span>
+                  </div>
+                  <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.AttendanceBadge" status="excused" lang="{{ lang }}" hint-size="80px,22px"></x-import>
+                </li>
+              </sc-for>
+            </ul>
+          </x-import>
+        </div>
+      </div>
+    </div>
+
+    <div style="flex:1 1 320px; min-width:0;">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Card" title="{{ X.attention }}" action="{{ alertCountBadge }}" padded="{{ false }}" hint-size="100%,520px">
+        <ul style="list-style:none; margin:0; padding:0;">
+          <sc-for list="{{ alerts }}" as="al" hint-placeholder-count="4">
+            <li style="display:flex; gap:12px; padding:16px 20px; border-top:1px solid var(--border-subtle);">
+              <span aria-hidden="true" style="flex:none; width:36px; height:36px; display:grid; place-items:center; border-radius:var(--radius-full); background:var(--{{ al.tone }}-subtle); color:var(--{{ al.tone }}-text); border:1px solid var(--{{ al.tone }}-border);">
+                <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Icon" name="{{ al.icon }}" size="{{ 18 }}" stroke-width="{{ 2 }}" hint-size="18px,18px"></x-import>
+              </span>
+              <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap:3px;">
+                <span style="font:600 15px/1.35 var(--font-ui); color:var(--text-1); text-wrap:pretty;">{{ al.title }}</span>
+                <span style="font:400 14px/1.5 var(--font-ui); color:var(--text-2); text-wrap:pretty;">{{ al.detail }}</span>
+                <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:8px;">
+                  <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" size="sm" variant="secondary" icon-start="{{ al.btnIcon }}" on-click="{{ al.go }}" disabled="{{ al.done }}" hint-size="130px,32px">{{ al.action }}</x-import>
+                </div>
+              </div>
+            </li>
+          </sc-for>
+        </ul>
+      </x-import>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const TX = {
+  en: { over: 'Thursday, October 15 · Week 6 of fall term', sub: 'Rehearsal 6 tonight at Grace Hall', summary: 'Season summary', choristers: 'Choristers', newDelta: '+5 new', newCtx: 'awaiting section placement', bySection: 'By section', attendanceTerm: 'Attendance this term', vsLast: 'vs. last week', nextOver: 'Next rehearsal · Rehearsal 6', tonight: 'Tonight', countdown: 'Starts in 2 h 10 min', expected: 'expected', runningOrder: 'Running order', dress: 'Dress code', reported: 'Reported absences', reportedBy: 'Reported by', attention: 'Needs attention',
+    a1t: 'Lucas Bergeron reached the absence limit', a1d: 'Bass · 3 of 3 allowed absences this term (Sep 10, Sep 24 and Oct 1).', a1b: 'View profile',
+    a2t: '6 forms not submitted', a2d: 'Medical information (4) and media consent (2). The last reminder went out on Oct 5.', a2b: 'Send reminder', a2done: 'Reminder sent',
+    a3t: '4 annual fees overdue', a3d: '$1,560 outstanding. The due date was September 30.', a3b: 'Review fees',
+    a4t: '5 new choristers to place', a4d: 'They registered this month. Sections are set during their first two rehearsals.', a4b: 'Place singers' },
+  fr: { over: 'Jeudi 15 octobre · Semaine 6 du trimestre d’automne', sub: 'Répétition 6 ce soir à Grace Hall', summary: 'Résumé de la saison', choristers: 'Choristes', newDelta: '+5 nouveaux', newCtx: 'en attente de placement', bySection: 'Par pupitre', attendanceTerm: 'Présence ce trimestre', vsLast: 'vs semaine dernière', nextOver: 'Prochaine répétition · Répétition 6', tonight: 'Ce soir', countdown: 'Dans 2 h 10', expected: 'attendus', runningOrder: 'Déroulement', dress: 'Tenue', reported: 'Absences signalées', reportedBy: 'Signalée par', attention: 'À traiter',
+    a1t: 'Lucas Bergeron a atteint la limite d’absences', a1d: 'Basse · 3 absences sur 3 permises ce trimestre (10 sept., 24 sept. et 1er oct.).', a1b: 'Voir le profil',
+    a2t: '6 formulaires non remis', a2d: 'Renseignements médicaux (4) et consentement médias (2). Dernier rappel envoyé le 5 oct.', a2b: 'Envoyer un rappel', a2done: 'Rappel envoyé',
+    a3t: '4 frais annuels en retard', a3d: '1 560 $ à percevoir. L’échéance était le 30 septembre.', a3b: 'Voir les frais',
+    a4t: '5 nouveaux choristes à placer', a4d: 'Inscrits ce mois-ci. Le pupitre est choisi pendant leurs deux premières répétitions.', a4b: 'Placer les choristes' },
+};
+class Component extends DCLogic {
+  state = { reminded: false };
+  componentDidMount() { this.waitDS(); }
+  waitDS() { if (window.ChoirbookDesignSystem_9d7b3b?.Badge) this.forceUpdate(); else setTimeout(() => this.waitDS(), 60); }
+  renderVals() {
+    const p = this.props, s = this.state;
+    const NS = window.ChoirbookDesignSystem_9d7b3b || {};
+    const h = (C, pr, ...c) => (C ? React.createElement(C, pr, ...c) : null);
+    const d = p.data || {}, t = p.t || {};
+    const lang = p.lang ?? 'en';
+    const X = TX[lang];
+    const dev = p.device || 'desktop';
+    const go = (r, demo) => () => p.go?.(r, demo);
+    const byId = Object.fromEntries((d.choristers || []).map((c) => [c.id, c]));
+    const sections = (d.sectionCounts || []).map((sc) => ({ ...sc, lower: sc.key.toLowerCase(), label: sc[lang] }));
+    const absences = (d.reportedAbsences || []).map((a) => ({ ...a, name: byId[a.id]?.name, part: byId[a.id]?.part }));
+    const expected = (d.stats?.total ?? 0) - absences.length;
+    const alerts = [
+      { tone: 'error', icon: 'circle-alert', title: X.a1t, detail: X.a1d, action: X.a1b, btnIcon: 'user', go: go('roster', 'lucas.bergeron') },
+      { tone: 'warning', icon: 'clipboard-list', title: X.a2t, detail: X.a2d, action: s.reminded ? X.a2done : X.a2b, btnIcon: s.reminded ? 'check' : 'bell', done: s.reminded, go: () => this.setState({ reminded: true }) },
+      { tone: 'warning', icon: 'receipt', title: X.a3t, detail: X.a3d, action: X.a3b, btnIcon: 'arrow-right', go: go('roster', 'overdue') },
+      { tone: 'info', icon: 'user-plus', title: X.a4t, detail: X.a4d, action: X.a4b, btnIcon: 'arrow-right', go: go('roster', 'unplaced') },
+    ];
+    return {
+      data: d, t, X, lang, locale: lang === 'fr' ? 'fr-CA' : 'en-CA',
+      pad: dev === 'desktop' ? '28px 32px 56px' : dev === 'mobile' ? '16px 16px 32px' : '24px 24px 48px',
+      sections, sectionAria: sections.map((sc) => `${sc.label} ${sc.count}`).join(', '),
+      absences, alerts,
+      expectedBadge: h(NS.Badge, { tone: 'neutral', icon: 'users', size: 'md' }, `${expected} ${X.expected}`),
+      absentCountBadge: h(NS.Badge, { tone: 'slate' }, String(absences.length)),
+      alertCountBadge: h(NS.Badge, { tone: 'accent' }, String(alerts.length)),
+      nextActions: h(NS.Button, { iconStart: 'clipboard-check', onClick: go('attendance') }, t.takeAttendance),
+      goComms: go('staff-comms', 'compose'), goBoard: go('staff-reports', 'board'), goCalendar: go('staff-calendar', 'add'),
+    };
+  }
+}
+</script>
+</body>
+</html>

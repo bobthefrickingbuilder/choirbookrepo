@@ -1,0 +1,24 @@
+/* Spacing, radius, elevation, motion, layout and breakpoints. */
+:root{
+--space-0:0;--space-0-5:2px;--space-1:4px;--space-1-5:6px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:20px;--space-6:24px;--space-8:32px;--space-10:40px;--space-12:48px;--space-16:64px;--space-20:80px;
+--radius-xs:2px;--radius-sm:4px;--radius-md:6px;--radius-lg:10px;--radius-xl:14px;--radius-full:999px;
+/* Elevation — paper is mostly flat; borders do most of the work. Shadows are warm-tinted. */
+--shadow-0:none;
+--shadow-1:0 1px 2px rgb(50 36 16 / .06),0 1px 1px rgb(50 36 16 / .03);
+--shadow-2:0 6px 16px -4px rgb(50 36 16 / .12),0 2px 4px rgb(50 36 16 / .05);
+--shadow-3:0 20px 48px -12px rgb(50 36 16 / .24),0 4px 10px rgb(50 36 16 / .06);
+/* Motion — short, no bounce. Zeroed under prefers-reduced-motion (tokens/base.css). */
+--duration-fast:120ms;/* @kind other */--duration-base:180ms;/* @kind other */--duration-slow:260ms;/* @kind other */
+--ease-standard:cubic-bezier(.2,0,0,1);/* @kind other */--ease-enter:cubic-bezier(0,0,.2,1);/* @kind other */--ease-exit:cubic-bezier(.4,0,1,1);/* @kind other */
+/* Layout */
+--header-h:60px;--sidebar-w:248px;--bottomnav-h:64px;--sheet-w:440px;--content-max:1200px;
+--tap-min:44px;--tap-checkin:56px;--control-h-sm:32px;--control-h:40px;--control-h-lg:48px;
+/* Breakpoints (reference values — use in media queries as literals) */
+--bp-phone:0px;--bp-tablet:600px;--bp-desktop:1024px;--bp-wide:1440px;
+--z-base:0;/* @kind other */--z-sticky:10;/* @kind other */--z-nav:20;/* @kind other */--z-popover:40;/* @kind other */--z-sheet:50;/* @kind other */--z-modal:60;/* @kind other */--z-toast:70;/* @kind other */
+}
+[data-mode="dark"]{
+--shadow-1:0 1px 2px rgb(0 0 0 / .4);
+--shadow-2:0 8px 20px -4px rgb(0 0 0 / .55),0 2px 4px rgb(0 0 0 / .3);
+--shadow-3:0 24px 56px -12px rgb(0 0 0 / .7),0 4px 12px rgb(0 0 0 / .35);
+}

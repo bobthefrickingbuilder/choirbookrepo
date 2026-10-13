@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="choirbook.css">
+<script src="_ds/choirbook-design-system-9d7b3b08-5cc4-4553-b44b-4db9eb92dfdb/_ds_bundle.js"></script>
+</helmet>
+<div style="width:100%; max-width:1200px; margin:0 auto; padding:{{ pad }}; display:flex; flex-direction:column; gap:20px;">
+  <header style="display:flex; flex-wrap:wrap; align-items:flex-end; gap:12px 16px;">
+    <div style="min-width:0; display:flex; flex-direction:column; gap:6px;">
+      <span style="font:700 12px/1.2 var(--font-ui); letter-spacing:var(--tracking-overline); text-transform:uppercase; color:var(--accent-text);">Winter Light · Dec 12</span>
+      <h1 style="font:500 var(--text-h1)/var(--lh-h1) var(--font-display); letter-spacing:var(--tracking-display); margin:0;">{{ t.music }}</h1>
+      <p style="margin:0; font-size:15px; color:var(--text-2);">{{ sub }}</p>
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:8px; margin-left:auto;">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" variant="secondary" icon-start="clipboard-check" on-click="{{ openAssign }}" hint-size="160px,40px">Assign practice</x-import>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" icon-start="upload" on-click="{{ openUpload }}" hint-size="120px,40px">Add piece</x-import>
+    </div>
+  </header>
+
+  <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Card" title="Current practice assignment" action="{{ assignBadge }}" hint-size="100%,150px">
+    <div style="display:flex; flex-wrap:wrap; gap:12px 24px; align-items:flex-start;">
+      <div style="flex:1 1 320px; min-width:0; display:flex; flex-direction:column; gap:6px;">
+        <span style="font:500 22px/1.2 var(--font-display);">{{ assignment.piece }} <span style="font:italic 400 16px var(--font-display); color:var(--text-2);">{{ assignment.bars }}</span></span>
+        <p style="margin:0; color:var(--text-2); text-wrap:pretty;">{{ assignment.text }}</p>
+      </div>
+      <dl style="flex:0 1 300px; margin:0; display:grid; grid-template-columns:auto minmax(0,1fr); gap:6px 14px; font-size:14px;">
+        <dt style="color:var(--text-3); font-weight:600;">Due</dt><dd style="margin:0;">{{ assignment.due }}</dd>
+        <dt style="color:var(--text-3); font-weight:600;">For</dt><dd style="margin:0;">{{ assignment.for }}</dd>
+        <dt style="color:var(--text-3); font-weight:600;">Played</dt><dd style="margin:0; font-variant-numeric:var(--numeric-tabular);">{{ assignment.played }}</dd>
+      </dl>
+    </div>
+  </x-import>
+
+  <div style="display:flex; flex-wrap:wrap; align-items:center; gap:10px 14px;">
+    <div style="flex:1 1 240px; max-width:360px;">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.SearchField" value="{{ query }}" on-change="{{ onQuery }}" placeholder="Search title or composer" label="Search music" hint-size="100%,40px"></x-import>
+    </div>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.SegmentedControl" label="Programme" value="{{ prog }}" on-change="{{ setProg }}" options="{{ progOptions }}" hint-size="300px,38px"></x-import>
+  </div>
+
+  <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(min(100%, 460px), 1fr)); gap:16px;">
+    <sc-for list="{{ pieces }}" as="m" hint-placeholder-count="5">
+      <div style="display:flex; flex-direction:column; gap:0; background:var(--surface-card); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); box-shadow:var(--shadow-1); overflow:hidden;">
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.MusicItem" title="{{ m.title }}" composer="{{ m.composer }}" arranger="{{ m.arranger }}" voicing="{{ m.voicing }}" duration="{{ m.duration }}" language="{{ m.language }}" score-href="#" score-size="{{ m.scoreSize }}" tracks="{{ m.tracks }}" due="{{ m.due }}" lang="{{ lang }}" hint-size="100%,220px"></x-import>
+        <div style="display:flex; flex-wrap:wrap; align-items:center; gap:8px; padding:10px 16px; border-top:1px solid var(--border-subtle); background:var(--surface-muted);">
+          <span style="font-size:13px; color:var(--text-3);">{{ m.programme }} · {{ m.trackCount }} learning tracks</span>
+          <span style="flex:1;"></span>
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" size="sm" variant="ghost" icon-start="upload" on-click="{{ m.addTrack }}" hint-size="100px,32px">Add track</x-import>
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" size="sm" variant="ghost" icon-start="pencil" on-click="{{ m.edit }}" hint-size="70px,32px">Edit</x-import>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+</div>
+
+<x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Modal" open="{{ uploadOpen }}" on-close="{{ close }}" size="md" title="{{ uploadTitle }}" close-label="Close" footer="{{ uploadFooter }}" hint-size="0px,0px">
+  <div style="display:flex; flex-direction:column; gap:18px;">
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.FormRow" hint-size="100%,72px">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="Title" required="{{ true }}" value="{{ u.title }}" on-change="{{ on.title }}" error="{{ uErr }}" hint-size="100%,72px"></x-import>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="Composer" value="{{ u.composer }}" on-change="{{ on.composer }}" hint-size="100%,72px"></x-import>
+    </x-import>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.FormRow" hint-size="100%,72px">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="Voicing" placeholder="SATB" value="{{ u.voicing }}" on-change="{{ on.voicing }}" hint-size="100%,72px"></x-import>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Select" label="Programme" value="{{ u.programme }}" on-change="{{ on.programme }}" options="{{ progSelect }}" hint-size="100%,72px"></x-import>
+    </x-import>
+    <div style="display:flex; flex-direction:column; gap:8px;">
+      <span style="font:600 14px/1.3 var(--font-ui);">Files</span>
+      <div style="display:flex; flex-direction:column; align-items:center; gap:8px; padding:22px 16px; border:1.5px dashed var(--border-control); border-radius:var(--radius-md); background:var(--surface-muted); text-align:center;">
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Icon" name="upload" size="{{ 22 }}" style="color:var(--text-3);" hint-size="22px,22px"></x-import>
+        <span style="font:500 14.5px/1.4 var(--font-ui);">Drop a score PDF and learning tracks here</span>
+        <span style="font-size:13px; color:var(--text-3);">PDF for scores · MP3 or M4A for tracks · up to 50 MB each</span>
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" size="sm" variant="secondary" on-click="{{ addFiles }}" hint-size="110px,32px">Choose files</x-import>
+      </div>
+      <ul style="list-style:none; margin:0; padding:0;">
+        <sc-for list="{{ files }}" as="fl" hint-placeholder-count="0">
+          <li style="display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid var(--border-subtle);">
+            <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Icon" name="{{ fl.icon }}" size="{{ 18 }}" style="color:var(--text-3);" hint-size="18px,18px"></x-import>
+            <span style="flex:1; min-width:0; font-size:14px;">{{ fl.name }}</span>
+            <div style="width:150px;">
+              <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Select" size="sm" label="{{ fl.selLabel }}" value="{{ fl.part }}" on-change="{{ fl.setPart }}" options="{{ partOptions }}" hint-size="150px,32px"></x-import>
+            </div>
+          </li>
+        </sc-for>
+      </ul>
+    </div>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Toggle" label="Visible to choristers now" description="Turn off to prepare a piece before you hand it out." label-position="end" checked="{{ u.visible }}" on-change="{{ toggleVisible }}" hint-size="100%,44px"></x-import>
+  </div>
+</x-import>
+
+<x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Modal" open="{{ assignOpen }}" on-close="{{ close }}" size="md" title="Assign practice" close-label="Close" footer="{{ assignFooter }}" hint-size="0px,0px">
+  <div style="display:flex; flex-direction:column; gap:18px;">
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.FormRow" hint-size="100%,72px">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Select" label="Piece" value="{{ a.piece }}" on-change="{{ onA.piece }}" options="{{ pieceOptions }}" hint-size="100%,72px"></x-import>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="Bars" placeholder="mm. 1–24" value="{{ a.bars }}" on-change="{{ onA.bars }}" hint-size="100%,72px"></x-import>
+    </x-import>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="What to practise" multiline="{{ true }}" rows="{{ 3 }}" value="{{ a.text }}" on-change="{{ onA.text }}" hint-size="100%,110px"></x-import>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.FormRow" hint-size="100%,72px">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.DatePicker" label="Due" value="{{ a.due }}" on-change="{{ setDue }}" locale="{{ locale }}" hint-size="100%,72px"></x-import>
+      <div></div>
+    </x-import>
+    <fieldset style="border:0; margin:0; padding:0;">
+      <legend style="padding:0; margin-bottom:8px; font:600 14px/1.3 var(--font-ui);">Sections</legend>
+      <div style="display:flex; flex-wrap:wrap; gap:6px;">
+        <sc-for list="{{ secChips }}" as="c" hint-placeholder-count="5">
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Chip" selected="{{ c.on }}" on-click="{{ c.toggle }}" hint-size="90px,32px">{{ c.label }}</x-import>
+        </sc-for>
+      </div>
+    </fieldset>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Checkbox" label="Include in the next monthly update" description="Guardians see the assignment in their October 31 email." checked="{{ a.monthly }}" on-change="{{ toggleMonthly }}" hint-size="100%,48px"></x-import>
+  </div>
+</x-import>
+
+<x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.ToastStack" toasts="{{ toasts }}" on-dismiss="{{ dismissToast }}" hint-size="0px,0px"></x-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const PROG = { ubi: 'Winter Light', bogo: 'Winter Light', seal: 'Winter Light', swallow: 'Winter Light', winter: 'Winter Light' };
+const BLANK_U = { title: '', composer: '', voicing: 'SATB', programme: 'Winter Light', visible: true };
+class Component extends DCLogic {
+  state = this.initState(this.props);
+  initState(p) {
+    const demo = p.demo;
+    return {
+      query: '', prog: 'all', modal: demo === 'assign' ? 'assign' : demo === 'upload' ? 'upload' : null, uErr: false,
+      u: demo === 'upload' ? { ...BLANK_U, title: 'Snow Angel', composer: 'Sarah Quartel', voicing: 'SSAA' } : { ...BLANK_U },
+      files: demo === 'upload' ? [{ name: 'Snow-Angel-score.pdf', part: 'score' }, { name: 'Snow-Angel-S1.mp3', part: 'S' }, { name: 'Snow-Angel-A1.mp3', part: 'A' }] : [],
+      a: { piece: 'bogo', bars: 'mm. 25–48', text: 'Learn mm. 25–48 with the learning track. Mark every breath in pencil before Thursday.', due: '2026-10-29', parts: { S: true, A: true, T: true, B: true }, monthly: true },
+      extra: [], current: null, toasts: [],
+    };
+  }
+  componentDidMount() { this.waitDS(); }
+  waitDS() { if (window.ChoirbookDesignSystem_9d7b3b?.MusicItem) this.forceUpdate(); else setTimeout(() => this.waitDS(), 60); }
+  componentDidUpdate(prev) { if (prev.demo !== this.props.demo) this.setState(this.initState(this.props)); }
+  toast(title, body) { const id = String(Date.now()); this.setState((s) => ({ toasts: [...s.toasts, { id, tone: 'success', title, children: body, duration: 5000 }] })); }
+  renderVals() {
+    const p = this.props, s = this.state;
+    const NS = window.ChoirbookDesignSystem_9d7b3b || {};
+    const h = (C, pr, ...c) => (C ? React.createElement(C, pr, ...c) : null);
+    const d = p.data || {}, t = p.t || {};
+    const lang = p.lang ?? 'en', locale = lang === 'fr' ? 'fr-CA' : 'en-CA';
+    const mobile = p.device === 'mobile';
+    const norm = (x) => (x || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const q = norm(s.query.trim());
+    const repertoire = [...(d.repertoire || []).map((m) => ({ ...m, programme: PROG[m.id] })), ...s.extra, { id: 'river', title: 'Shenandoah', composer: 'American folk song', arranger: 'J. Erb', voicing: 'SATB', language: 'English', duration: '3:40', seconds: 220, scoreSize: '0.7 MB', programme: 'Songs of the River' }];
+    const PARTS = [['S', 'Soprano'], ['A', 'Alto'], ['T', 'Tenor'], ['B', 'Bass']];
+    const pieces = repertoire.filter((m) => (s.prog === 'all' || m.programme === s.prog) && (!q || norm(m.title + m.composer).includes(q))).map((m) => ({
+      ...m, tracks: PARTS.map(([part, label]) => ({ part, label: `${label} learning track`, duration: m.seconds })), trackCount: 4,
+      addTrack: () => this.setState({ modal: 'upload', u: { ...BLANK_U, title: m.title, composer: m.composer, voicing: m.voicing, programme: m.programme, id: m.id }, files: [] }),
+      edit: () => this.setState({ modal: 'upload', u: { ...BLANK_U, title: m.title, composer: m.composer, voicing: m.voicing, programme: m.programme, id: m.id }, files: [{ name: `${m.title.replace(/\W+/g, '-')}-score.pdf`, part: 'score' }] }),
+    }));
+    const rep = Object.fromEntries(repertoire.map((m) => [m.id, m]));
+    const cur = s.current || { piece: d.practice?.piece, bars: d.practice?.bars, text: d.practice?.text, due: d.practice?.due, for: 'Full choir', played: '47 of 64 choristers have played the track' };
+    const close = () => this.setState({ modal: null });
+    const setU = (k, v) => this.setState((x) => ({ u: { ...x.u, [k]: v }, uErr: k === 'title' ? false : x.uErr }));
+    const setA = (k, v) => this.setState((x) => ({ a: { ...x.a, [k]: v } }));
+    const fmtDue = (iso) => new Intl.DateTimeFormat(locale, { weekday: 'long', month: 'long', day: 'numeric' }).format(new Date(iso + 'T12:00'));
+    const secs = ['S', 'A', 'T', 'B'].filter((k) => s.a.parts[k]);
+    return {
+      t, lang, locale,
+      pad: mobile ? '16px 16px 32px' : p.device === 'tablet' ? '24px 24px 48px' : '28px 32px 56px',
+      sub: `${repertoire.length} pieces this season · scores and learning tracks for every section`,
+      assignment: cur, assignBadge: h(NS.Badge, { tone: 'accent', icon: 'calendar-check' }, 'Active'),
+      query: s.query, onQuery: (v) => this.setState({ query: v }),
+      prog: s.prog, setProg: (v) => this.setState({ prog: v }),
+      progOptions: [{ value: 'all', label: 'All' }, { value: 'Winter Light', label: 'Winter Light' }, { value: 'Songs of the River', label: 'May concert' }],
+      progSelect: [{ value: 'Winter Light', label: 'Winter Light (Dec 12)' }, { value: 'Songs of the River', label: 'Songs of the River (May 15)' }, { value: 'Warm-ups', label: 'Warm-ups and exercises' }],
+      pieces,
+      uploadOpen: s.modal === 'upload', uploadTitle: s.u.id ? `Edit ${s.u.title}` : 'Add piece',
+      openUpload: () => this.setState({ modal: 'upload', u: { ...BLANK_U }, files: [], uErr: false }),
+      u: s.u, uErr: s.uErr ? 'Enter the title of the piece' : undefined,
+      on: Object.fromEntries(['title', 'composer', 'voicing', 'programme'].map((k) => [k, (e) => setU(k, e.target.value)])),
+      toggleVisible: (e) => setU('visible', e.target.checked),
+      addFiles: () => this.setState((x) => ({ files: [...x.files, { name: `${(x.u.title || 'New-piece').replace(/\W+/g, '-')}-score.pdf`, part: 'score' }, { name: `${(x.u.title || 'New-piece').replace(/\W+/g, '-')}-T.mp3`, part: 'T' }] })),
+      files: s.files.map((fl, i) => ({ ...fl, icon: fl.part === 'score' ? 'file-text' : 'headphones', selLabel: `File type for ${fl.name}`, setPart: (e) => this.setState((x) => ({ files: x.files.map((y, j) => (j === i ? { ...y, part: e.target.value } : y)) })) })),
+      partOptions: [{ value: 'score', label: 'Score' }, { value: 'S', label: 'Soprano track' }, { value: 'A', label: 'Alto track' }, { value: 'T', label: 'Tenor track' }, { value: 'B', label: 'Bass track' }, { value: 'full', label: 'Full choir track' }],
+      uploadFooter: [h(NS.Button, { key: 'c', variant: 'secondary', onClick: close }, 'Cancel'), h(NS.Button, { key: 's', iconStart: 'check', onClick: () => {
+        if (!s.u.title.trim()) { this.setState({ uErr: true }); return; }
+        if (!s.u.id) this.setState((x) => ({ extra: [...x.extra, { id: 'n' + Date.now(), title: x.u.title, composer: x.u.composer || 'Composer unknown', voicing: x.u.voicing, language: 'English', duration: '3:00', seconds: 180, scoreSize: '1.0 MB', programme: x.u.programme }] }));
+        this.setState({ modal: null });
+        this.toast(s.u.id ? 'Piece updated' : 'Piece added', s.u.visible ? 'Choristers can see it in their music library now.' : 'Hidden from choristers until you turn it on.');
+      } }, s.u.id ? 'Save changes' : 'Add piece')],
+      assignOpen: s.modal === 'assign', openAssign: () => this.setState({ modal: 'assign' }),
+      a: s.a, onA: Object.fromEntries(['piece', 'bars', 'text'].map((k) => [k, (e) => setA(k, e.target.value)])),
+      setDue: (v) => setA('due', v), toggleMonthly: (e) => setA('monthly', e.target.checked),
+      pieceOptions: repertoire.map((m) => ({ value: m.id, label: m.title })),
+      secChips: [['S', 'Sopranos'], ['A', 'Altos'], ['T', 'Tenors'], ['B', 'Basses']].map(([k, label]) => ({ label, on: !!s.a.parts[k], toggle: () => setA('parts', { ...s.a.parts, [k]: !s.a.parts[k] }) })),
+      assignFooter: [h(NS.Button, { key: 'c', variant: 'secondary', onClick: close }, 'Cancel'), h(NS.Button, { key: 's', iconStart: 'send', disabled: !secs.length, onClick: () => {
+        const n = (d.choristers || []).filter((c) => secs.includes(c.section)).length;
+        this.setState({ modal: null, current: { piece: rep[s.a.piece]?.title, bars: s.a.bars, text: s.a.text, due: fmtDue(s.a.due), for: secs.length === 4 ? 'Full choir' : secs.join(', '), played: 'Sent just now' } });
+        this.toast('Practice assigned', `${n} choristers will see it on their home screen.`);
+      } }, 'Assign practice')],
+      close, toasts: s.toasts, dismissToast: (id) => this.setState((x) => ({ toasts: x.toasts.filter((tt) => tt.id !== id) })),
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="choirbook.css">
+<script src="_ds/choirbook-design-system-9d7b3b08-5cc4-4553-b44b-4db9eb92dfdb/_ds_bundle.js"></script>
+</helmet>
+<div style="width:100%; max-width:1200px; margin:0 auto; padding:{{ pad }}; display:flex; flex-direction:column; gap:20px;">
+  <header style="display:flex; flex-wrap:wrap; align-items:flex-end; gap:12px 16px;">
+    <div style="min-width:0; display:flex; flex-direction:column; gap:6px;">
+      <h1 style="font:500 var(--text-h1)/var(--lh-h1) var(--font-display); letter-spacing:var(--tracking-display); margin:0;">{{ t.users }}</h1>
+      <p style="margin:0; font-size:15px; color:var(--text-2);">{{ sub }}</p>
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:8px; margin-left:auto;">
+      <sc-if value="{{ isUsers }}" hint-placeholder-val="{{ true }}">
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" icon-start="user-plus" on-click="{{ openInvite }}" hint-size="140px,40px">Invite staff</x-import>
+      </sc-if>
+      <sc-if value="{{ isRoles }}" hint-placeholder-val="{{ false }}">
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" icon-start="plus" on-click="{{ openNewRole }}" hint-size="110px,40px">New role</x-import>
+      </sc-if>
+    </div>
+  </header>
+
+  <div style="max-width:360px;">
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.SegmentedControl" full-width="{{ true }}" label="Section" value="{{ tab }}" on-change="{{ setTab }}" options="{{ tabOptions }}" hint-size="100%,38px"></x-import>
+  </div>
+
+  <sc-if value="{{ isUsers }}" hint-placeholder-val="{{ true }}">
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.DataTable" caption="Staff users" lang="{{ lang }}" columns="{{ columns }}" rows="{{ users }}" get-row-id="{{ getRowId }}" row-label="{{ rowLabel }}" searchable="{{ true }}" search-keys="{{ searchKeys }}" search-placeholder="Search name or email" filters="{{ userFilters }}" default-sort="{{ sort }}" on-row-click="{{ openUser }}" hint-size="100%,560px"></x-import>
+    <p style="margin:0; font-size:13.5px; color:var(--text-3); text-wrap:pretty;">Guardians and choristers get accounts when they register. They only ever see their own family’s information, so they aren’t listed here.</p>
+  </sc-if>
+
+  <sc-if value="{{ isRoles }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex; flex-wrap:wrap; gap:20px; align-items:flex-start;">
+      <nav aria-label="Roles" style="flex:1 1 240px; max-width:{{ roleListMax }}; display:flex; flex-direction:column; background:var(--surface-card); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); box-shadow:var(--shadow-1); overflow:hidden;">
+        <sc-for list="{{ roles }}" as="r" hint-placeholder-count="6">
+          <button type="button" onClick="{{ r.select }}" aria-current="{{ r.current }}" style="display:flex; align-items:center; gap:10px; min-height:52px; padding:10px 16px; border:0; border-bottom:1px solid var(--border-subtle); background:{{ r.bg }}; color:var(--text-1); text-align:left; font:inherit; cursor:pointer;">
+            <span style="flex:1; min-width:0; display:flex; flex-direction:column;">
+              <span style="font:600 14.5px/1.3 var(--font-ui);">{{ r.name }}</span>
+              <span style="font-size:12.5px; color:var(--text-3);">{{ r.countText }}</span>
+            </span>
+            <sc-if value="{{ r.locked }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Icon" name="lock" size="{{ 15 }}" label="Locked" style="color:var(--text-3);" hint-size="15px,15px"></x-import></sc-if>
+            <sc-if value="{{ r.custom }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Badge" tone="neutral" hint-size="60px,22px">Custom</x-import></sc-if>
+          </button>
+        </sc-for>
+      </nav>
+
+      <section style="flex:3 1 520px; min-width:0; display:flex; flex-direction:column; background:var(--surface-card); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); box-shadow:var(--shadow-1);">
+        <div style="display:flex; flex-wrap:wrap; align-items:flex-start; gap:12px 16px; padding:18px 20px; border-bottom:1px solid var(--border-subtle);">
+          <div style="flex:1 1 260px; min-width:0; display:flex; flex-direction:column; gap:4px;">
+            <h2 style="margin:0; font:500 24px/1.2 var(--font-display);">{{ role.name }}</h2>
+            <p style="margin:0; font-size:14px; color:var(--text-2);">{{ role.description }}</p>
+          </div>
+          <div style="display:flex; flex-wrap:wrap; gap:8px;">
+            <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" size="sm" variant="ghost" icon-start="copy" on-click="{{ duplicate }}" hint-size="100px,32px">Duplicate</x-import>
+            <sc-if value="{{ role.custom }}" hint-placeholder-val="{{ false }}">
+              <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" size="sm" variant="ghost" icon-start="trash-2" on-click="{{ askDelete }}" style="color:var(--error-text);" hint-size="90px,32px">Delete</x-import>
+            </sc-if>
+          </div>
+        </div>
+        <sc-if value="{{ role.locked }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:16px 20px 0;">
+            <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.AlertCard" tone="info" icon="lock" title="Administrators always have full access" hint-size="100%,80px">So at least one person can always manage users and permissions.</x-import>
+          </div>
+        </sc-if>
+        <div role="table" aria-label="{{ matrixLabel }}" style="display:flex; flex-direction:column; padding:8px 20px 16px;">
+          <div role="row" style="display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--border-default); font:600 11.5px/1.2 var(--font-ui); letter-spacing:var(--tracking-overline); text-transform:uppercase; color:var(--text-3);">
+            <span role="columnheader" style="flex:1;">Area</span>
+            <span role="columnheader" style="flex:none; width:{{ segW }};">Access</span>
+          </div>
+          <sc-for list="{{ matrix }}" as="m" hint-placeholder-count="12">
+            <div role="row" style="display:flex; flex-wrap:wrap; align-items:center; gap:8px 12px; min-height:56px; padding:8px 0; border-bottom:1px solid var(--border-subtle);">
+              <span role="rowheader" style="flex:1 1 200px; min-width:0; display:flex; flex-direction:column;">
+                <span style="font:500 14.5px/1.3 var(--font-ui);">{{ m.label }}</span>
+                <span style="font-size:12.5px; color:var(--text-3);">{{ m.hint }}</span>
+              </span>
+              <span role="cell" style="flex:none; width:{{ segW }};">
+                <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.SegmentedControl" full-width="{{ true }}" label="{{ m.segLabel }}" value="{{ m.value }}" on-change="{{ m.set }}" options="{{ m.options }}" hint-size="100%,36px"></x-import>
+              </span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; align-items:center; gap:10px; padding:14px 20px; border-top:1px solid var(--border-subtle); background:var(--surface-muted); border-radius:0 0 var(--radius-lg) var(--radius-lg);">
+          <span style="flex:1 1 220px; font-size:13.5px; color:var(--text-2);">{{ saveHint }}</span>
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" variant="secondary" on-click="{{ reset }}" disabled="{{ clean }}" hint-size="90px,40px">Discard</x-import>
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" icon-start="check" on-click="{{ save }}" disabled="{{ clean }}" hint-size="130px,40px">Save changes</x-import>
+        </div>
+      </section>
+    </div>
+  </sc-if>
+</div>
+
+<x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Modal" open="{{ inviteOpen }}" on-close="{{ close }}" size="sm" title="Invite staff" close-label="Close" footer="{{ inviteFooter }}" hint-size="0px,0px">
+  <div style="display:flex; flex-direction:column; gap:16px;">
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="Full name" required="{{ true }}" value="{{ inv.name }}" on-change="{{ onInv.name }}" hint-size="100%,72px"></x-import>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="Email" type="email" required="{{ true }}" value="{{ inv.email }}" on-change="{{ onInv.email }}" error="{{ invErr }}" hint-size="100%,72px"></x-import>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Select" label="Role" value="{{ inv.role }}" on-change="{{ onInv.role }}" options="{{ roleOptions }}" hint="{{ invRoleHint }}" hint-size="100%,90px"></x-import>
+    <sc-if value="{{ invIsSection }}" hint-placeholder-val="{{ false }}">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Select" label="Section" value="{{ inv.scope }}" on-change="{{ onInv.scope }}" options="{{ scopeOptions }}" hint-size="100%,72px"></x-import>
+    </sc-if>
+    <p style="margin:0; font-size:13.5px; color:var(--text-3);">They’ll get an email to create a password. The invitation expires in 7 days.</p>
+  </div>
+</x-import>
+
+<x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.SideSheet" open="{{ userOpen }}" on-close="{{ close }}" header="{{ userHeader }}" footer="{{ userFooter }}" label="Staff user" close-label="Close" hint-size="0px,0px">
+  <div style="display:flex; flex-direction:column; gap:18px;">
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Select" label="Role" value="{{ sel.role }}" on-change="{{ changeRole }}" options="{{ roleOptions }}" hint-size="100%,72px"></x-import>
+    <sc-if value="{{ sel.isSection }}" hint-placeholder-val="{{ false }}">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Select" label="Section" value="{{ sel.scope }}" on-change="{{ changeScope }}" options="{{ scopeOptions }}" hint-size="100%,72px"></x-import>
+    </sc-if>
+    <div style="display:flex; flex-direction:column; gap:6px;">
+      <h3 style="margin:0; font:600 11.5px/1.2 var(--font-ui); letter-spacing:var(--tracking-overline); text-transform:uppercase; color:var(--text-3);">What {{ sel.first }} can do</h3>
+      <ul style="list-style:none; margin:0; padding:0;">
+        <sc-for list="{{ sel.access }}" as="a" hint-placeholder-count="6">
+          <li style="display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid var(--border-subtle); font-size:14px;">
+            <span style="flex:1;">{{ a.label }}</span>
+            <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Badge" tone="{{ a.tone }}" icon="{{ a.icon }}" hint-size="60px,22px">{{ a.text }}</x-import>
+          </li>
+        </sc-for>
+      </ul>
+    </div>
+  </div>
+</x-import>
+
+<x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Modal" open="{{ newRoleOpen }}" on-close="{{ close }}" size="sm" title="New role" close-label="Close" footer="{{ newRoleFooter }}" hint-size="0px,0px">
+  <div style="display:flex; flex-direction:column; gap:16px;">
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="Role name" required="{{ true }}" value="{{ nr.name }}" on-change="{{ onNr.name }}" placeholder="e.g. Tour coordinator" hint-size="100%,72px"></x-import>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="Description" optional="{{ true }}" value="{{ nr.description }}" on-change="{{ onNr.description }}" hint-size="100%,72px"></x-import>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Select" label="Start from" value="{{ nr.from }}" on-change="{{ onNr.from }}" options="{{ fromOptions }}" hint="You can change every permission next." hint-size="100%,90px"></x-import>
+  </div>
+</x-import>
+
+<x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.ConfirmDialog" open="{{ deleteOpen }}" tone="danger" title="{{ deleteTitle }}" confirm-label="Delete role" cancel-label="Keep role" on-cancel="{{ close }}" on-confirm="{{ doDelete }}" hint-size="0px,0px">{{ deleteBody }}</x-import>
+<x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.ConfirmDialog" open="{{ deactOpen }}" tone="danger" title="{{ deactTitle }}" confirm-label="Remove access" cancel-label="Cancel" on-cancel="{{ backToUser }}" on-confirm="{{ doDeact }}" hint-size="0px,0px">They’ll be signed out everywhere and can’t sign in again. Their attendance records and notes stay.</x-import>
+
+<x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.ToastStack" toasts="{{ toasts }}" on-dismiss="{{ dismissToast }}" hint-size="0px,0px"></x-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const LEVELS = { none: ['neutral', 'minus', 'No access'], view: ['info', 'eye', 'View'], edit: ['success', 'pencil', 'Edit'] };
+class Component extends DCLogic {
+  state = this.initState(this.props);
+  initState(p) {
+    const d = p.data || {}, demo = p.demo || '';
+    const roles = (d.roles || []).map((r) => ({ ...r, perms: { ...r.perms } }));
+    return { tab: demo === 'roles' ? 'roles' : 'users', roles, saved: JSON.stringify(roles), roleId: demo === 'roles' ? 'section' : 'admin', users: d.staff || [], modal: demo === 'invite' ? 'invite' : null, userId: null,
+      inv: demo === 'invite' ? { name: 'Grace Achebe', email: 'grace.achebe@example.com', role: 'chaperone', scope: 'Sopranos' } : { name: '', email: '', role: 'chaperone', scope: 'Sopranos' }, invErr: false,
+      nr: { name: '', description: '', from: 'chaperone' }, toasts: [] };
+  }
+  componentDidMount() { this.waitDS(); }
+  waitDS() { if (window.ChoirbookDesignSystem_9d7b3b?.DataTable) this.forceUpdate(); else setTimeout(() => this.waitDS(), 60); }
+  componentDidUpdate(prev) { if (prev.demo !== this.props.demo || prev.data !== this.props.data) this.setState(this.initState(this.props)); }
+  toast(title, body) { const id = String(Date.now()); this.setState((s) => ({ toasts: [...s.toasts, { id, tone: 'success', title, children: body, duration: 5000 }] })); }
+  renderVals() {
+    const p = this.props, s = this.state;
+    const NS = window.ChoirbookDesignSystem_9d7b3b || {};
+    const h = (C, pr, ...c) => (C ? React.createElement(C, pr, ...c) : null);
+    const d = p.data || {}, t = p.t || {};
+    const lang = p.lang ?? 'en';
+    const mobile = p.device === 'mobile';
+    const areas = d.areas || [];
+    const roleById = Object.fromEntries(s.roles.map((r) => [r.id, r]));
+    const count = (id) => s.users.filter((u) => u.role === id && u.status !== 'removed').length;
+    const role = roleById[s.roleId] || s.roles[0] || { perms: {} };
+    const close = () => this.setState({ modal: null });
+    const users = s.users.filter((u) => u.status !== 'removed');
+    const sel0 = s.users.find((u) => u.id === s.userId) || {};
+    const setInv = (k, v) => this.setState((x) => ({ inv: { ...x.inv, [k]: v }, invErr: k === 'email' ? false : x.invErr }));
+    const setNr = (k, v) => this.setState((x) => ({ nr: { ...x.nr, [k]: v } }));
+    const patchUser = (fn) => this.setState((x) => ({ users: x.users.map((u) => (u.id === sel0.id ? fn(u) : u)) }));
+    const roleLabel = (u) => roleById[u.role]?.name + (u.scope ? ` · ${u.scope}` : '');
+    const dirty = JSON.stringify(s.roles) !== s.saved;
+    return {
+      t, lang,
+      pad: mobile ? '16px 16px 32px' : p.device === 'tablet' ? '24px 24px 48px' : '28px 32px 56px',
+      sub: s.tab === 'users' ? `${users.length} staff · ${users.filter((u) => u.status === 'invited').length} invitation pending` : 'Each role sets what its staff can see and change. Changes apply the next time they load a page.',
+      tab: s.tab, setTab: (v) => this.setState({ tab: v }), isUsers: s.tab === 'users', isRoles: s.tab === 'roles',
+      tabOptions: [{ value: 'users', label: 'Staff', icon: 'users' }, { value: 'roles', label: 'Roles', icon: 'shield-check' }],
+      columns: [
+        { key: 'name', header: 'Name', sortable: true, render: (u) => h('span', { style: { display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 } }, h(NS.Avatar, { name: u.name, size: 30 }), h('span', { style: { minWidth: 0 } }, h('span', { style: { display: 'block', fontWeight: 600 } }, u.name), h('span', { style: { display: 'block', fontSize: 12.5, color: 'var(--text-3)' } }, u.email))) },
+        { key: 'role', header: 'Role', sortable: true, sortValue: (u) => roleById[u.role]?.name, render: (u) => h(NS.Badge, { tone: u.role === 'admin' ? 'accent' : 'neutral', icon: u.role === 'admin' ? 'shield-check' : undefined }, roleLabel(u)) },
+        { key: 'status', header: 'Status', sortable: true, render: (u) => h(NS.Badge, { tone: u.status === 'active' ? 'success' : 'warning', icon: u.status === 'active' ? 'check' : 'mail' }, u.status === 'active' ? 'Active' : 'Invited') },
+        { key: 'last', header: 'Last active' },
+      ],
+      users, getRowId: (u) => u.id, rowLabel: (u) => u.name, searchKeys: ['name', 'email'], sort: { key: 'name', dir: 'asc' },
+      userFilters: [{ id: 'role', label: 'Role', options: s.roles.map((r) => ({ value: r.id, label: r.name, count: count(r.id) })), match: (u, v) => u.role === v }],
+      openUser: (u) => this.setState({ modal: 'user', userId: u.id }),
+      userOpen: s.modal === 'user',
+      userHeader: h('div', { style: { display: 'flex', alignItems: 'center', gap: 14 } }, h(NS.Avatar, { name: sel0.name || '', size: 52 }), h('div', null, h('h2', { style: { margin: 0, font: '500 22px/1.2 var(--font-display)' } }, sel0.name), h('div', { style: { fontSize: 13.5, color: 'var(--text-3)', marginTop: 4 } }, `${sel0.email} · ${sel0.last}`))),
+      userFooter: [sel0.status === 'invited' ? h(NS.Button, { key: 'r', variant: 'secondary', iconStart: 'mail', onClick: () => this.toast('Invitation resent', sel0.email) }, 'Resend invitation') : null, sel0.role !== 'admin' || users.filter((u) => u.role === 'admin').length > 1 ? h(NS.Button, { key: 'x', variant: 'ghost', iconStart: 'trash-2', style: { color: 'var(--error-text)' }, onClick: () => this.setState({ modal: 'deact' }) }, 'Remove access') : null],
+      sel: { ...sel0, first: (sel0.name || '').split(' ')[0], isSection: sel0.role === 'section', access: areas.map((a) => { const lv = roleById[sel0.role]?.perms[a.id] || 'none'; const [tone, icon, text] = LEVELS[lv]; return { label: a.label, tone, icon, text }; }) },
+      changeRole: (e) => { const v = e.target.value; patchUser((u) => ({ ...u, role: v, scope: v === 'section' ? u.scope || 'Sopranos' : undefined })); this.toast('Role changed', `${sel0.name} is now ${roleById[v]?.name}.`); },
+      changeScope: (e) => { const v = e.target.value; patchUser((u) => ({ ...u, scope: v })); },
+      scopeOptions: ['Sopranos', 'Altos', 'Tenors', 'Basses'],
+      deactOpen: s.modal === 'deact', deactTitle: `Remove ${sel0.name}’s access?`, backToUser: () => this.setState({ modal: 'user' }),
+      doDeact: () => { patchUser((u) => ({ ...u, status: 'removed' })); this.setState({ modal: null }); this.toast('Access removed', sel0.name); },
+      inviteOpen: s.modal === 'invite', openInvite: () => this.setState({ modal: 'invite', inv: { name: '', email: '', role: 'chaperone', scope: 'Sopranos' } }),
+      inv: s.inv, onInv: Object.fromEntries(['name', 'email', 'role', 'scope'].map((k) => [k, (e) => setInv(k, e.target.value)])),
+      invErr: s.invErr ? 'Enter an email like name@example.com' : undefined,
+      invIsSection: s.inv.role === 'section', invRoleHint: roleById[s.inv.role]?.description,
+      roleOptions: s.roles.map((r) => ({ value: r.id, label: r.name })),
+      inviteFooter: [h(NS.Button, { key: 'c', variant: 'secondary', onClick: close }, 'Cancel'), h(NS.Button, { key: 's', iconStart: 'send', disabled: !s.inv.name.trim(), onClick: () => {
+        if (!/^\S+@\S+\.\S+$/.test(s.inv.email)) { this.setState({ invErr: true }); return; }
+        this.setState((x) => ({ modal: null, users: [...x.users, { id: 'u' + Date.now(), name: x.inv.name.trim(), email: x.inv.email, role: x.inv.role, scope: x.inv.role === 'section' ? x.inv.scope : undefined, status: 'invited', last: 'Invited just now' }] }));
+        this.toast('Invitation sent', `${s.inv.name} will get an email at ${s.inv.email}.`);
+      } }, 'Send invitation')],
+      roleListMax: mobile ? '100%' : '300px', segW: mobile ? '100%' : '260px',
+      roles: s.roles.map((r) => ({ ...r, countText: `${count(r.id)} ${count(r.id) === 1 ? 'person' : 'people'}`, current: r.id === s.roleId ? 'true' : undefined, bg: r.id === s.roleId ? 'var(--accent-subtle)' : 'transparent', select: () => this.setState({ roleId: r.id }) })),
+      role, matrixLabel: `Permissions for ${role.name}`,
+      matrix: areas.map((a) => ({ ...a, value: role.perms[a.id] || 'none', segLabel: `${a.label} access`,
+        options: [{ value: 'none', label: 'None', disabled: role.locked }, { value: 'view', label: 'View', disabled: role.locked }, { value: 'edit', label: 'Edit', disabled: role.locked }],
+        set: (v) => { if (role.locked) return; this.setState((x) => ({ roles: x.roles.map((r) => (r.id === role.id ? { ...r, perms: { ...r.perms, [a.id]: v } } : r)) })); } })),
+      clean: !dirty, saveHint: dirty ? `Unsaved changes. ${count(role.id)} ${count(role.id) === 1 ? 'person has' : 'people have'} this role.` : `${count(role.id)} ${count(role.id) === 1 ? 'person has' : 'people have'} this role.`,
+      reset: () => this.setState((x) => ({ roles: JSON.parse(x.saved) })),
+      save: () => { this.setState((x) => ({ saved: JSON.stringify(x.roles) })); this.toast('Permissions saved', `${role.name} · ${count(role.id)} people affected.`); },
+      duplicate: () => { const id = 'r' + Date.now(); this.setState((x) => ({ roles: [...x.roles, { ...role, id, name: `${role.name} (copy)`, locked: false, custom: true, perms: { ...role.perms } }], roleId: id })); },
+      openNewRole: () => this.setState({ modal: 'newrole', nr: { name: '', description: '', from: 'chaperone' } }), newRoleOpen: s.modal === 'newrole',
+      nr: s.nr, onNr: Object.fromEntries(['name', 'description', 'from'].map((k) => [k, (e) => setNr(k, e.target.value)])),
+      fromOptions: [{ value: 'blank', label: 'No access to anything' }, ...s.roles.map((r) => ({ value: r.id, label: `Copy of ${r.name}` }))],
+      newRoleFooter: [h(NS.Button, { key: 'c', variant: 'secondary', onClick: close }, 'Cancel'), h(NS.Button, { key: 's', iconStart: 'check', disabled: !s.nr.name.trim(), onClick: () => {
+        const id = 'r' + Date.now();
+        const perms = s.nr.from === 'blank' ? Object.fromEntries(areas.map((a) => [a.id, 'none'])) : { ...roleById[s.nr.from].perms };
+        this.setState((x) => ({ modal: null, roles: [...x.roles, { id, name: x.nr.name.trim(), description: x.nr.description || 'Custom role', custom: true, perms }], roleId: id, tab: 'roles' }));
+      } }, 'Create role')],
+      askDelete: () => this.setState({ modal: 'delete' }), deleteOpen: s.modal === 'delete', deleteTitle: `Delete ${role.name}?`,
+      deleteBody: count(role.id) ? `${count(role.id)} ${count(role.id) === 1 ? 'person has' : 'people have'} this role. They’ll lose access until you give them another role.` : 'No one has this role.',
+      doDelete: () => { this.setState((x) => ({ modal: null, roles: x.roles.filter((r) => r.id !== role.id), saved: JSON.stringify(x.roles.filter((r) => r.id !== role.id)), roleId: 'admin' })); this.toast('Role deleted', role.name); },
+      close, toasts: s.toasts, dismissToast: (id) => this.setState((x) => ({ toasts: x.toasts.filter((tt) => tt.id !== id) })),
+    };
+  }
+}
+</script>
+</body>
+</html>

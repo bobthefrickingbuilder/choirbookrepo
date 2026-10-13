@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="choirbook.css">
+<script src="_ds/choirbook-design-system-9d7b3b08-5cc4-4553-b44b-4db9eb92dfdb/_ds_bundle.js"></script>
+</helmet>
+<div style="width:100%; max-width:760px; margin:0 auto; padding:{{ pad }}; display:flex; flex-direction:column; gap:20px;">
+  <header style="display:flex; align-items:center; gap:16px;">
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Avatar" name="{{ c.name }}" size="{{ 64 }}" hint-size="64px,64px"></x-import>
+    <div style="min-width:0; display:flex; flex-direction:column; gap:6px;">
+      <h1 style="font:500 {{ h1 }}/1.15 var(--font-display); letter-spacing:var(--tracking-display); margin:0;">{{ c.name }}</h1>
+      <div style="display:flex; flex-wrap:wrap; align-items:center; gap:6px 10px; font-size:14px; color:var(--text-2);">
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.VoicePartBadge" part="A2" variant="pill" lang="{{ lang }}" hint-size="90px,24px"></x-import>
+        <span>3rd year · {{ c.pronouns }}</span>
+      </div>
+    </div>
+  </header>
+
+  <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Card" title="My attendance this term" hint-size="100%,170px">
+    <div style="display:flex; flex-direction:column; gap:14px;">
+      <div style="display:flex; align-items:flex-end; gap:16px; flex-wrap:wrap;">
+        <span style="font:500 40px/1 var(--font-display); font-variant-numeric:var(--numeric-tabular);">{{ c.rate }}<small style="font:500 16px var(--font-ui); color:var(--text-3);">%</small></span>
+        <span style="font-size:14px; color:var(--text-2); padding-bottom:4px;">{{ absText }}</span>
+      </div>
+      <div role="list" aria-label="Recent rehearsals" style="display:grid; grid-template-columns:repeat(5, minmax(0,1fr)); gap:6px;">
+        <sc-for list="{{ strip }}" as="s" hint-placeholder-count="5">
+          <div role="listitem" style="display:flex; flex-direction:column; align-items:center; gap:6px; padding:8px 0; border-radius:var(--radius-md); background:{{ s.bg }}; color:{{ s.fg }};">
+            <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Icon" name="{{ s.icon }}" size="{{ 16 }}" stroke-width="{{ 2.5 }}" label="{{ s.label }}" hint-size="16px,16px"></x-import>
+            <span style="font:600 12px/1.2 var(--font-ui);">{{ s.date }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </x-import>
+
+  <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Card" title="My details" action="{{ editBtn }}" hint-size="100%,220px">
+    <sc-if value="{{ notEditing }}" hint-placeholder-val="{{ true }}">
+      <dl style="margin:0; display:grid; grid-template-columns:minmax(6rem,auto) minmax(0,1fr); gap:10px 16px; font-size:14.5px;">
+        <dt style="color:var(--text-3);">Email</dt><dd style="margin:0; overflow-wrap:anywhere;">{{ v.email }}</dd>
+        <dt style="color:var(--text-3);">Phone</dt><dd style="margin:0; font-variant-numeric:var(--numeric-tabular);">{{ v.phone }}</dd>
+        <dt style="color:var(--text-3);">Pronouns</dt><dd style="margin:0;">{{ v.pronouns }}</dd>
+        <dt style="color:var(--text-3);">School</dt><dd style="margin:0;">{{ v.school }}</dd>
+      </dl>
+    </sc-if>
+    <sc-if value="{{ editing }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="Phone" type="tel" value="{{ v.phone }}" on-change="{{ on.phone }}" size="lg" hint-size="100%,72px"></x-import>
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="Pronouns" value="{{ v.pronouns }}" on-change="{{ on.pronouns }}" size="lg" hint-size="100%,72px"></x-import>
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="School" value="{{ v.school }}" on-change="{{ on.school }}" size="lg" hint-size="100%,72px"></x-import>
+        <p style="margin:0; font-size:13px; color:var(--text-3);">To change your email, ask the choir office. It’s the address you sign in with.</p>
+        <div style="display:flex; flex-wrap:wrap; gap:8px;">
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" icon-start="check" on-click="{{ saveDetails }}" hint-size="90px,40px">Save</x-import>
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" variant="ghost" on-click="{{ cancelEdit }}" hint-size="80px,40px">Cancel</x-import>
+        </div>
+      </div>
+    </sc-if>
+  </x-import>
+
+  <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Card" title="Guardians" padded="{{ false }}" hint-size="100%,140px">
+    <ul style="list-style:none; margin:0; padding:0 20px 8px;">
+      <sc-for list="{{ c.guardians }}" as="g" hint-placeholder-count="2">
+        <li style="display:flex; align-items:center; gap:10px; min-height:52px; border-bottom:1px solid var(--border-subtle);">
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Avatar" name="{{ g.name }}" size="{{ 32 }}" hint-size="32px,32px"></x-import>
+          <span style="flex:1; min-width:0;"><span style="display:block; font:500 14.5px/1.3 var(--font-ui);">{{ g.name }}</span><span style="font-size:13px; color:var(--text-3);">{{ g.relation }}</span></span>
+        </li>
+      </sc-for>
+    </ul>
+  </x-import>
+
+  <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Card" title="Notifications" hint-size="100%,220px">
+    <div style="display:flex; flex-direction:column; gap:14px;">
+      <sc-for list="{{ notifs }}" as="n" hint-placeholder-count="4">
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Toggle" label="{{ n.label }}" description="{{ n.hint }}" label-position="end" checked="{{ n.on }}" on-change="{{ n.toggle }}" hint-size="100%,44px"></x-import>
+      </sc-for>
+    </div>
+  </x-import>
+
+  <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Card" title="Account" hint-size="100%,200px">
+    <div style="display:flex; flex-direction:column; gap:16px;">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.SegmentedControl" full-width="{{ true }}" label="Language" value="{{ lang }}" on-change="{{ setLang }}" options="{{ langOptions }}" hint-size="100%,38px"></x-import>
+      <div style="display:flex; flex-wrap:wrap; gap:8px;">
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" variant="secondary" icon-start="lock" on-click="{{ openPw }}" hint-size="160px,40px">Change password</x-import>
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" variant="ghost" icon-start="log-out" on-click="{{ signOut }}" hint-size="100px,40px">Sign out</x-import>
+      </div>
+    </div>
+  </x-import>
+</div>
+
+<x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Modal" open="{{ pwOpen }}" on-close="{{ closePw }}" size="sm" title="Change password" close-label="Close" footer="{{ pwFooter }}" hint-size="0px,0px">
+  <div style="display:flex; flex-direction:column; gap:16px;">
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="Current password" type="password" auto-complete="current-password" value="{{ pw.cur }}" on-change="{{ onPw.cur }}" size="lg" hint-size="100%,72px"></x-import>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="New password" type="password" auto-complete="new-password" value="{{ pw.next }}" on-change="{{ onPw.next }}" hint="At least 10 characters." error="{{ pwErr }}" size="lg" hint-size="100%,90px"></x-import>
+  </div>
+</x-import>
+<x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.ToastStack" toasts="{{ toasts }}" on-dismiss="{{ dismissToast }}" hint-size="0px,0px"></x-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const STRIP = { present: ['var(--att-present-subtle)', 'var(--att-present-text)', 'check', 'Present'], late: ['var(--att-late-subtle)', 'var(--att-late-text)', 'clock', 'Late'], absent: ['var(--att-absent-subtle)', 'var(--att-absent-text)', 'x', 'Absent'], excused: ['var(--att-excused-subtle)', 'var(--att-excused-text)', 'circle-minus', 'Excused'] };
+class Component extends DCLogic {
+  state = { editing: false, v: null, draft: null, notif: { reh: true, music: true, ann: true, sms: false }, pwOpen: false, pw: { cur: '', next: '' }, pwErr: false, toasts: [] };
+  componentDidMount() { this.waitDS(); }
+  waitDS() { if (window.ChoirbookDesignSystem_9d7b3b?.Toggle) this.forceUpdate(); else setTimeout(() => this.waitDS(), 60); }
+  toast(title, body) { const id = String(Date.now()); this.setState((s) => ({ toasts: [...s.toasts, { id, tone: 'success', title, children: body, duration: 5000 }] })); }
+  renderVals() {
+    const p = this.props, s = this.state;
+    const NS = window.ChoirbookDesignSystem_9d7b3b || {};
+    const h = (C, pr, ...c) => (C ? React.createElement(C, pr, ...c) : null);
+    const d = p.data || {};
+    const lang = p.lang ?? 'en', locale = lang === 'fr' ? 'fr-CA' : 'en-CA';
+    const mobile = p.device === 'mobile';
+    const c = (d.choristers || []).find((x) => x.id === 'ella.martin') || { guardians: [], recent: [] };
+    const v = s.editing ? s.draft : s.v || { email: c.email, phone: c.phone, pronouns: c.pronouns, school: c.school };
+    const N = [['reh', 'Rehearsal reminders', 'The morning of each rehearsal'], ['music', 'New music and practice', 'When a piece or assignment is added'], ['ann', 'Announcements by email', 'They always show in the app too'], ['sms', 'Text messages', 'Only for same-day changes and cancellations']];
+    return {
+      lang, c: { ...c, rate: c.rate ?? '—' },
+      pad: mobile ? '16px 16px 32px' : '28px 32px 56px', h1: mobile ? '26px' : 'var(--text-h1)',
+      absText: `${c.absences} of ${d.stats?.threshold ?? 3} allowed absences used`,
+      strip: c.recent.map((st, i) => ({ bg: STRIP[st][0], fg: STRIP[st][1], icon: STRIP[st][2], label: STRIP[st][3], date: new Intl.DateTimeFormat(locale, { month: 'short', day: 'numeric' }).format(new Date(d.rehearsalDates[i] + 'T12:00')) })),
+      v, editing: s.editing, notEditing: !s.editing,
+      editBtn: s.editing ? null : h(NS.Button, { size: 'sm', variant: 'ghost', iconStart: 'pencil', onClick: () => this.setState({ editing: true, draft: { ...v } }) }, 'Edit'),
+      on: Object.fromEntries(['phone', 'pronouns', 'school'].map((k) => [k, (e) => { const val = e.target.value; this.setState((x) => ({ draft: { ...x.draft, [k]: val } })); }])),
+      saveDetails: () => { this.setState((x) => ({ editing: false, v: x.draft })); this.toast('Details saved', 'The choir office can see the change.'); },
+      cancelEdit: () => this.setState({ editing: false }),
+      notifs: N.map(([k, label, hint]) => ({ label, hint, on: s.notif[k], toggle: (e) => { const val = e.target.checked; this.setState((x) => ({ notif: { ...x.notif, [k]: val } })); } })),
+      setLang: (l) => p.setLang?.(l), langOptions: [{ value: 'en', label: 'English' }, { value: 'fr', label: 'Français' }],
+      signOut: () => p.go?.('login'),
+      pwOpen: s.pwOpen, openPw: () => this.setState({ pwOpen: true, pw: { cur: '', next: '' }, pwErr: false }), closePw: () => this.setState({ pwOpen: false }),
+      pw: s.pw, onPw: Object.fromEntries(['cur', 'next'].map((k) => [k, (e) => { const val = e.target.value; this.setState((x) => ({ pw: { ...x.pw, [k]: val }, pwErr: false })); }])),
+      pwErr: s.pwErr ? 'Use at least 10 characters' : undefined,
+      pwFooter: [h(NS.Button, { key: 'c', variant: 'secondary', onClick: () => this.setState({ pwOpen: false }) }, 'Cancel'), h(NS.Button, { key: 's', iconStart: 'check', disabled: !s.pw.cur, onClick: () => { if (s.pw.next.length < 10) { this.setState({ pwErr: true }); return; } this.setState({ pwOpen: false }); this.toast('Password changed', 'Use it next time you sign in.'); } }, 'Change password')],
+      toasts: s.toasts, dismissToast: (id) => this.setState((x) => ({ toasts: x.toasts.filter((tt) => tt.id !== id) })),
+    };
+  }
+}
+</script>
+</body>
+</html>

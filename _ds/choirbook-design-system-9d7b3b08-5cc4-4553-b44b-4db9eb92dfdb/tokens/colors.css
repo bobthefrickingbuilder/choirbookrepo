@@ -1,0 +1,75 @@
+/* Choirbook colour tokens. Primitives first, then semantic aliases. Light is :root; dark is [data-mode="dark"]. Components consume semantic aliases only. */
+:root{
+/* Paper — warm neutral surfaces */
+--paper-0:#FFFDF9;--paper-50:#FAF7F1;--paper-100:#F4EFE5;--paper-150:#EFE9DD;--paper-200:#EAE3D5;--paper-300:#DBD2C1;--paper-400:#C2B7A3;
+/* Ink — warm near-black text scale */
+--ink-900:#1C1915;--ink-800:#2E2A24;--ink-700:#4A443D;--ink-600:#635C53;--ink-500:#7A7268;--ink-450:#8C8478;--ink-400:#9C9488;--ink-300:#B8B0A3;
+/* Rubric — the single Choirbook accent (cinnabar red) */
+--rubric-50:#FBF0EC;--rubric-100:#F7DDD5;--rubric-200:#EEB9AA;--rubric-300:#E28C76;--rubric-400:#D2624A;--rubric-500:#B9391F;--rubric-600:#A0301A;--rubric-700:#862711;--rubric-800:#651D0D;
+/* State primitives */
+--green-50:#EEF6F0;--green-100:#D6EADC;--green-500:#3C8C55;--green-600:#2F7A47;--green-700:#245F37;
+--amber-50:#FCF5E3;--amber-100:#F5E3B5;--amber-500:#D79A1E;--amber-600:#B07A0C;--amber-700:#8A5A00;
+--crimson-50:#FBEDF0;--crimson-100:#F3D3DA;--crimson-500:#C42B4B;--crimson-600:#B3203F;--crimson-700:#8F1830;
+--blue-50:#EDF3F9;--blue-100:#D5E3F1;--blue-500:#3E74A6;--blue-600:#2D5F8A;--blue-700:#214A6D;
+--slate-50:#F0F2F5;--slate-100:#DDE3EA;--slate-500:#66768C;--slate-600:#4A5A70;--slate-700:#3A4759;
+/* Voice parts — Okabe–Ito derived, colourblind-safe. Always paired with S/A/T/B letter. */
+--voice-s:#E69F00;--voice-s-on:#1C1915;--voice-s-text:#7A4E00;--voice-s-subtle:#FCEFD2;
+--voice-a:#CC79A7;--voice-a-on:#1C1915;--voice-a-text:#8A3A6A;--voice-a-subtle:#F7E4EF;
+--voice-t:#009E73;--voice-t-on:#1C1915;--voice-t-text:#00654A;--voice-t-subtle:#D8F0E8;
+--voice-b:#0072B2;--voice-b-on:#FFFFFF;--voice-b-text:#005585;--voice-b-subtle:#DCEBF5;
+
+/* ---- Semantic aliases (light) ---- */
+--bg-app:var(--paper-50);--bg-sunken:var(--paper-100);
+--surface-card:var(--paper-0);--surface-raised:#FFFFFF;--surface-overlay:#FFFFFF;
+--surface-muted:var(--paper-100);--surface-muted-strong:var(--paper-200);
+--surface-hover:rgb(46 36 20 / .055);--surface-pressed:rgb(46 36 20 / .1);
+--surface-disabled:var(--paper-150);--surface-inverse:var(--ink-900);
+--scrim:rgb(28 25 21 / .38);
+--border-subtle:var(--paper-200);--border-default:var(--paper-300);--border-strong:var(--paper-400);--border-control:var(--ink-450);
+--text-1:var(--ink-900);--text-2:var(--ink-700);--text-3:var(--ink-600);--text-placeholder:var(--ink-500);--text-disabled:var(--ink-400);--text-inverse:var(--paper-50);
+--text-body:var(--text-1);--text-secondary:var(--text-2);--text-muted:var(--text-3);
+/* Accent — re-pointed by choir theme layers (tokens/themes.css) */
+--rubric:var(--rubric-500);
+--choir-brand:var(--rubric-500);--choir-on-brand:#FFFFFF;
+--accent:var(--rubric-500);--accent-hover:var(--rubric-600);--accent-pressed:var(--rubric-700);
+--accent-text:var(--rubric-600);--accent-subtle:var(--rubric-50);--accent-subtle-strong:var(--rubric-100);
+--on-accent:#FFFFFF;--focus-ring:var(--rubric-500);
+--link:var(--accent-text);--link-hover:var(--accent-pressed);
+/* States */
+--success-solid:var(--green-600);--success-on:#FFFFFF;--success-text:var(--green-700);--success-subtle:var(--green-50);--success-border:var(--green-100);
+--warning-solid:var(--amber-500);--warning-on:var(--ink-900);--warning-text:var(--amber-700);--warning-subtle:var(--amber-50);--warning-border:var(--amber-100);
+--error-solid:var(--crimson-600);--error-on:#FFFFFF;--error-text:var(--crimson-700);--error-subtle:var(--crimson-50);--error-border:var(--crimson-100);
+--info-solid:var(--blue-600);--info-on:#FFFFFF;--info-text:var(--blue-700);--info-subtle:var(--blue-50);--info-border:var(--blue-100);
+--neutral-solid:var(--slate-600);--neutral-on:#FFFFFF;--neutral-text:var(--slate-700);--neutral-subtle:var(--slate-50);--neutral-border:var(--slate-100);
+/* Attendance — colour + icon + label, never colour alone */
+--att-present-solid:var(--success-solid);--att-present-on:var(--success-on);--att-present-text:var(--success-text);--att-present-subtle:var(--success-subtle);
+--att-late-solid:var(--warning-solid);--att-late-on:var(--warning-on);--att-late-text:var(--warning-text);--att-late-subtle:var(--warning-subtle);
+--att-absent-solid:var(--error-solid);--att-absent-on:var(--error-on);--att-absent-text:var(--error-text);--att-absent-subtle:var(--error-subtle);
+--att-excused-solid:var(--neutral-solid);--att-excused-on:var(--neutral-on);--att-excused-text:var(--neutral-text);--att-excused-subtle:var(--neutral-subtle);
+color-scheme:light;
+}
+
+[data-mode="dark"]{
+--bg-app:#15130F;--bg-sunken:#100E0B;
+--surface-card:#1D1A16;--surface-raised:#24211C;--surface-overlay:#2A2620;
+--surface-muted:#262219;--surface-muted-strong:#302B23;
+--surface-hover:rgb(243 238 228 / .06);--surface-pressed:rgb(243 238 228 / .11);
+--surface-disabled:#25221D;--surface-inverse:#F3EEE4;
+--scrim:rgb(0 0 0 / .55);
+--border-subtle:#2E2A24;--border-default:#3A352D;--border-strong:#4D463C;--border-control:#7A7266;
+--text-1:#F3EEE4;--text-2:#CFC7B8;--text-3:#A79F91;--text-placeholder:#8F877A;--text-disabled:#6A6358;--text-inverse:#1C1915;
+--rubric:#E8735C;--choir-brand:#E8735C;--choir-on-brand:#16140F;
+--accent:#E8735C;--accent-hover:#EE8A76;--accent-pressed:#DB5F47;
+--accent-text:#EE8A76;--accent-subtle:#35201A;--accent-subtle-strong:#4A2A21;
+--on-accent:#16140F;--focus-ring:#EE8A76;
+--success-solid:#5DB277;--success-on:#10180F;--success-text:#8FD0A2;--success-subtle:#16291C;--success-border:#24412D;
+--warning-solid:#E0AB3C;--warning-on:#1C1407;--warning-text:#F0C870;--warning-subtle:#2C2210;--warning-border:#4A3A17;
+--error-solid:#E5677F;--error-on:#1D0A0F;--error-text:#F29AAB;--error-subtle:#33161D;--error-border:#55242F;
+--info-solid:#6FA3D6;--info-on:#0B1520;--info-text:#9EC4EA;--info-subtle:#15243A;--info-border:#223B5A;
+--neutral-solid:#8797AC;--neutral-on:#10141A;--neutral-text:#B3BFCF;--neutral-subtle:#212833;--neutral-border:#344052;
+--voice-s-text:#F3C15C;--voice-s-subtle:#33270F;
+--voice-a-text:#E7A9CB;--voice-a-subtle:#33202B;
+--voice-t-text:#5FD1AE;--voice-t-subtle:#0F2C24;
+--voice-b:#2B8FD0;--voice-b-text:#86C1EA;--voice-b-subtle:#122838;
+color-scheme:dark;
+}

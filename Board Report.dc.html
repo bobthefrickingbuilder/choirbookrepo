@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="choirbook.css">
+<script src="_ds/choirbook-design-system-9d7b3b08-5cc4-4553-b44b-4db9eb92dfdb/_ds_bundle.js"></script>
+</helmet>
+<div style="display:flex; flex-direction:column; gap:20px;">
+  <div style="display:flex; flex-wrap:wrap; align-items:center; gap:12px 16px; padding:14px 18px; background:var(--surface-card); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); box-shadow:var(--shadow-1);">
+    <div style="flex:1 1 260px; min-width:0; display:flex; flex-direction:column; gap:2px;">
+      <span style="display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+        <span style="font:500 19px/1.25 var(--font-display);">{{ periodLabel }} board report</span>
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Badge" tone="{{ statusTone }}" icon="{{ statusIcon }}" hint-size="90px,22px">{{ statusLabel }}</x-import>
+      </span>
+      <span style="font-size:13.5px; color:var(--text-3);">Figures update live until you send or download it.</span>
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:8px;">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" variant="ghost" icon-start="check" on-click="{{ saveDraft }}" hint-size="110px,40px">Save draft</x-import>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" variant="secondary" icon-start="download" on-click="{{ download }}" hint-size="140px,40px">Download PDF</x-import>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" icon-start="send" on-click="{{ openEmail }}" hint-size="150px,40px">Send to board</x-import>
+    </div>
+  </div>
+
+  <div style="display:flex; flex-wrap:wrap; gap:20px; align-items:flex-start;">
+    <div style="flex:1 1 320px; max-width:{{ sideMax }}; min-width:0; display:flex; flex-direction:column; gap:20px;">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Card" title="Report settings" hint-size="100%,260px">
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Select" label="Period" value="{{ period }}" on-change="{{ setPeriod }}" options="{{ periodOptions }}" hint-size="100%,72px"></x-import>
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.DatePicker" label="Board meeting" value="{{ meeting }}" on-change="{{ setMeeting }}" locale="{{ locale }}" hint-size="100%,72px"></x-import>
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Toggle" label="Compare with the previous period" label-position="end" checked="{{ compare }}" on-change="{{ toggleCompare }}" hint-size="100%,32px"></x-import>
+        </div>
+      </x-import>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Card" title="Sections" padded="{{ false }}" hint-size="100%,420px">
+        <ul style="list-style:none; margin:0; padding:0;">
+          <sc-for list="{{ toggles }}" as="tg" hint-placeholder-count="8">
+            <li style="padding:10px 20px; border-top:1px solid var(--border-subtle);">
+              <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Toggle" label="{{ tg.label }}" description="{{ tg.hint }}" label-position="end" checked="{{ tg.on }}" on-change="{{ tg.toggle }}" hint-size="100%,44px"></x-import>
+            </li>
+          </sc-for>
+        </ul>
+      </x-import>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Card" title="Your notes" hint-size="100%,340px">
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="Highlights" multiline="{{ true }}" rows="{{ 4 }}" value="{{ highlights }}" on-change="{{ onHighlights }}" hint="One per line. Shown as a list." hint-size="100%,150px"></x-import>
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="For the board to decide" optional="{{ true }}" multiline="{{ true }}" rows="{{ 3 }}" value="{{ decisions }}" on-change="{{ onDecisions }}" hint="One per line." hint-size="100%,130px"></x-import>
+        </div>
+      </x-import>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Card" title="Past reports" padded="{{ false }}" hint-size="100%,140px">
+        <ul style="list-style:none; margin:0; padding:0;">
+          <sc-for list="{{ past }}" as="pr" hint-placeholder-count="2">
+            <li style="display:flex; align-items:center; gap:10px; padding:10px 12px 10px 20px; border-top:1px solid var(--border-subtle); font-size:14px;">
+              <span style="flex:1; min-width:0;"><span style="display:block; font-weight:600;">{{ pr.title }}</span><span style="font-size:12.5px; color:var(--text-3);">{{ pr.meta }}</span></span>
+              <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.IconButton" icon="download" label="{{ pr.dl }}" size="sm" variant="ghost" on-click="{{ pr.open }}" hint-size="32px,32px"></x-import>
+            </li>
+          </sc-for>
+        </ul>
+      </x-import>
+    </div>
+
+    <article data-print-report="true" aria-label="Board report preview" style="flex:2 1 560px; min-width:0; background:var(--surface-card); border:1px solid var(--border-default); border-radius:var(--radius-lg); box-shadow:var(--shadow-2); overflow:hidden;">
+      <div style="height:4px; background:var(--choir-brand);"></div>
+      <div style="padding:{{ docPad }}; display:flex; flex-direction:column; gap:28px;">
+        <header style="display:flex; flex-wrap:wrap; align-items:flex-start; justify-content:space-between; gap:16px;">
+          <div style="display:flex; flex-direction:column; gap:10px; min-width:0;">
+            <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.ChoirLogo" name="Ottawa Regional Youth Choir" short-name="ORYC" size="{{ 36 }}" hint-size="100%,36px"></x-import>
+            <div>
+              <span style="font:700 11.5px/1.2 var(--font-ui); letter-spacing:var(--tracking-overline); text-transform:uppercase; color:var(--accent-text);">Report to the board of directors</span>
+              <h2 style="margin:6px 0 0; font:500 {{ docH }}/1.1 var(--font-display); letter-spacing:var(--tracking-display);">{{ periodLabel }}</h2>
+            </div>
+          </div>
+          <dl style="margin:0; display:grid; grid-template-columns:auto auto; gap:4px 12px; font-size:13px;">
+            <dt style="color:var(--text-3);">Prepared by</dt><dd style="margin:0;">Claire Dubois, Administrator</dd>
+            <dt style="color:var(--text-3);">Meeting</dt><dd style="margin:0;">{{ meetingLabel }}</dd>
+            <dt style="color:var(--text-3);">Figures as of</dt><dd style="margin:0;">October 15, 2026</dd>
+          </dl>
+        </header>
+
+        <section aria-label="Summary" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:12px;">
+          <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
+            <div style="display:flex; flex-direction:column; gap:6px; padding:14px 16px; border:1px solid var(--border-subtle); border-radius:var(--radius-md); background:var(--bg-app);">
+              <span style="font:600 12.5px/1.3 var(--font-ui); color:var(--text-3);">{{ k.label }}</span>
+              <span style="font:500 30px/1 var(--font-display); font-variant-numeric:var(--numeric-tabular);">{{ k.value }}</span>
+              <sc-if value="{{ k.showDelta }}" hint-placeholder-val="{{ false }}">
+                <span style="display:flex; align-items:center; gap:4px; font:600 12.5px/1.3 var(--font-ui); color:{{ k.deltaColor }};">
+                  <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Icon" name="{{ k.deltaIcon }}" size="{{ 14 }}" stroke-width="{{ 2.25 }}" hint-size="14px,14px"></x-import>{{ k.delta }}
+                </span>
+              </sc-if>
+              <span style="font-size:12.5px; color:var(--text-3);">{{ k.context }}</span>
+            </div>
+          </sc-for>
+        </section>
+
+        <sc-if value="{{ on.highlights }}" hint-placeholder-val="{{ true }}">
+          <section style="display:flex; flex-direction:column; gap:10px;">
+            <h3 style="margin:0; font:500 20px/1.25 var(--font-display);">Highlights</h3>
+            <ul style="margin:0; padding-left:20px; display:flex; flex-direction:column; gap:6px; font-size:14.5px; line-height:1.5;">
+              <sc-for list="{{ highlightList }}" as="hl" hint-placeholder-count="3"><li style="text-wrap:pretty;">{{ hl }}</li></sc-for>
+            </ul>
+          </section>
+        </sc-if>
+
+        <sc-if value="{{ on.membership }}" hint-placeholder-val="{{ true }}">
+          <section style="display:flex; flex-direction:column; gap:12px; padding-top:20px; border-top:1px solid var(--border-subtle);">
+            <h3 style="margin:0; font:500 20px/1.25 var(--font-display);">Membership</h3>
+            <div role="img" aria-label="{{ mem.aria }}" style="display:flex; gap:3px; height:12px; border-radius:var(--radius-full); overflow:hidden;">
+              <sc-for list="{{ mem.sections }}" as="s" hint-placeholder-count="5"><span style="flex:{{ s.count }} 0 0; background:{{ s.color }};"></span></sc-for>
+            </div>
+            <div style="display:flex; flex-wrap:wrap; gap:8px 18px; font-size:13.5px;">
+              <sc-for list="{{ mem.sections }}" as="s" hint-placeholder-count="5">
+                <span style="display:flex; align-items:center; gap:6px;"><span style="width:10px; height:10px; border-radius:2px; background:{{ s.color }};"></span>{{ s.label }} <strong style="font-variant-numeric:var(--numeric-tabular);">{{ s.count }}</strong></span>
+              </sc-for>
+            </div>
+            <dl style="margin:0; display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:10px 20px; font-size:14px;">
+              <sc-for list="{{ mem.facts }}" as="fc" hint-placeholder-count="4">
+                <div style="display:flex; justify-content:space-between; gap:12px; padding:8px 0; border-bottom:1px solid var(--border-subtle);"><dt style="color:var(--text-2);">{{ fc.k }}</dt><dd style="margin:0; font-weight:600; font-variant-numeric:var(--numeric-tabular);">{{ fc.v }}</dd></div>
+              </sc-for>
+            </dl>
+          </section>
+        </sc-if>
+
+        <sc-if value="{{ on.attendance }}" hint-placeholder-val="{{ true }}">
+          <section style="display:flex; flex-direction:column; gap:12px; padding-top:20px; border-top:1px solid var(--border-subtle);">
+            <h3 style="margin:0; font:500 20px/1.25 var(--font-display);">Attendance</h3>
+            <div style="display:flex; flex-wrap:wrap; gap:20px; align-items:flex-end;">
+              <div role="img" aria-label="{{ att.aria }}" style="flex:1 1 260px; display:grid; grid-template-columns:repeat(5, minmax(0,1fr)); gap:10px; align-items:end; height:120px;">
+                <sc-for list="{{ att.bars }}" as="b" hint-placeholder-count="5">
+                  <div style="height:100%; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; gap:4px;">
+                    <span style="font:600 12px/1 var(--font-ui); font-variant-numeric:var(--numeric-tabular);">{{ b.pct }}%</span>
+                    <div style="width:100%; max-width:44px; height:{{ b.h }}; background:var(--accent); border-radius:var(--radius-sm) var(--radius-sm) 0 0;"></div>
+                    <span style="font-size:11.5px; color:var(--text-3);">{{ b.label }}</span>
+                  </div>
+                </sc-for>
+              </div>
+              <dl style="flex:1 1 220px; margin:0; display:flex; flex-direction:column; font-size:14px;">
+                <sc-for list="{{ att.facts }}" as="fc" hint-placeholder-count="4">
+                  <div style="display:flex; justify-content:space-between; gap:12px; padding:8px 0; border-bottom:1px solid var(--border-subtle);"><dt style="color:var(--text-2);">{{ fc.k }}</dt><dd style="margin:0; font-weight:600; font-variant-numeric:var(--numeric-tabular);">{{ fc.v }}</dd></div>
+                </sc-for>
+              </dl>
+            </div>
+          </section>
+        </sc-if>
+
+        <sc-if value="{{ on.finances }}" hint-placeholder-val="{{ true }}">
+          <section style="display:flex; flex-direction:column; gap:12px; padding-top:20px; border-top:1px solid var(--border-subtle);">
+            <h3 style="margin:0; font:500 20px/1.25 var(--font-display);">Finances · annual fees</h3>
+            <div role="img" aria-label="{{ fin.aria }}" style="display:flex; gap:2px; height:12px; border-radius:var(--radius-full); overflow:hidden;">
+              <sc-for list="{{ fin.parts }}" as="f" hint-placeholder-count="3"><span style="flex:{{ f.n }} 0 0; background:{{ f.color }};"></span></sc-for>
+            </div>
+            <table style="width:100%; border-collapse:collapse; font-size:14px;">
+              <tbody>
+                <sc-for list="{{ fin.rows }}" as="r" hint-placeholder-count="5">
+                  <tr style="border-bottom:1px solid var(--border-subtle);">
+                    <th scope="row" style="text-align:left; padding:8px 0; font-weight:400; color:var(--text-2);"><span style="display:inline-flex; align-items:center; gap:8px;"><span style="width:10px; height:10px; border-radius:2px; background:{{ r.color }};"></span>{{ r.label }}</span></th>
+                    <td style="padding:8px 0; text-align:right; color:var(--text-3); font-variant-numeric:var(--numeric-tabular);">{{ r.count }}</td>
+                    <td style="padding:8px 0 8px 16px; text-align:right; font-weight:600; font-variant-numeric:var(--numeric-tabular); width:7rem;">{{ r.amount }}</td>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+            <p style="margin:0; font-size:13px; color:var(--text-3);">{{ fin.methods }}</p>
+          </section>
+        </sc-if>
+
+        <sc-if value="{{ on.forms }}" hint-placeholder-val="{{ true }}">
+          <section style="display:flex; flex-direction:column; gap:12px; padding-top:20px; border-top:1px solid var(--border-subtle);">
+            <h3 style="margin:0; font:500 20px/1.25 var(--font-display);">Forms and safety</h3>
+            <ul style="list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px;">
+              <sc-for list="{{ forms }}" as="f" hint-placeholder-count="5">
+                <li style="display:grid; grid-template-columns:minmax(0,1.4fr) minmax(80px,1fr) 4.5rem; align-items:center; gap:12px; font-size:14px;">
+                  <span style="min-width:0;">{{ f.title }}</span>
+                  <div aria-hidden="true" style="height:8px; border-radius:var(--radius-full); background:var(--surface-muted-strong); overflow:hidden;"><div style="height:100%; width:{{ f.pct }}; background:{{ f.bar }}; border-radius:inherit;"></div></div>
+                  <span style="text-align:right; font-weight:600; font-variant-numeric:var(--numeric-tabular);">{{ f.pct }}</span>
+                </li>
+              </sc-for>
+            </ul>
+          </section>
+        </sc-if>
+
+        <sc-if value="{{ on.comms }}" hint-placeholder-val="{{ true }}">
+          <section style="display:flex; flex-direction:column; gap:12px; padding-top:20px; border-top:1px solid var(--border-subtle);">
+            <h3 style="margin:0; font:500 20px/1.25 var(--font-display);">Communication with families</h3>
+            <dl style="margin:0; display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px 20px; font-size:14px;">
+              <sc-for list="{{ comms }}" as="fc" hint-placeholder-count="4">
+                <div style="display:flex; justify-content:space-between; gap:12px; padding:8px 0; border-bottom:1px solid var(--border-subtle);"><dt style="color:var(--text-2);">{{ fc.k }}</dt><dd style="margin:0; font-weight:600; font-variant-numeric:var(--numeric-tabular);">{{ fc.v }}</dd></div>
+              </sc-for>
+            </dl>
+          </section>
+        </sc-if>
+
+        <sc-if value="{{ on.upcoming }}" hint-placeholder-val="{{ true }}">
+          <section style="display:flex; flex-direction:column; gap:10px; padding-top:20px; border-top:1px solid var(--border-subtle);">
+            <h3 style="margin:0; font:500 20px/1.25 var(--font-display);">Coming up</h3>
+            <ul style="list-style:none; margin:0; padding:0;">
+              <sc-for list="{{ upcoming }}" as="u" hint-placeholder-count="5">
+                <li style="display:flex; gap:14px; padding:7px 0; border-bottom:1px solid var(--border-subtle); font-size:14px;">
+                  <span style="flex:none; width:7.5rem; color:var(--text-2); font-variant-numeric:var(--numeric-tabular);">{{ u.when }}</span>
+                  <span style="font-weight:{{ u.weight }}; color:{{ u.color }};">{{ u.title }}</span>
+                </li>
+              </sc-for>
+            </ul>
+          </section>
+        </sc-if>
+
+        <sc-if value="{{ showDecisions }}" hint-placeholder-val="{{ true }}">
+          <section style="display:flex; flex-direction:column; gap:10px; padding:16px 18px; border-radius:var(--radius-md); background:var(--accent-subtle); border:1px solid var(--accent-subtle-strong);">
+            <h3 style="margin:0; font:500 20px/1.25 var(--font-display);">For the board to decide</h3>
+            <ol style="margin:0; padding-left:20px; display:flex; flex-direction:column; gap:6px; font-size:14.5px; line-height:1.5;">
+              <sc-for list="{{ decisionList }}" as="dl" hint-placeholder-count="2"><li style="text-wrap:pretty;">{{ dl }}</li></sc-for>
+            </ol>
+          </section>
+        </sc-if>
+
+        <p style="margin:0; padding-top:16px; border-top:1px solid var(--border-subtle); font-size:12px; color:var(--text-3); text-wrap:pretty;">Generated by Choirbook from the choir’s records. Chorister names, medical details and individual payments are left out of board reports.</p>
+      </div>
+    </article>
+  </div>
+</div>
+
+<x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Modal" open="{{ emailOpen }}" on-close="{{ closeEmail }}" size="sm" title="Send to the board" close-label="Close" footer="{{ emailFooter }}" hint-size="0px,0px">
+  <div style="display:flex; flex-direction:column; gap:16px;">
+    <fieldset style="border:0; margin:0; padding:0;">
+      <legend style="padding:0; margin-bottom:8px; font:600 14px/1.3 var(--font-ui);">Recipients</legend>
+      <div style="display:flex; flex-wrap:wrap; gap:6px;">
+        <sc-for list="{{ board }}" as="b" hint-placeholder-count="5">
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Chip" selected="{{ b.on }}" on-click="{{ b.toggle }}" hint-size="140px,32px">{{ b.label }}</x-import>
+        </sc-for>
+      </div>
+    </fieldset>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="Message" multiline="{{ true }}" rows="{{ 4 }}" value="{{ msg }}" on-change="{{ onMsg }}" hint-size="100%,140px"></x-import>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Checkbox" label="Attach as PDF" description="Board members don’t need a Choirbook account to read it." checked="{{ attach }}" on-change="{{ toggleAttach }}" hint-size="100%,48px"></x-import>
+  </div>
+</x-import>
+<x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.ToastStack" toasts="{{ toasts }}" on-dismiss="{{ dismissToast }}" hint-size="0px,0px"></x-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const SECTIONS = [
+  ['highlights', 'Highlights', 'Your notes, at the top'],
+  ['membership', 'Membership', 'Sections, new members, ages, retention'],
+  ['attendance', 'Attendance', 'Rate by rehearsal, absence follow-ups'],
+  ['finances', 'Finances', 'Fees collected, due, overdue'],
+  ['forms', 'Forms and safety', 'Medical, consent and permission forms'],
+  ['comms', 'Communication with families', 'Announcements, inbox, monthly updates'],
+  ['upcoming', 'Coming up', 'Key dates in the next two months'],
+  ['decisions', 'For the board to decide', 'Your notes, at the end'],
+];
+const BOARD = ['Robert Lalonde · Chair', 'Helen Ng · Treasurer', 'Aisha Karim · Secretary', 'Pierre Gagnon', 'Susan Whitfield'];
+const money = (n) => '$' + n.toLocaleString('en-CA');
+class Component extends DCLogic {
+  state = {
+    period: 'oct', meeting: '2026-11-03', compare: true, on: Object.fromEntries(SECTIONS.map(([k]) => [k, true])),
+    highlights: 'Ubi Caritas is memorised and the choir sang it for the group photo on October 15.\nFive new singers joined this month; all have finished their first placement session.\nWinter Light tickets went on sale October 9. 212 of 340 seats are reserved.',
+    decisions: 'Approve up to $1,200 to hire a rehearsal accompanist for the two extra sectionals in November.\nAgree a policy for families who need to spread the annual fee over the year.',
+    status: this.props.demo === 'board-sent' ? 'sent' : 'draft', modal: this.props.demo === 'board-email' ? 'email' : null,
+    recipients: Object.fromEntries(BOARD.map((b) => [b, true])), msg: 'Hello everyone, here is the October report for our meeting on November 3. The two items for decision are at the end. Claire', attach: true, toasts: [],
+  };
+  componentDidMount() { this.waitDS(); }
+  waitDS() { if (window.ChoirbookDesignSystem_9d7b3b?.Toggle) this.forceUpdate(); else setTimeout(() => this.waitDS(), 60); }
+  toast(title, body) { const id = String(Date.now()); this.setState((s) => ({ toasts: [...s.toasts, { id, tone: 'success', title, children: body, duration: 5000 }] })); }
+  renderVals() {
+    const p = this.props, s = this.state;
+    const NS = window.ChoirbookDesignSystem_9d7b3b || {};
+    const h = (C, pr, ...c) => (C ? React.createElement(C, pr, ...c) : null);
+    const d = p.data || {};
+    const lang = p.lang ?? 'en', locale = lang === 'fr' ? 'fr-CA' : 'en-CA';
+    const mobile = p.device === 'mobile';
+    const cs = d.choristers || [];
+    const placed = cs.filter((c) => c.section);
+    const fmt = (iso, o) => new Intl.DateTimeFormat(locale, o).format(new Date(iso + 'T12:00'));
+    const PERIOD = { oct: 'October 2026', sep: 'September 2026', fall: 'Fall term 2026', season: '2026–27 season to date' };
+    const prevLabel = { oct: 'vs September', sep: 'vs last September', fall: 'vs fall 2025', season: 'vs last season' }[s.period];
+    const fees = { paid: cs.filter((c) => c.fees === 'paid').length, due: cs.filter((c) => c.fees === 'due').length, overdue: cs.filter((c) => c.fees === 'overdue').length };
+    const expected = cs.length * 390;
+    const formsAll = d.forms || [];
+    const formsPct = Math.round((formsAll.reduce((n, f) => n + f.done, 0) / Math.max(formsAll.reduce((n, f) => n + f.total, 0), 1)) * 100);
+    const dates = d.rehearsalDates || [];
+    const bars = dates.map((iso, i) => { const n = placed.filter((c) => ['present', 'late'].includes(c.recent[i])).length; const pct = Math.round((n / Math.max(placed.length, 1)) * 100); return { label: fmt(iso, { month: 'short', day: 'numeric' }), pct, h: `${Math.max(8, (pct - 70) * 3)}%` }; });
+    const delta = (txt, good, up = true) => ({ showDelta: s.compare, delta: `${txt} ${prevLabel}`, deltaIcon: up ? 'arrow-up' : 'arrow-down', deltaColor: good ? 'var(--success-text)' : 'var(--error-text)' });
+    const COLORS = { S: 'var(--voice-s)', A: 'var(--voice-a)', T: 'var(--voice-t)', B: 'var(--voice-b)' };
+    const memSections = [...(d.sectionCounts || []).map((sc) => ({ label: sc[lang], count: sc.count, color: COLORS[sc.key] })), { label: 'Awaiting placement', count: cs.length - placed.length, color: 'var(--neutral-border)' }];
+    const lines = (t) => t.split('\n').map((x) => x.trim()).filter(Boolean);
+    const decisionList = lines(s.decisions);
+    const tiny = (v) => (v.length > 3 ? 'smaller' : 'normal');
+    return {
+      lang, locale, periodLabel: PERIOD[s.period],
+      sideMax: mobile ? '100%' : '380px', docPad: mobile ? '20px 18px 24px' : '32px 36px 36px', docH: mobile ? '28px' : '36px',
+      statusTone: s.status === 'sent' ? 'success' : 'neutral', statusIcon: s.status === 'sent' ? 'check' : 'pencil', statusLabel: s.status === 'sent' ? 'Sent to board' : s.status === 'saved' ? 'Draft saved' : 'Draft',
+      saveDraft: () => { this.setState({ status: 'saved' }); this.toast('Draft saved', 'Other administrators can see and edit it.'); },
+      download: () => window.print(),
+      period: s.period, setPeriod: (e) => this.setState({ period: e.target.value }),
+      periodOptions: Object.entries(PERIOD).map(([value, label]) => ({ value, label })),
+      meeting: s.meeting, setMeeting: (v) => this.setState({ meeting: v }), meetingLabel: fmt(s.meeting, { weekday: 'long', month: 'long', day: 'numeric' }),
+      compare: s.compare, toggleCompare: (e) => this.setState({ compare: e.target.checked }),
+      toggles: SECTIONS.map(([k, label, hint]) => ({ label, hint, on: s.on[k], toggle: (e) => { const v = e.target.checked; this.setState((x) => ({ on: { ...x.on, [k]: v } })); } })),
+      on: s.on,
+      highlights: s.highlights, onHighlights: (e) => this.setState({ highlights: e.target.value }), highlightList: lines(s.highlights),
+      decisions: s.decisions, onDecisions: (e) => this.setState({ decisions: e.target.value }), decisionList, showDecisions: s.on.decisions && decisionList.length > 0,
+      past: [
+        { title: 'September 2026', meta: 'Sent Oct 1 · 5 board members', dl: 'Download September 2026 report', open: () => this.toast('Downloaded', 'ORYC-board-report-2026-09.pdf') },
+        { title: '2025–26 season summary', meta: 'Sent Jun 20 · annual general meeting', dl: 'Download 2025–26 season summary', open: () => this.toast('Downloaded', 'ORYC-season-report-2025-26.pdf') },
+      ],
+      kpis: [
+        { label: 'Choristers', value: String(cs.length), context: `${cs.length - placed.length} joined this month`, ...delta('+5', true) },
+        { label: 'Attendance', value: `${d.stats?.attendanceRate}%`, context: 'fall term so far', ...delta('+1 pt', true) },
+        { label: 'Fees collected', value: money(fees.paid * 390), context: `${Math.round((fees.paid / cs.length) * 100)}% of ${money(expected)}`, ...delta('+$4,680', true) },
+        { label: 'Forms complete', value: `${formsPct}%`, context: `${formsAll.reduce((n, f) => n + f.total - f.done, 0)} still to come in`, ...delta('+6 pts', true) },
+      ],
+      mem: { sections: memSections, aria: memSections.map((x) => `${x.label} ${x.count}`).join(', '),
+        facts: [{ k: 'Returning from last season', v: '78%' }, { k: 'New this season', v: String(cs.filter((c) => c.years <= 1).length) }, { k: 'Ages', v: '12 to 22' }, { k: 'Schools represented', v: '8 and 2 colleges' }, { k: 'Left the choir', v: '0' }, { k: 'Smallest section', v: 'Tenors (10)' }] },
+      att: { bars, aria: bars.map((b) => `${b.label} ${b.pct}%`).join(', '),
+        facts: [{ k: 'Rehearsals held', v: `${dates.length} of 13 this term` }, { k: 'Average present per rehearsal', v: `${Math.round(placed.length * 0.91)} of ${placed.length}` }, { k: 'Absences reported in advance', v: '82%' }, { k: 'At the absence limit', v: '1 chorister, family contacted' }] },
+      fin: { aria: `Paid ${fees.paid}, due ${fees.due}, overdue ${fees.overdue}`,
+        parts: [{ n: fees.paid, color: 'var(--success-text)' }, { n: fees.due, color: 'var(--warning-text)' }, { n: fees.overdue, color: 'var(--error-text)' }],
+        rows: [{ label: 'Collected', count: `${fees.paid} families`, amount: money(fees.paid * 390), color: 'var(--success-text)' }, { label: 'Due by October 31', count: `${fees.due} families`, amount: money(fees.due * 390), color: 'var(--warning-text)' }, { label: 'Overdue since September 30', count: `${fees.overdue} families`, amount: money(fees.overdue * 390), color: 'var(--error-text)' }, { label: 'Fee waivers granted', count: '0 families', amount: '$0', color: 'var(--neutral-border)' }, { label: 'Expected this season', count: `${cs.length} choristers`, amount: money(expected), color: 'transparent' }],
+        methods: 'Paid by card in the app 71% · Interac e-Transfer 22% · cheque 7%' },
+      forms: formsAll.map((f) => ({ title: f.title, pct: `${Math.round((f.done / f.total) * 100)}%`, bar: f.done === f.total ? 'var(--success-text)' : f.status === 'overdue' ? 'var(--warning-text)' : 'var(--accent)' })),
+      comms: [{ k: 'Announcements sent', v: String((d.announcementsSent || []).length) }, { k: 'Average read rate', v: '86%' }, { k: 'Messages from families', v: String((d.threads || []).length) }, { k: 'Typical reply time', v: 'Under 1 day' }, { k: 'September update opened', v: '61 of 69 families' }, { k: 'Unresolved messages', v: String((d.threads || []).filter((x) => x.status === 'open').length) }],
+      upcoming: (d.events || []).filter((e) => e.date > d.today && e.date <= '2026-12-17' && e.type !== 'rehearsal').map((e) => ({ when: fmt(e.date, { weekday: 'short', month: 'short', day: 'numeric' }), title: e.title, weight: e.type === 'concert' ? 600 : 400, color: e.type === 'concert' ? 'var(--accent-text)' : 'var(--text-1)' })),
+      emailOpen: s.modal === 'email', openEmail: () => this.setState({ modal: 'email' }), closeEmail: () => this.setState({ modal: null }),
+      board: BOARD.map((b) => ({ label: b, on: !!s.recipients[b], toggle: () => this.setState((x) => ({ recipients: { ...x.recipients, [b]: !x.recipients[b] } })) })),
+      msg: s.msg, onMsg: (e) => this.setState({ msg: e.target.value }),
+      attach: s.attach, toggleAttach: (e) => this.setState({ attach: e.target.checked }),
+      emailFooter: [h(NS.Button, { key: 'c', variant: 'secondary', onClick: () => this.setState({ modal: null }) }, 'Cancel'), h(NS.Button, { key: 's', iconStart: 'send', disabled: !Object.values(s.recipients).some(Boolean), onClick: () => { const n = Object.values(s.recipients).filter(Boolean).length; this.setState({ modal: null, status: 'sent' }); this.toast('Report sent', `${PERIOD[s.period]} report emailed to ${n} board members.`); } }, 'Send report')],
+      toasts: s.toasts, dismissToast: (id) => this.setState((x) => ({ toasts: x.toasts.filter((tt) => tt.id !== id) })),
+    };
+  }
+}
+</script>
+</body>
+</html>

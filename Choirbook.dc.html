@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="choirbook.css">
+<script src="_ds/choirbook-design-system-9d7b3b08-5cc4-4553-b44b-4db9eb92dfdb/_ds_bundle.js"></script>
+<title>Choirbook</title>
+</helmet>
+<div ref="{{ rootRef }}" data-mode="{{ mode }}" data-choir="{{ choirTheme }}" data-device="{{ device }}" lang="{{ lang }}" style="position:relative; height:{{ rootH }}; display:flex; flex-direction:column; overflow:hidden; transform:translateZ(0); background:var(--bg-app); color:var(--text-1); font-family:var(--font-ui); font-size:var(--text-body); line-height:var(--lh-body);">
+
+<sc-if value="{{ loading }}" hint-placeholder-val="{{ false }}">
+  <div style="flex:1; display:flex; align-items:center; justify-content:center; color:var(--text-3); font-size:var(--text-body-s);">Loading…</div>
+</sc-if>
+
+<sc-if value="{{ isPublic }}" hint-placeholder-val="{{ false }}">
+  <div ref="{{ publicRef }}" style="flex:1; min-height:0; overflow-y:auto; display:flex; flex-direction:column;">
+    <sc-if value="{{ isLogin }}" hint-placeholder-val="{{ false }}">
+      <dc-import name="Login" data="{{ data }}" lang="{{ lang }}" set-lang="{{ setLang }}" device="{{ device }}" go="{{ go }}" demo="{{ demo }}" style="flex:1; display:flex; flex-direction:column;" hint-size="100%,100%"></dc-import>
+    </sc-if>
+    <sc-if value="{{ isRegister }}" hint-placeholder-val="{{ false }}">
+      <dc-import name="Registration" data="{{ data }}" lang="{{ lang }}" set-lang="{{ setLang }}" device="{{ device }}" go="{{ go }}" demo="{{ demo }}" scroll-top="{{ scrollTop }}" style="flex:1; display:flex; flex-direction:column;" hint-size="100%,1400px"></dc-import>
+    </sc-if>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isApp }}" hint-placeholder-val="{{ false }}">
+  <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.AppHeader" start="{{ hStart }}" search="{{ hSearch }}" actions="{{ hActions }}" end="{{ hEnd }}" on-menu="{{ onMenu }}" menu-label="{{ t.openMenu }}" hint-size="100%,60px"></x-import>
+  <div style="position:relative; flex:1; min-height:0; display:flex;">
+    <sc-if value="{{ showSidebar }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex; flex:none;">
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Sidebar" sections="{{ navSections }}" active-id="{{ navActive }}" on-navigate="{{ onNav }}" footer="{{ sideFooter }}" label="{{ t.mainNav }}" hint-size="248px,100%"></x-import>
+      </div>
+    </sc-if>
+    <sc-if value="{{ drawerOpen }}" hint-placeholder-val="{{ false }}">
+      <div onClick="{{ closeDrawer }}" aria-hidden="true" style="position:absolute; inset:0; z-index:29; background:var(--scrim);"></div>
+      <div style="position:absolute; top:0; bottom:0; left:0; z-index:30; display:flex; box-shadow:var(--shadow-3); animation:cb-drawer-in var(--duration-slow) var(--ease-enter);">
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Sidebar" sections="{{ navSections }}" active-id="{{ navActive }}" on-navigate="{{ onNav }}" footer="{{ sideFooter }}" label="{{ t.mainNav }}" hint-size="248px,100%"></x-import>
+      </div>
+    </sc-if>
+    <main ref="{{ mainRef }}" style="flex:1; min-width:0; overflow-y:auto; display:flex; flex-direction:column;">
+      <sc-if value="{{ isStaffHome }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="Staff Home" data="{{ data }}" t="{{ t }}" lang="{{ lang }}" device="{{ device }}" go="{{ go }}" demo="{{ demo }}" hint-size="100%,1100px"></dc-import>
+      </sc-if>
+      <sc-if value="{{ isAttendance }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="Attendance" data="{{ data }}" t="{{ t }}" lang="{{ lang }}" device="{{ device }}" go="{{ go }}" demo="{{ demo }}" style="flex:1; display:flex; flex-direction:column;" hint-size="100%,1100px"></dc-import>
+      </sc-if>
+      <sc-if value="{{ isRoster }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="Roster" data="{{ data }}" t="{{ t }}" lang="{{ lang }}" device="{{ device }}" go="{{ go }}" demo="{{ demo }}" hint-size="100%,1100px"></dc-import>
+      </sc-if>
+      <sc-if value="{{ isGuardian }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="Guardian Home" data="{{ data }}" t="{{ t }}" lang="{{ lang }}" device="{{ device }}" go="{{ go }}" demo="{{ demo }}" child-id="{{ childId }}" set-child-id="{{ setChildId }}" hint-size="100%,1400px"></dc-import>
+      </sc-if>
+      <sc-if value="{{ isChorister }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="Chorister Home" data="{{ data }}" t="{{ t }}" lang="{{ lang }}" device="{{ device }}" go="{{ go }}" demo="{{ demo }}" view="{{ choristerView }}" hint-size="100%,1400px"></dc-import>
+      </sc-if>
+      <sc-if value="{{ isCalendar }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="Calendar" data="{{ data }}" t="{{ t }}" lang="{{ lang }}" device="{{ device }}" go="{{ go }}" demo="{{ demo }}" role="{{ role }}" hint-size="100%,1100px"></dc-import>
+      </sc-if>
+      <sc-if value="{{ isMusicLib }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="Music Library" data="{{ data }}" t="{{ t }}" lang="{{ lang }}" device="{{ device }}" go="{{ go }}" demo="{{ demo }}" hint-size="100%,1100px"></dc-import>
+      </sc-if>
+      <sc-if value="{{ isComms }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="Communications" data="{{ data }}" t="{{ t }}" lang="{{ lang }}" device="{{ device }}" go="{{ go }}" demo="{{ demo }}" hint-size="100%,1100px"></dc-import>
+      </sc-if>
+      <sc-if value="{{ isForms }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="Forms and Fees" data="{{ data }}" t="{{ t }}" lang="{{ lang }}" device="{{ device }}" go="{{ go }}" demo="{{ demo }}" role="{{ role }}" hint-size="100%,1100px"></dc-import>
+      </sc-if>
+      <sc-if value="{{ isUsers }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="Users and Permissions" data="{{ data }}" t="{{ t }}" lang="{{ lang }}" device="{{ device }}" go="{{ go }}" demo="{{ demo }}" hint-size="100%,1100px"></dc-import>
+      </sc-if>
+      <sc-if value="{{ isReports }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="Reports" data="{{ data }}" t="{{ t }}" lang="{{ lang }}" device="{{ device }}" go="{{ go }}" demo="{{ demo }}" hint-size="100%,1100px"></dc-import>
+      </sc-if>
+      <sc-if value="{{ isMessages }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="Messages" data="{{ data }}" t="{{ t }}" lang="{{ lang }}" device="{{ device }}" go="{{ go }}" demo="{{ demo }}" role="{{ role }}" style="flex:1; display:flex; flex-direction:column;" hint-size="100%,1100px"></dc-import>
+      </sc-if>
+      <sc-if value="{{ isProfile }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="Chorister Profile" set-lang="{{ setLang }}" data="{{ data }}" t="{{ t }}" lang="{{ lang }}" device="{{ device }}" go="{{ go }}" demo="{{ demo }}" hint-size="100%,1100px"></dc-import>
+      </sc-if>
+      <sc-if value="{{ isTickets }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="Tickets" data="{{ data }}" t="{{ t }}" lang="{{ lang }}" device="{{ device }}" go="{{ go }}" demo="{{ demo }}" hint-size="100%,1100px"></dc-import>
+      </sc-if>
+      <sc-if value="{{ isPlaceholder }}" hint-placeholder-val="{{ false }}">
+        <div style="width:100%; max-width:1200px; margin:0 auto; padding:{{ pagePad }}; display:flex; flex-direction:column; gap:24px;">
+          <h1 style="font:500 var(--text-h1)/var(--lh-h1) var(--font-display); letter-spacing:var(--tracking-display); margin:0;">{{ placeholderTitle }}</h1>
+          <div style="background:var(--surface-card); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); box-shadow:var(--shadow-1);">
+            <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.EmptyState" icon="layout-grid" title="{{ t.notDesigned }}" actions="{{ backBtn }}" hint-size="100%,260px">{{ t.notDesignedBody }}</x-import>
+          </div>
+        </div>
+      </sc-if>
+    </main>
+  </div>
+  <sc-if value="{{ showBottomNav }}" hint-placeholder-val="{{ false }}">
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.BottomNav" items="{{ bottomItems }}" active-id="{{ navActive }}" on-navigate="{{ onNav }}" fixed="{{ false }}" label="{{ t.mainNav }}" hint-size="100%,64px"></x-import>
+  </sc-if>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;route&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;login&quot;, &quot;register&quot;, &quot;staff-home&quot;, &quot;attendance&quot;, &quot;roster&quot;, &quot;staff-calendar&quot;, &quot;staff-music&quot;, &quot;staff-comms&quot;, &quot;staff-forms&quot;, &quot;staff-users&quot;, &quot;staff-reports&quot;, &quot;guardian-home&quot;, &quot;guardian-calendar&quot;, &quot;guardian-forms&quot;, &quot;guardian-messages&quot;, &quot;chorister-home&quot;, &quot;chorister-music&quot;, &quot;chorister-calendar&quot;, &quot;chorister-messages&quot;, &quot;chorister-profile&quot;], &quot;default&quot;: &quot;login&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Prototype&quot;}, &quot;mode&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;auto&quot;, &quot;light&quot;, &quot;dark&quot;], &quot;default&quot;: &quot;auto&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Prototype&quot;}, &quot;lang&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;en&quot;, &quot;fr&quot;], &quot;default&quot;: &quot;en&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Prototype&quot;}, &quot;device&quot;: {&quot;editor&quot;: null, &quot;tsType&quot;: &quot;string&quot;}, &quot;demo&quot;: {&quot;editor&quot;: null, &quot;tsType&quot;: &quot;string&quot;}, &quot;height&quot;: {&quot;editor&quot;: null, &quot;tsType&quot;: &quot;string&quot;}}">
+const STAFF = ['staff-tickets', 'staff-home', 'roster', 'staff-calendar', 'attendance', 'staff-music', 'staff-comms', 'staff-forms', 'staff-users', 'staff-reports'];
+const BUILT = ['staff-home', 'roster', 'attendance', 'guardian-home', 'chorister-home', 'chorister-music', 'login', 'register', 'staff-calendar', 'guardian-calendar', 'chorister-calendar', 'staff-music', 'staff-comms', 'staff-forms', 'guardian-forms', 'staff-users', 'staff-reports', 'guardian-messages', 'chorister-messages', 'chorister-profile', 'staff-tickets'];
+const TITLE_KEY = { 'staff-calendar': 'calendar', 'staff-music': 'music', 'staff-comms': 'comms', 'staff-forms': 'formsFees', 'staff-users': 'users', 'staff-reports': 'reports', 'guardian-calendar': 'calendar', 'guardian-forms': 'formsFees', 'guardian-messages': 'messages', 'chorister-calendar': 'calendar', 'chorister-profile': 'profile' };
+
+class Component extends DCLogic {
+  state = {
+    route: this.props.route ?? 'login', mode: this.props.mode ?? 'auto', lang: this.props.lang ?? 'en', demo: this.props.demo ?? null,
+    data: null, width: 1440, prefersDark: false, choirId: 'myc', childId: this.props.demo === 'sam' ? 'sam' : 'ella', drawer: false,
+  };
+  rootRef = React.createRef();
+  mainRef = React.createRef();
+  publicRef = React.createRef();
+
+  componentDidMount() {
+    import('./choirbook-data.js').then((m) => this.setState({ data: m.default }));
+    if (window.matchMedia) {
+      this.mql = window.matchMedia('(prefers-color-scheme: dark)');
+      this.onMql = () => this.setState({ prefersDark: this.mql.matches });
+      this.onMql();
+      this.mql.addEventListener?.('change', this.onMql);
+    }
+    if (this.rootRef.current && window.ResizeObserver) {
+      this.ro = new ResizeObserver(([e]) => this.setState({ width: Math.round(e.contentRect.width) }));
+      this.ro.observe(this.rootRef.current);
+    }
+    this.waitDS();
+  }
+  waitDS() { if (window.ChoirbookDesignSystem_9d7b3b?.AppHeader) this.forceUpdate(); else setTimeout(() => this.waitDS(), 60); }
+  componentWillUnmount() { this.ro?.disconnect(); this.mql?.removeEventListener?.('change', this.onMql); }
+  componentDidUpdate(prev) {
+    const p = this.props, patch = {};
+    if (p.route !== prev.route && p.route) patch.route = p.route;
+    if (p.mode !== prev.mode && p.mode) patch.mode = p.mode;
+    if (p.lang !== prev.lang && p.lang) patch.lang = p.lang;
+    if (p.demo !== prev.demo) patch.demo = p.demo ?? null;
+    if (Object.keys(patch).length) this.setState(patch);
+  }
+  go = (route, demo) => {
+    this.setState({ route, demo: demo ?? null, drawer: false });
+    if (this.mainRef.current) this.mainRef.current.scrollTop = 0;
+    if (this.publicRef.current) this.publicRef.current.scrollTop = 0;
+  };
+
+  renderVals() {
+    const s = this.state, d = s.data;
+    const NS = window.ChoirbookDesignSystem_9d7b3b || {};
+    const h = (C, p, ...c) => (C ? React.createElement(C, p, ...c) : null);
+    const device = this.props.device ?? (s.width < 600 ? 'mobile' : s.width < 1024 ? 'tablet' : 'desktop');
+    const mobile = device === 'mobile', desktop = device === 'desktop';
+    const mode = s.mode === 'auto' ? (s.prefersDark ? 'dark' : 'light') : s.mode;
+    const lang = s.lang;
+    const r = s.route;
+    const role = STAFF.includes(r) ? 'staff' : r.startsWith('guardian') ? 'guardian' : r.startsWith('chorister') ? 'chorister' : 'public';
+    const ready = !!d;
+    const t = d ? d.i18n[lang] : {};
+    const base = { choirTheme: 'oryc', rootRef: this.rootRef, mainRef: this.mainRef, publicRef: this.publicRef, mode, device, lang, rootH: this.props.height ?? '100vh', loading: !ready, data: d || {}, t };
+    if (!ready) return base;
+
+    const setLang = (l) => this.setState({ lang: l });
+    const setMode = (m) => this.setState({ mode: m });
+    const children = d.guardianChildren;
+    const child = children.find((c) => c.id === s.childId) || children[0];
+    const choirs = role === 'staff' ? d.choirs : role === 'guardian' ? d.choirs : [d.choirs[0]];
+    const currentChoir = role === 'guardian' ? child.choirId : role === 'staff' ? s.choirId : 'myc';
+    const onChoir = (id) => role === 'guardian' ? this.setState({ childId: (children.find((c) => c.choirId === id) || child).id }) : this.setState({ choirId: id });
+    const user = d.users[role] || d.users.staff;
+
+    const item = (id, key, icon, extra) => ({ id, label: t[key], icon, ...extra });
+    const sections = role === 'staff' ? [
+      { items: [item('staff-home', 'home', 'house')] },
+      { label: t.secChoir, items: [item('roster', 'roster', 'users'), item('staff-calendar', 'calendar', 'calendar'), item('attendance', 'attendance', 'clipboard-check'), item('staff-music', 'music', 'music')] },
+      { label: t.secOffice, items: [item('staff-comms', 'comms', 'megaphone'), { id: 'staff-tickets', label: lang === 'fr' ? 'Billets' : 'Tickets', icon: 'ticket' }, item('staff-forms', 'formsFees', 'clipboard-list', { count: 10, alert: true, countLabel: 'outstanding' })] },
+      { label: t.secAdmin, items: [item('staff-users', 'users', 'shield-check'), item('staff-reports', 'reports', 'gauge')] },
+    ] : role === 'guardian' ? [
+      { items: [item('guardian-home', 'home', 'house'), item('guardian-calendar', 'calendar', 'calendar'), item('guardian-forms', 'formsFees', 'clipboard-list', child.todo.length ? { count: child.todo.length, alert: true, countLabel: 'to do' } : {}), item('guardian-messages', 'messages', 'message-square', { count: 1, countLabel: 'unread' })] },
+    ] : [
+      { items: [item('chorister-home', 'home', 'house'), item('chorister-music', 'music', 'music'), item('chorister-calendar', 'calendar', 'calendar'), item('chorister-messages', 'messages', 'message-square'), item('chorister-profile', 'profile', 'user-round')] },
+    ];
+    const useBottomNav = mobile && role !== 'staff';
+    const useDrawer = !desktop && !useBottomNav;
+    const onNav = (id) => this.go(id);
+    const pTitle = TITLE_KEY[r] ? t[TITLE_KEY[r]] : '';
+
+    return {
+      ...base, setLang, go: this.go, demo: s.demo, choirTheme: (d.choirs.find((c) => c.id === (role === 'guardian' ? child.choirId : role === 'staff' ? s.choirId : 'myc')) || {}).theme || 'choirbook',
+      scrollTop: () => { if (this.publicRef.current) this.publicRef.current.scrollTop = 0; },
+      isPublic: role === 'public', isLogin: r === 'login', isRegister: r === 'register',
+      isApp: role !== 'public',
+      hStart: h(NS.ChoirSwitcher, { choirs, currentId: currentChoir, onChange: onChoir, label: t.switchChoir, size: mobile ? 28 : 32 }),
+      hSearch: role === 'staff' && desktop ? h(NS.SearchField, { size: 'sm', placeholder: t.searchPh, label: t.search, shortcut: '/' }) : null,
+      hActions: h(NS.IconButton, { icon: 'bell', label: t.notifications, count: role === 'staff' ? 3 : 1 }),
+      hEnd: h(NS.UserMenu, { user, lang, onLangChange: setLang, mode, onModeChange: setMode, onSignOut: () => this.go('login') }),
+      onMenu: useDrawer ? () => this.setState({ drawer: !s.drawer }) : undefined,
+      showSidebar: desktop, drawerOpen: useDrawer && s.drawer, closeDrawer: () => this.setState({ drawer: false }),
+      navSections: sections, navActive: r, onNav,
+      sideFooter: h(NS.PoweredBy, { lang }),
+      showBottomNav: useBottomNav,
+      bottomItems: sections[0].items.map((it) => ({ ...it, count: it.count })),
+      isStaffHome: r === 'staff-home', isAttendance: r === 'attendance', isRoster: r === 'roster',
+      role, isCalendar: r.endsWith('-calendar'), isMusicLib: r === 'staff-music', isComms: r === 'staff-comms', isForms: r === 'staff-forms' || r === 'guardian-forms', isUsers: r === 'staff-users', isReports: r === 'staff-reports', isMessages: r.endsWith('-messages'), isProfile: r === 'chorister-profile', isTickets: r === 'staff-tickets',
+      isGuardian: r === 'guardian-home', isChorister: r === 'chorister-home' || r === 'chorister-music',
+      choristerView: r === 'chorister-music' ? 'music' : 'home',
+      childId: child.id, setChildId: (id) => this.setState({ childId: id }),
+      isPlaceholder: role !== 'public' && !BUILT.includes(r),
+      placeholderTitle: pTitle,
+      pagePad: desktop ? '28px 32px 56px' : mobile ? '16px 16px 32px' : '24px 24px 48px',
+      backBtn: h(NS.Button, { variant: 'secondary', iconStart: 'arrow-left', onClick: () => this.go(role === 'staff' ? 'staff-home' : role === 'guardian' ? 'guardian-home' : 'chorister-home') }, t.backHome),
+    };
+  }
+}
+</script>
+</body>
+</html>

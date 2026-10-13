@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="choirbook.css">
+<script src="_ds/choirbook-design-system-9d7b3b08-5cc4-4553-b44b-4db9eb92dfdb/_ds_bundle.js"></script>
+</helmet>
+<div style="width:100%; max-width:1200px; margin:0 auto; padding:{{ pad }}; display:flex; flex-direction:column; gap:20px;">
+  <header style="display:flex; flex-wrap:wrap; align-items:flex-end; gap:12px 16px;">
+    <div style="min-width:0; display:flex; flex-direction:column; gap:6px;">
+      <span style="font:700 12px/1.2 var(--font-ui); letter-spacing:var(--tracking-overline); text-transform:uppercase; color:var(--accent-text);">2026–27 season</span>
+      <h1 style="font:500 var(--text-h1)/var(--lh-h1) var(--font-display); letter-spacing:var(--tracking-display); margin:0;">Tickets</h1>
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:8px; margin-left:auto;">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" variant="secondary" icon-start="external-link" on-click="{{ copyLink }}" hint-size="150px,40px">Copy sales link</x-import>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" variant="secondary" icon-start="download" on-click="{{ exportCsv }}" hint-size="110px,40px">Export</x-import>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" icon-start="plus" on-click="{{ openComp }}" hint-size="160px,40px">Issue free tickets</x-import>
+    </div>
+  </header>
+
+  <div style="max-width:520px;">
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.SegmentedControl" full-width="{{ true }}" label="Concert" value="{{ concertId }}" on-change="{{ setConcert }}" options="{{ concertOptions }}" hint-size="100%,38px"></x-import>
+  </div>
+
+  <div style="display:flex; flex-wrap:wrap; align-items:center; gap:12px 18px; padding:16px 20px; background:var(--surface-card); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); box-shadow:var(--shadow-1);">
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.DateLeaf" date="{{ c.date }}" red="{{ true }}" locale="{{ locale }}" hint-size="56px,64px"></x-import>
+    <div style="flex:1 1 260px; min-width:0; display:flex; flex-direction:column; gap:3px;">
+      <span style="font:500 22px/1.2 var(--font-display);">{{ c.title }}</span>
+      <span style="font-size:14px; color:var(--text-2);">{{ c.when }} · {{ c.venue }}</span>
+    </div>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Badge" tone="{{ c.statusTone }}" icon="{{ c.statusIcon }}" size="md" hint-size="120px,26px">{{ c.statusLabel }}</x-import>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" variant="secondary" size="sm" icon-start="{{ c.toggleIcon }}" on-click="{{ askToggle }}" hint-size="120px,32px">{{ c.toggleLabel }}</x-import>
+  </div>
+
+  <sc-if value="{{ c.onSale }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex; flex-wrap:wrap; gap:16px;">
+      <div style="flex:1 1 200px;"><x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.StatCard" icon="ticket" label="Seats sold" value="{{ c.sold }}" context="{{ c.soldCtx }}" progress="{{ c.progress }}" hint-size="100%,120px"></x-import></div>
+      <div style="flex:1 1 200px;"><x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.StatCard" icon="receipt" label="Ticket revenue" value="{{ c.revenue }}" context="{{ c.revenueCtx }}" hint-size="100%,120px"></x-import></div>
+      <div style="flex:1 1 200px;"><x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.StatCard" icon="calendar-clock" label="Sold this week" value="{{ c.week }}" delta="{{ c.weekDelta }}" trend="up" good="{{ true }}" context="vs last week" hint-size="100%,120px"></x-import></div>
+      <div style="flex:1 1 200px;"><x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.StatCard" icon="users" label="Seats left" value="{{ c.left }}" context="{{ c.leftCtx }}" hint-size="100%,120px"></x-import></div>
+    </div>
+
+    <div style="display:flex; flex-wrap:wrap; gap:20px; align-items:stretch;">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Card" title="Sales by day" style="flex:1.5 1 440px; min-width:0;" hint-size="100%,300px">
+        <div role="img" aria-label="{{ c.chartLabel }}" style="display:grid; grid-template-columns:repeat({{ c.days }}, minmax(0,1fr)); gap:8px; align-items:end; height:190px;">
+          <sc-for list="{{ c.byDay }}" as="b" hint-placeholder-count="7">
+            <div style="height:100%; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; gap:4px;">
+              <span style="font:600 12px/1 var(--font-ui); font-variant-numeric:var(--numeric-tabular);">{{ b.n }}</span>
+              <div style="width:100%; max-width:40px; height:{{ b.h }}; background:var(--accent); border-radius:var(--radius-sm) var(--radius-sm) 0 0;"></div>
+              <span style="font-size:11.5px; color:var(--text-3); white-space:nowrap;">{{ b.label }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <p style="margin:12px 0 0; font-size:13px; color:var(--text-3);">{{ c.chartNote }}</p>
+      </x-import>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Card" title="By ticket type" action="{{ editTypesBtn }}" padded="{{ false }}" style="flex:1 1 320px; min-width:0;" hint-size="100%,300px">
+        <table style="width:100%; border-collapse:collapse; font-size:14px;">
+          <thead>
+            <tr style="font:600 11.5px/1.2 var(--font-ui); letter-spacing:var(--tracking-overline); text-transform:uppercase; color:var(--text-3);">
+              <th scope="col" style="text-align:left; padding:8px 20px; font-weight:600;">Type</th>
+              <th scope="col" style="text-align:right; padding:8px 8px; font-weight:600;">Sold</th>
+              <th scope="col" style="text-align:right; padding:8px 20px 8px 8px; font-weight:600;">Revenue</th>
+            </tr>
+          </thead>
+          <tbody>
+            <sc-for list="{{ c.types }}" as="ty" hint-placeholder-count="4">
+              <tr style="border-top:1px solid var(--border-subtle);">
+                <th scope="row" style="text-align:left; padding:10px 20px; font-weight:500;"><span style="display:block;">{{ ty.name }}</span><span style="font-size:12.5px; font-weight:400; color:var(--text-3);">{{ ty.priceLabel }}</span></th>
+                <td style="text-align:right; padding:10px 8px; font-variant-numeric:var(--numeric-tabular);">{{ ty.sold }}</td>
+                <td style="text-align:right; padding:10px 20px 10px 8px; font-weight:600; font-variant-numeric:var(--numeric-tabular);">{{ ty.revenueLabel }}</td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+      </x-import>
+    </div>
+
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.DataTable" caption="Orders" lang="{{ lang }}" columns="{{ columns }}" rows="{{ orders }}" get-row-id="{{ getRowId }}" row-label="{{ rowLabel }}" searchable="{{ true }}" search-keys="{{ searchKeys }}" search-placeholder="Search buyer, email or order number" filters="{{ filters }}" default-sort="{{ sort }}" on-row-click="{{ openOrder }}" compact="{{ true }}" footer="{{ tableFooter }}" hint-size="100%,620px"></x-import>
+  </sc-if>
+
+  <sc-if value="{{ c.notOnSale }}" hint-placeholder-val="{{ false }}">
+    <div style="background:var(--surface-card); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); box-shadow:var(--shadow-1);">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.EmptyState" icon="ticket" title="{{ c.emptyTitle }}" actions="{{ emptyActions }}" hint-size="100%,260px">{{ c.emptyBody }}</x-import>
+    </div>
+  </sc-if>
+</div>
+
+<x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.SideSheet" open="{{ orderOpen }}" on-close="{{ close }}" header="{{ orderHeader }}" footer="{{ orderFooter }}" label="Ticket order" close-label="Close" hint-size="0px,0px">
+  <div style="display:flex; flex-direction:column; gap:18px;">
+    <dl style="margin:0; display:grid; grid-template-columns:7rem minmax(0,1fr); gap:8px 12px; font-size:14px;">
+      <dt style="color:var(--text-3);">Email</dt><dd style="margin:0; overflow-wrap:anywhere;">{{ o.email }}</dd>
+      <dt style="color:var(--text-3);">Ordered</dt><dd style="margin:0;">{{ o.dateLabel }}</dd>
+      <dt style="color:var(--text-3);">Paid by</dt><dd style="margin:0;">{{ o.method }}</dd>
+      <dt style="color:var(--text-3);">Linked to</dt><dd style="margin:0;">{{ o.linked }}</dd>
+    </dl>
+    <ul style="list-style:none; margin:0; padding:0; border-top:1px solid var(--border-subtle);">
+      <sc-for list="{{ o.lines }}" as="ln" hint-placeholder-count="2">
+        <li style="display:flex; justify-content:space-between; gap:12px; padding:10px 0; border-bottom:1px solid var(--border-subtle); font-size:14.5px;">
+          <span>{{ ln.qty }} × {{ ln.name }}</span><span style="font-variant-numeric:var(--numeric-tabular);">{{ ln.total }}</span>
+        </li>
+      </sc-for>
+      <li style="display:flex; justify-content:space-between; gap:12px; padding:10px 0; font-weight:600;"><span>Total</span><span style="font-variant-numeric:var(--numeric-tabular);">{{ o.totalLabel }}</span></li>
+    </ul>
+  </div>
+</x-import>
+
+<x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Modal" open="{{ compOpen }}" on-close="{{ close }}" size="sm" title="Issue free tickets" close-label="Close" footer="{{ compFooter }}" hint-size="0px,0px">
+  <div style="display:flex; flex-direction:column; gap:16px;">
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="Name" required="{{ true }}" value="{{ comp.name }}" on-change="{{ onComp.name }}" hint-size="100%,72px"></x-import>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="Email" type="email" value="{{ comp.email }}" on-change="{{ onComp.email }}" hint="Tickets are emailed here. Leave blank to hold them at the door." hint-size="100%,90px"></x-import>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.FormRow" hint-size="100%,72px">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Select" label="Seats" value="{{ comp.qty }}" on-change="{{ onComp.qty }}" options="{{ qtyOptions }}" hint-size="100%,72px"></x-import>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Select" label="Reason" value="{{ comp.reason }}" on-change="{{ onComp.reason }}" options="{{ reasonOptions }}" hint-size="100%,72px"></x-import>
+    </x-import>
+  </div>
+</x-import>
+
+<x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.ConfirmDialog" open="{{ refundOpen }}" tone="danger" title="{{ refundTitle }}" confirm-label="Refund order" cancel-label="Keep order" on-cancel="{{ backToOrder }}" on-confirm="{{ doRefund }}" hint-size="0px,0px">{{ refundBody }}</x-import>
+<x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.ConfirmDialog" open="{{ toggleOpen }}" title="{{ toggleTitle }}" confirm-label="{{ toggleConfirm }}" cancel-label="Cancel" on-cancel="{{ close }}" on-confirm="{{ doToggle }}" hint-size="0px,0px">{{ toggleBody }}</x-import>
+<x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.ToastStack" toasts="{{ toasts }}" on-dismiss="{{ dismissToast }}" hint-size="0px,0px"></x-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const money = (n) => '$' + n.toLocaleString('en-CA', { minimumFractionDigits: n % 1 ? 2 : 0 });
+const TYPES = [{ id: 'adult', name: 'Adult', price: 20 }, { id: 'family', name: 'Choir family', price: 15 }, { id: 'student', name: 'Student or senior', price: 10 }, { id: 'chorister', name: 'Chorister', price: 0 }];
+const FIRST = ['Linda', 'Mark', 'Sana', 'Jean', 'Grace', 'Tom', 'Olivia', 'Raj', 'Marie', 'Ben', 'Hana', 'Luc', 'Ann', 'Victor', 'Esther', 'Paul'];
+const LAST = ['Chen', 'Tremblay', 'Martin', 'Gagnon', 'Okafor', 'Roy', 'Nguyen', 'Patel', 'Côté', 'Wright', 'Lavoie', 'Park', 'Singh', 'Morin', 'Haddad', 'Kim'];
+const DAYS = ['2026-10-09', '2026-10-10', '2026-10-11', '2026-10-12', '2026-10-13', '2026-10-14', '2026-10-15'];
+const PER_DAY = [64, 38, 22, 17, 26, 21, 24];
+function buildOrders() {
+  const out = []; let n = 1;
+  DAYS.forEach((day, di) => {
+    let seats = PER_DAY[di];
+    while (seats > 0) {
+      const i = n * 7;
+      const fam = i % 3 === 0;
+      const lines = fam ? [{ type: 'family', qty: Math.min(seats, 2 + (i % 3)) }, { type: 'chorister', qty: 1 }] : i % 5 === 0 ? [{ type: 'student', qty: Math.min(seats, 1 + (i % 2)) }] : [{ type: 'adult', qty: Math.min(seats, 1 + (i % 3)) }];
+      const q = lines.reduce((x, l) => x + l.qty, 0);
+      seats -= q;
+      const name = `${FIRST[i % FIRST.length]} ${LAST[(i * 3) % LAST.length]}`;
+      out.push({ id: `WL-${String(1000 + n).slice(1)}`, name, email: `${name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(' ', '.')}@example.com`, date: day, time: `${9 + (i % 12)}:${String((i * 13) % 60).padStart(2, '0')}`, lines, seats: q, total: lines.reduce((x, l) => x + l.qty * TYPES.find((t) => t.id === l.type).price, 0), method: i % 4 === 0 ? 'Apple Pay' : 'Card', status: 'paid', family: fam });
+      n++;
+    }
+  });
+  return out.reverse();
+}
+class Component extends DCLogic {
+  state = { concertId: 'c1', orders: buildOrders(), paused: false, modal: this.props.demo === 'comp' ? 'comp' : null, orderId: null, comp: { name: '', email: '', qty: '2', reason: 'Guest artist' }, toasts: [] };
+  componentDidMount() { this.waitDS(); }
+  waitDS() { if (window.ChoirbookDesignSystem_9d7b3b?.DataTable) this.forceUpdate(); else setTimeout(() => this.waitDS(), 60); }
+  componentDidUpdate(prev) { if (prev.demo !== this.props.demo) this.setState({ modal: this.props.demo === 'comp' ? 'comp' : null }); }
+  toast(title, body) { const id = String(Date.now()); this.setState((s) => ({ toasts: [...s.toasts, { id, tone: 'success', title, children: body, duration: 5000 }] })); }
+  renderVals() {
+    const p = this.props, s = this.state;
+    const NS = window.ChoirbookDesignSystem_9d7b3b || {};
+    const h = (C, pr, ...c) => (C ? React.createElement(C, pr, ...c) : null);
+    const lang = p.lang ?? 'en', locale = lang === 'fr' ? 'fr-CA' : 'en-CA';
+    const mobile = p.device === 'mobile';
+    const fmt = (iso, o) => new Intl.DateTimeFormat(locale, o).format(new Date(iso + 'T12:00'));
+    const live = s.orders.filter((o) => o.status !== 'refunded');
+    const cap = 340;
+    const sold = live.reduce((n, o) => n + o.seats, 0);
+    const revenue = live.reduce((n, o) => n + o.total, 0);
+    const types = TYPES.map((t) => { const q = live.reduce((n, o) => n + o.lines.filter((l) => l.type === t.id).reduce((x, l) => x + l.qty, 0), 0); return { ...t, sold: q, priceLabel: t.price ? money(t.price) : 'Free, reserved seat', revenueLabel: money(q * t.price) }; });
+    const byDayN = DAYS.map((day) => live.filter((o) => o.date === day).reduce((n, o) => n + o.seats, 0));
+    const maxD = Math.max(...byDayN, 1);
+    const onSale = s.concertId === 'c1';
+    const o0 = s.orders.find((o) => o.id === s.orderId) || { lines: [] };
+    const close = () => this.setState({ modal: null });
+    const setComp = (k, v) => this.setState((x) => ({ comp: { ...x.comp, [k]: v } }));
+    const statusBadge = (o) => o.status === 'refunded' ? h(NS.Badge, { tone: 'slate', icon: 'rotate-ccw' }, 'Refunded') : o.status === 'comp' ? h(NS.Badge, { tone: 'info', icon: 'ticket' }, 'Free') : h(NS.Badge, { tone: 'success', icon: 'check' }, 'Paid');
+    return {
+      lang, locale,
+      pad: mobile ? '16px 16px 32px' : p.device === 'tablet' ? '24px 24px 48px' : '28px 32px 56px',
+      concertId: s.concertId, setConcert: (v) => this.setState({ concertId: v }),
+      concertOptions: [{ value: 'c1', label: 'Winter Light · Dec 12' }, { value: 'c2', label: 'Songs of the River · May 15' }],
+      c: onSale ? {
+        title: 'Winter Light', date: '2026-12-12', when: 'Saturday, December 12 · 7:00 p.m.', venue: 'Holy Trinity Church · 340 seats',
+        onSale: true, notOnSale: false,
+        statusTone: s.paused ? 'warning' : 'success', statusIcon: s.paused ? 'pause' : 'circle-check', statusLabel: s.paused ? 'Sales paused' : 'On sale',
+        toggleIcon: s.paused ? 'play' : 'pause', toggleLabel: s.paused ? 'Resume sales' : 'Pause sales',
+        sold: String(sold), soldCtx: `of ${cap} seats · ${Math.round((sold / cap) * 100)}% full`, progress: sold / cap,
+        revenue: money(revenue), revenueCtx: `after card fees ${money(Math.round(revenue * 0.965))}`,
+        week: String(byDayN.slice(-7).reduce((a, b) => a + b, 0) - byDayN[0]), weekDelta: '+18%',
+        left: String(cap - sold), leftCtx: 'Sales close Dec 12 at 5:00 p.m.',
+        days: DAYS.length, byDay: DAYS.map((day, i) => ({ label: fmt(day, { month: 'short', day: 'numeric' }), n: byDayN[i], h: `${(byDayN[i] / maxD) * 80 + 3}%` })),
+        chartLabel: DAYS.map((day, i) => `${fmt(day, { month: 'short', day: 'numeric' })}: ${byDayN[i]}`).join(', '),
+        chartNote: 'Sales opened October 9 with the announcement to families. A public sales link went out on October 13.',
+        types,
+      } : { title: 'Songs of the River', date: '2027-05-15', when: 'Saturday, May 15 · 2:30 p.m.', venue: 'Riverside Arts Centre · 450 seats', onSale: false, notOnSale: true, statusTone: 'neutral', statusIcon: 'calendar-clock', statusLabel: 'Opens March 1', toggleIcon: 'play', toggleLabel: 'Open sales now', emptyTitle: 'Sales open March 1, 2027', emptyBody: 'Ticket types are set: Adult $22, Choir family $15, Student or senior $12, Chorister free. Sales numbers will appear here once tickets go on sale.' },
+      emptyActions: h(NS.Button, { variant: 'secondary', iconStart: 'pencil' }, 'Edit ticket types'),
+      editTypesBtn: h(NS.Button, { size: 'sm', variant: 'ghost', iconStart: 'pencil' }, 'Edit'),
+      columns: [
+        { key: 'id', header: 'Order', sortable: true, render: (o) => h('span', { style: { fontVariantNumeric: 'tabular-nums', color: 'var(--text-2)' } }, o.id) },
+        { key: 'name', header: 'Buyer', sortable: true, render: (o) => h('span', { style: { display: 'block', minWidth: 0 } }, h('span', { style: { display: 'block', fontWeight: 600 } }, o.name), h('span', { style: { display: 'block', fontSize: 12.5, color: 'var(--text-3)' } }, o.family ? 'Choir family' : 'Public')) },
+        { key: 'seats', header: 'Seats', align: 'right', sortable: true },
+        { key: 'total', header: 'Total', align: 'right', sortable: true, render: (o) => money(o.total) },
+        { key: 'date', header: 'Ordered', sortable: true, sortValue: (o) => o.date + o.time.padStart(5, '0'), render: (o) => fmt(o.date, { month: 'short', day: 'numeric' }) },
+        { key: 'status', header: 'Status', sortable: true, render: statusBadge },
+      ],
+      orders: s.orders, getRowId: (o) => o.id, rowLabel: (o) => `${o.id} ${o.name}`, searchKeys: ['name', 'email', 'id'], sort: { key: 'date', dir: 'desc' },
+      filters: [{ id: 'buyer', label: 'Buyer', options: [{ value: 'family', label: 'Choir families', count: s.orders.filter((o) => o.family).length }, { value: 'public', label: 'Public', count: s.orders.filter((o) => !o.family).length }], match: (o, v) => (v === 'family' ? o.family : !o.family) }],
+      tableFooter: h('span', null, `${s.orders.length} orders`),
+      openOrder: (o) => this.setState({ modal: 'order', orderId: o.id }), orderOpen: s.modal === 'order', close,
+      orderHeader: h('div', null, h('h2', { style: { margin: 0, font: '500 22px/1.2 var(--font-display)' } }, o0.name), h('div', { style: { display: 'flex', gap: 8, alignItems: 'center', marginTop: 6, fontSize: 13.5, color: 'var(--text-3)' } }, `Order ${o0.id}`, o0.id ? statusBadge(o0) : null)),
+      o: { ...o0, dateLabel: o0.date ? `${fmt(o0.date, { weekday: 'long', month: 'long', day: 'numeric' })}, ${o0.time}` : '', linked: o0.family ? 'Choir family account' : 'Public buyer, no account', totalLabel: money(o0.total || 0),
+        lines: o0.lines.map((l) => { const t = TYPES.find((x) => x.id === l.type); return { qty: l.qty, name: t.name, total: t.price ? money(l.qty * t.price) : 'Free' }; }) },
+      orderFooter: o0.status === 'refunded' ? null : [h(NS.Button, { key: 'r', variant: 'secondary', iconStart: 'mail', onClick: () => this.toast('Tickets resent', o0.email) }, 'Resend tickets'), h(NS.Button, { key: 'x', variant: 'ghost', iconStart: 'rotate-ccw', style: { color: 'var(--error-text)' }, onClick: () => this.setState({ modal: 'refund' }) }, 'Refund')],
+      refundOpen: s.modal === 'refund', refundTitle: `Refund order ${o0.id}?`, refundBody: `${money(o0.total || 0)} goes back to ${o0.name}’s card in 5–10 days and ${o0.seats} ${o0.seats === 1 ? 'seat is' : 'seats are'} released for sale.`,
+      backToOrder: () => this.setState({ modal: 'order' }),
+      doRefund: () => { this.setState((x) => ({ modal: null, orders: x.orders.map((o) => (o.id === o0.id ? { ...o, status: 'refunded' } : o)) })); this.toast('Order refunded', `${o0.id} · ${money(o0.total || 0)}`); },
+      openComp: () => this.setState({ modal: 'comp', comp: { name: '', email: '', qty: '2', reason: 'Guest artist' } }), compOpen: s.modal === 'comp',
+      comp: s.comp, onComp: Object.fromEntries(['name', 'email', 'qty', 'reason'].map((k) => [k, (e) => setComp(k, e.target.value)])),
+      qtyOptions: ['1', '2', '3', '4', '6', '8', '10'], reasonOptions: ['Guest artist', 'Sponsor', 'Volunteer', 'Venue staff', 'Press', 'Other'],
+      compFooter: [h(NS.Button, { key: 'c', variant: 'secondary', onClick: close }, 'Cancel'), h(NS.Button, { key: 's', iconStart: 'ticket', disabled: !s.comp.name.trim(), onClick: () => {
+        const q = Number(s.comp.qty);
+        const order = { id: `WL-${String(s.orders.length + 1).padStart(3, '0')}C`, name: s.comp.name.trim(), email: s.comp.email || 'Held at the door', date: '2026-10-15', time: '16:20', lines: [{ type: 'adult', qty: q }], seats: q, total: 0, method: `Free · ${s.comp.reason}`, status: 'comp', family: false };
+        this.setState((x) => ({ modal: null, orders: [order, ...x.orders] }));
+        this.toast('Free tickets issued', `${q} seats for ${order.name}.`);
+      } }, 'Issue tickets')],
+      askToggle: () => this.setState({ modal: 'toggle' }), toggleOpen: s.modal === 'toggle',
+      toggleTitle: onSale ? (s.paused ? 'Resume ticket sales?' : 'Pause ticket sales?') : 'Open sales for Songs of the River now?',
+      toggleConfirm: onSale ? (s.paused ? 'Resume sales' : 'Pause sales') : 'Open sales',
+      toggleBody: onSale ? (s.paused ? 'The sales page will take orders again right away.' : 'The sales page will say tickets are unavailable. Existing orders aren’t affected.') : 'The sales page goes live and families get an announcement.',
+      doToggle: () => { this.setState((x) => ({ modal: null, paused: onSale ? !x.paused : x.paused })); this.toast(onSale ? (s.paused ? 'Sales resumed' : 'Sales paused') : 'Sales opened', onSale ? 'Winter Light' : 'Songs of the River'); },
+      copyLink: () => this.toast('Sales link copied', 'tickets.choirbook.app/oryc/winter-light'),
+      exportCsv: () => this.toast('Orders exported', 'winter-light-orders.csv · use it as the door list'),
+      toasts: s.toasts, dismissToast: (id) => this.setState((x) => ({ toasts: x.toasts.filter((tt) => tt.id !== id) })),
+    };
+  }
+}
+</script>
+</body>
+</html>

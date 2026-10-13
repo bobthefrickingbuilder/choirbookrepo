@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="choirbook.css">
+<script src="_ds/choirbook-design-system-9d7b3b08-5cc4-4553-b44b-4db9eb92dfdb/_ds_bundle.js"></script>
+</helmet>
+<div style="width:100%; max-width:1200px; margin:0 auto; padding:{{ pad }}; display:flex; flex-direction:column; gap:20px;">
+  <header style="display:flex; flex-wrap:wrap; align-items:flex-end; gap:12px 16px;">
+    <div style="min-width:0; display:flex; flex-direction:column; gap:6px;">
+      <span style="font:700 12px/1.2 var(--font-ui); letter-spacing:var(--tracking-overline); text-transform:uppercase; color:var(--accent-text);">{{ X.season }}</span>
+      <h1 style="font:500 var(--text-h1)/var(--lh-h1) var(--font-display); letter-spacing:var(--tracking-display); margin:0;">{{ t.roster }}</h1>
+      <p style="margin:0; font-size:15px; color:var(--text-2);">{{ X.sub }}</p>
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:8px; margin-left:auto;">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" variant="secondary" icon-start="download" hint-size="110px,40px">{{ X.export }}</x-import>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" icon-start="user-plus" hint-size="150px,40px">{{ X.add }}</x-import>
+    </div>
+  </header>
+
+  <sc-if value="{{ hasView }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+      <span style="font:600 13px/1.2 var(--font-ui); color:var(--text-3);">{{ X.showing }}</span>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Chip" on-remove="{{ clearView }}" remove-label="{{ X.clear }}" icon="{{ viewIcon }}" hint-size="160px,32px">{{ viewLabel }}</x-import>
+    </div>
+  </sc-if>
+
+  <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.DataTable" caption="{{ t.roster }}" lang="{{ lang }}" columns="{{ columns }}" rows="{{ rows }}" get-row-id="{{ getRowId }}" row-label="{{ rowLabel }}" selectable="{{ true }}" searchable="{{ true }}" search-keys="{{ searchKeys }}" search-placeholder="{{ X.search }}" filters="{{ filters }}" bulk-actions="{{ bulkActions }}" default-sort="{{ defaultSort }}" on-row-click="{{ openRow }}" footer="{{ tableFooter }}" hint-size="100%,760px"></x-import>
+</div>
+
+<x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.SideSheet" open="{{ hasSel }}" on-close="{{ close }}" header="{{ sheetHeader }}" footer="{{ sheetFooter }}" label="{{ sheetLabel }}" close-label="{{ X.close }}" hint-size="0px,0px">
+  <div style="padding:0 0 18px; border-bottom:1px solid var(--border-subtle);">
+    <h3 style="margin:0 0 12px; font:600 11.5px/1.2 var(--font-ui); letter-spacing:var(--tracking-overline); text-transform:uppercase; color:var(--text-3);">{{ X.contact }}</h3>
+    <dl style="margin:0; display:grid; grid-template-columns:6rem minmax(0,1fr); gap:6px 12px; font-size:14px;">
+      <dt style="color:var(--text-3);">{{ X.email }}</dt><dd style="margin:0;"><a href="#" style="color:var(--link);">{{ sel.email }}</a></dd>
+      <dt style="color:var(--text-3);">{{ X.phone }}</dt><dd style="margin:0; font-variant-numeric:var(--numeric-tabular);">{{ sel.phone }}</dd>
+      <dt style="color:var(--text-3);">{{ X.school }}</dt><dd style="margin:0;">{{ sel.school }} · {{ sel.grade }}</dd>
+    </dl>
+  </div>
+
+  <div style="padding:18px 0; border-bottom:1px solid var(--border-subtle);">
+    <h3 style="margin:0 0 6px; font:600 11.5px/1.2 var(--font-ui); letter-spacing:var(--tracking-overline); text-transform:uppercase; color:var(--text-3);">{{ X.guardians }}</h3>
+    <ul style="list-style:none; margin:0; padding:0;">
+      <sc-for list="{{ sel.guardians }}" as="g" hint-placeholder-count="2">
+        <li style="display:flex; align-items:center; gap:10px; min-height:44px; padding:8px 0; border-bottom:1px solid var(--border-subtle);">
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Avatar" name="{{ g.name }}" size="{{ 32 }}" hint-size="32px,32px"></x-import>
+          <div style="flex:1; min-width:0;">
+            <div style="display:flex; flex-wrap:wrap; align-items:center; gap:6px; font:500 14.5px/1.3 var(--font-ui);">{{ g.name }}
+              <sc-if value="{{ g.primary }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Badge" tone="neutral" hint-size="60px,22px">{{ X.primary }}</x-import></sc-if>
+            </div>
+            <div style="font:400 13px/1.3 var(--font-ui); color:var(--text-3); font-variant-numeric:var(--numeric-tabular);">{{ g.relation }} · {{ g.phone }}</div>
+          </div>
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.IconButton" icon="phone" label="{{ g.callLabel }}" size="sm" hint-size="32px,32px"></x-import>
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.IconButton" icon="mail" label="{{ g.mailLabel }}" size="sm" hint-size="32px,32px"></x-import>
+        </li>
+      </sc-for>
+    </ul>
+  </div>
+
+  <div style="padding:18px 0; border-bottom:1px solid var(--border-subtle); display:flex; flex-direction:column; gap:14px;">
+    <h3 style="margin:0; font:600 11.5px/1.2 var(--font-ui); letter-spacing:var(--tracking-overline); text-transform:uppercase; color:var(--text-3);">{{ X.attTerm }}</h3>
+    <sc-if value="{{ sel.hasHistory }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex; align-items:flex-end; gap:16px; flex-wrap:wrap;">
+        <span style="font:500 36px/1 var(--font-display); font-variant-numeric:var(--numeric-tabular);">{{ sel.rate }}<small style="font:500 15px var(--font-ui); color:var(--text-3); margin-left:2px;">%</small></span>
+        <div style="display:flex; flex-wrap:wrap; gap:6px;">
+          <sc-for list="{{ sel.counts }}" as="c" hint-placeholder-count="3">
+            <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.AttendanceBadge" status="{{ c.status }}" lang="{{ lang }}" hint-size="80px,22px">{{ c.label }}</x-import>
+          </sc-for>
+        </div>
+      </div>
+      <div role="list" aria-label="{{ X.recent }}" style="display:grid; grid-template-columns:repeat(5, minmax(0,1fr)); gap:6px;">
+        <sc-for list="{{ sel.strip }}" as="c" hint-placeholder-count="5">
+          <div role="listitem" style="display:flex; flex-direction:column; align-items:center; gap:6px; padding:8px 0; border-radius:var(--radius-md); background:{{ c.bg }}; color:{{ c.fg }}; border:1px solid {{ c.bd }};">
+            <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Icon" name="{{ c.icon }}" size="{{ 16 }}" stroke-width="{{ 2.5 }}" label="{{ c.label }}" hint-size="16px,16px"></x-import>
+            <span style="font:600 12px/1.2 var(--font-ui); font-variant-numeric:var(--numeric-tabular);">{{ c.date }}</span>
+          </div>
+        </sc-for>
+      </div>
+      <sc-if value="{{ sel.overLimit }}" hint-placeholder-val="{{ false }}">
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.AlertCard" tone="error" title="{{ X.limitTitle }}" hint-size="100%,80px">{{ sel.limitBody }}</x-import>
+      </sc-if>
+    </sc-if>
+    <sc-if value="{{ sel.noHistory }}" hint-placeholder-val="{{ false }}">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.AlertCard" tone="info" icon="user-plus" title="{{ X.newTitle }}" hint-size="100%,80px">{{ X.newBody }}</x-import>
+    </sc-if>
+  </div>
+
+  <div style="padding:18px 0; border-bottom:1px solid var(--border-subtle);">
+    <h3 style="margin:0 0 6px; font:600 11.5px/1.2 var(--font-ui); letter-spacing:var(--tracking-overline); text-transform:uppercase; color:var(--text-3);">{{ X.formsFees }}</h3>
+    <ul style="list-style:none; margin:0; padding:0;">
+      <li style="display:flex; align-items:center; gap:10px; min-height:44px; padding:8px 0; border-bottom:1px solid var(--border-subtle);">
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Icon" name="file-text" size="{{ 18 }}" style="color:var(--text-3);" hint-size="18px,18px"></x-import>
+        <div style="flex:1; min-width:0;"><div style="font:500 14.5px/1.3 var(--font-ui);">{{ X.forms }}</div><div style="font:400 13px/1.3 var(--font-ui); color:var(--text-3);">{{ sel.formsDetail }}</div></div>
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.FormStatusBadge" status="{{ sel.forms }}" lang="{{ lang }}" hint-size="90px,22px"></x-import>
+      </li>
+      <li style="display:flex; align-items:center; gap:10px; min-height:44px; padding:8px 0;">
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Icon" name="receipt" size="{{ 18 }}" style="color:var(--text-3);" hint-size="18px,18px"></x-import>
+        <div style="flex:1; min-width:0;"><div style="font:500 14.5px/1.3 var(--font-ui);">{{ X.fee }}</div><div style="font:400 13px/1.3 var(--font-ui); color:var(--text-3); font-variant-numeric:var(--numeric-tabular);">{{ sel.feeAmount }}</div></div>
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.FeeStatusBadge" status="{{ sel.fees }}" lang="{{ lang }}" hint-size="80px,22px"></x-import>
+      </li>
+    </ul>
+  </div>
+
+  <div style="padding:18px 0 0; display:flex; flex-direction:column; gap:12px;">
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+      <h3 style="margin:0; font:600 11.5px/1.2 var(--font-ui); letter-spacing:var(--tracking-overline); text-transform:uppercase; color:var(--text-3);">{{ X.notes }}</h3>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Badge" tone="slate" icon="lock" hint-size="120px,22px">{{ X.private }}</x-import>
+    </div>
+    <sc-for list="{{ sel.notes }}" as="nt" hint-placeholder-count="1">
+      <div style="display:flex; flex-direction:column; gap:4px; padding:12px 14px; background:var(--surface-muted); border-radius:var(--radius-md);">
+        <span style="font:600 12.5px/1.3 var(--font-ui); color:var(--text-3);">{{ nt.author }} · {{ nt.role }} · {{ nt.date }}</span>
+        <p style="margin:0; font:400 14px/1.5 var(--font-ui); color:var(--text-1);">{{ nt.text }}</p>
+      </div>
+    </sc-for>
+    <sc-if value="{{ sel.noNotes }}" hint-placeholder-val="{{ false }}">
+      <p style="margin:0; font-size:14px; color:var(--text-3);">{{ X.noNotes }}</p>
+    </sc-if>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="{{ X.addNote }}" multiline="{{ true }}" rows="{{ 3 }}" value="{{ draft }}" on-change="{{ onDraft }}" placeholder="{{ X.notePh }}" hint-size="100%,110px"></x-import>
+    <div style="display:flex; justify-content:flex-end;">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" size="sm" variant="secondary" icon-start="plus" on-click="{{ addNote }}" disabled="{{ noDraft }}" hint-size="100px,32px">{{ X.saveNote }}</x-import>
+    </div>
+  </div>
+</x-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const TX = {
+  en: { season: '2026–27 season', sub: (p, n) => `${p} choristers · ${n} new awaiting placement`, export: 'Export', add: 'Add chorister', search: 'Search name, school or guardian', chorister: 'Chorister', section: 'Section', part: 'Voice part', years: 'Years', school: 'School', guardian: 'Guardian', forms: 'Forms', fees: 'Fees', fee: 'Annual fee 2026–27', unplaced: 'Unplaced', outstanding: 'Outstanding', overdue: 'Overdue', due: 'Due', newF: 'New',
+    msg: 'Message guardians', remind: 'Send form reminder', showing: 'Showing', clear: 'Clear filter', viewOverdue: 'Fees overdue', viewUnplaced: 'Awaiting placement', close: 'Close', contact: 'Contact', email: 'Email', phone: 'Phone', guardians: 'Guardians', primary: 'Primary', call: 'Call', mail: 'Email',
+    attTerm: 'Attendance this term', recent: 'Recent rehearsals', present: 'Present', late: 'Late', absent: 'Absent', excused: 'Excused', limitTitle: 'At the absence limit', newTitle: 'First rehearsal tonight', newBody: 'Voice placement happens during the first two rehearsals.', formsFees: 'Forms and fees', allIn: 'All forms submitted', missing: (f) => `${f} not submitted`, notes: 'Staff notes', private: 'Staff only', noNotes: 'No notes yet.', addNote: 'Add a note', notePh: 'Visible to staff only', saveNote: 'Save note', edit: 'Edit', profile: 'Chorister profile', yr: (n) => `${n === 1 ? '1st' : n === 2 ? '2nd' : n === 3 ? '3rd' : n + 'th'} year`, newSeason: 'New this season', age: 'Age', footer: (n) => `${n} choristers` },
+  fr: { season: 'Saison 2026-2027', sub: (p, n) => `${p} choristes · ${n} nouveaux à placer`, export: 'Exporter', add: 'Ajouter un choriste', search: 'Rechercher nom, école ou parent', chorister: 'Choriste', section: 'Pupitre', part: 'Partie', years: 'Années', school: 'École', guardian: 'Parent', forms: 'Formulaires', fees: 'Frais', fee: 'Frais annuels 2026-2027', unplaced: 'À placer', outstanding: 'En attente', overdue: 'En retard', due: 'À payer', newF: 'Nouv.',
+    msg: 'Écrire aux parents', remind: 'Rappel de formulaires', showing: 'Affichage', clear: 'Retirer le filtre', viewOverdue: 'Frais en retard', viewUnplaced: 'À placer', close: 'Fermer', contact: 'Coordonnées', email: 'Courriel', phone: 'Téléphone', guardians: 'Parents', primary: 'Principal', call: 'Appeler', mail: 'Écrire à',
+    attTerm: 'Présence ce trimestre', recent: 'Répétitions récentes', present: 'Présent', late: 'Retard', absent: 'Absent', excused: 'Motivé', limitTitle: 'Limite d’absences atteinte', newTitle: 'Première répétition ce soir', newBody: 'Le pupitre est choisi pendant les deux premières répétitions.', formsFees: 'Formulaires et frais', allIn: 'Tous les formulaires remis', missing: (f) => `${f} non remis`, notes: 'Notes du personnel', private: 'Personnel seulement', noNotes: 'Aucune note.', addNote: 'Ajouter une note', notePh: 'Visible par le personnel seulement', saveNote: 'Enregistrer', edit: 'Modifier', profile: 'Profil du choriste', yr: (n) => `${n}${n === 1 ? 're' : 'e'} année`, newSeason: 'Nouveau cette saison', age: 'Âge', footer: (n) => `${n} choristes` },
+};
+const STRIP = {
+  present: ['var(--att-present-subtle)', 'var(--att-present-text)', 'var(--success-border)', 'check'],
+  late: ['var(--att-late-subtle)', 'var(--att-late-text)', 'var(--warning-border)', 'clock'],
+  absent: ['var(--att-absent-subtle)', 'var(--att-absent-text)', 'var(--error-border)', 'x'],
+  excused: ['var(--att-excused-subtle)', 'var(--att-excused-text)', 'var(--neutral-border)', 'circle-minus'],
+};
+class Component extends DCLogic {
+  state = this.initState(this.props);
+  initState(p) {
+    const ids = (p.data?.choristers || []).map((c) => c.id);
+    return { view: ['overdue', 'unplaced'].includes(p.demo) ? p.demo : null, selectedId: ids.includes(p.demo) ? p.demo : null, draft: '', extraNotes: {} };
+  }
+  componentDidMount() { this.waitDS(); }
+  waitDS() { if (window.ChoirbookDesignSystem_9d7b3b?.DataTable) this.forceUpdate(); else setTimeout(() => this.waitDS(), 60); }
+  componentDidUpdate(prev) { if (prev.demo !== this.props.demo) this.setState(this.initState(this.props)); }
+  renderVals() {
+    const p = this.props, s = this.state;
+    const NS = window.ChoirbookDesignSystem_9d7b3b || {};
+    const h = (C, pr, ...c) => (C ? React.createElement(C, pr, ...c) : null);
+    const d = p.data || {}, t = p.t || {};
+    const lang = p.lang ?? 'en';
+    const X = TX[lang];
+    const dev = p.device || 'desktop';
+    const all = (d.choristers || []).map((c) => ({ ...c, guardian: c.guardians[0]?.name || '' }));
+    let rows = all;
+    if (s.view === 'overdue') rows = all.filter((c) => c.fees === 'overdue');
+    if (s.view === 'unplaced') rows = all.filter((c) => !c.section);
+    const showSchool = dev === 'desktop';
+    const person = (r) => h('span', { style: { display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 } },
+      h(NS.Avatar, { name: r.name, size: 30 }),
+      h('span', { style: { minWidth: 0 } }, h('span', { style: { display: 'block', fontWeight: 600, color: 'var(--text-1)', whiteSpace: 'nowrap' } }, r.name), h('span', { style: { display: 'block', fontSize: 12.5, color: 'var(--text-3)' } }, r.pronouns)));
+    const columns = [
+      { key: 'name', header: X.chorister, sortable: true, sortValue: (r) => r.last + r.first, render: person },
+      { key: 'section', header: X.section, sortable: true, sortValue: (r) => 'SATBZ'.indexOf(r.section || 'Z'), render: (r) => r.section ? h(NS.VoicePartBadge, { part: r.section, showLabel: true, lang }) : h(NS.Badge, { tone: 'info', icon: 'user-plus' }, X.unplaced) },
+      { key: 'part', header: X.part, sortable: true, sortValue: (r) => r.part || 'Z', render: (r) => r.part || '—' },
+      { key: 'years', header: X.years, sortable: true, align: 'right', render: (r) => (r.years ? String(r.years) : X.newF) },
+      ...(showSchool ? [{ key: 'school', header: X.school, sortable: true, render: (r) => h('span', { style: { whiteSpace: 'nowrap' } }, r.school) }] : []),
+      { key: 'guardian', header: X.guardian, sortable: true, render: (r) => h('span', { style: { whiteSpace: 'nowrap' } }, r.guardian) },
+      { key: 'forms', header: X.forms, sortable: true, sortValue: (r) => (r.forms === 'approved' ? 1 : 0), render: (r) => h(NS.FormStatusBadge, { status: r.forms, lang }) },
+      { key: 'fees', header: X.fees, sortable: true, sortValue: (r) => ({ overdue: 0, due: 1, paid: 2 })[r.fees], render: (r) => h(NS.FeeStatusBadge, { status: r.fees, lang }) },
+    ];
+    const cnt = (f) => all.filter(f).length;
+    const filters = [
+      { id: 'section', label: X.section, options: [...['S', 'A', 'T', 'B'].map((k) => ({ value: k, label: k, count: cnt((r) => r.section === k) })), { value: 'U', label: X.newF, count: cnt((r) => !r.section) }], match: (r, v) => (v === 'U' ? !r.section : r.section === v) },
+      { id: 'forms', label: X.forms, options: [{ value: 'out', label: X.outstanding, count: cnt((r) => r.forms !== 'approved') }], match: (r) => r.forms !== 'approved' },
+      { id: 'fees', label: X.fees, options: [{ value: 'overdue', label: X.overdue, count: cnt((r) => r.fees === 'overdue') }, { value: 'due', label: X.due, count: cnt((r) => r.fees === 'due') }], match: (r, v) => r.fees === v },
+    ];
+    const selC = all.find((c) => c.id === s.selectedId);
+    let sel = { guardians: [], counts: [], strip: [], notes: [] };
+    let sheetHeader = null, sheetFooter = null;
+    if (selC) {
+      const k = (st) => selC.recent.filter((x) => x === st).length;
+      const notes = [...(s.extraNotes[selC.id] || []), ...selC.notes];
+      sel = {
+        ...selC,
+        guardians: selC.guardians.map((g) => ({ ...g, callLabel: `${X.call} ${g.name}`, mailLabel: `${X.mail} ${g.name}` })),
+        hasHistory: selC.recent.length > 0, noHistory: selC.recent.length === 0,
+        counts: ['present', 'late', 'absent', 'excused'].filter((st) => k(st)).map((st) => ({ status: st, label: `${X[st]} ${k(st)}` })),
+        strip: selC.recent.map((st, i) => ({ bg: STRIP[st][0], fg: STRIP[st][1], bd: STRIP[st][2], icon: STRIP[st][3], label: X[st], date: new Intl.DateTimeFormat(lang === 'fr' ? 'fr-CA' : 'en-CA', { month: 'short', day: 'numeric' }).format(new Date(d.rehearsalDates[i] + 'T12:00')) })),
+        overLimit: selC.absences >= (d.stats?.threshold ?? 3),
+        limitBody: lang === 'fr' ? `${selC.absences} absences sur ${d.stats?.threshold} permises ce trimestre.` : `${selC.absences} of ${d.stats?.threshold} allowed absences this term.`,
+        formsDetail: selC.formsMissing ? X.missing(selC.formsMissing) : X.allIn,
+        notes, noNotes: notes.length === 0,
+      };
+      sheetHeader = h('div', { style: { display: 'flex', gap: 14, alignItems: 'center', minWidth: 0 } },
+        h(NS.Avatar, { name: selC.name, size: 56 }),
+        h('div', { style: { minWidth: 0 } },
+          h('h2', { style: { margin: 0, font: '500 24px/1.2 var(--font-display)', letterSpacing: 'var(--tracking-display)' } }, selC.name),
+          h('div', { style: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '6px 10px', marginTop: 6, font: '400 13px/1.3 var(--font-ui)', color: 'var(--text-3)' } },
+            selC.part ? h(NS.VoicePartBadge, { part: selC.part, variant: 'pill', lang }) : h(NS.Badge, { tone: 'info', icon: 'user-plus' }, X.unplaced),
+            h('span', null, selC.pronouns), h('span', null, selC.years ? X.yr(selC.years) : X.newSeason), h('span', null, `${X.age} ${selC.age}`))));
+      sheetFooter = [h(NS.Button, { key: 'm', iconStart: 'mail' }, X.msg), h(NS.Button, { key: 'e', variant: 'ghost', iconStart: 'pencil' }, X.edit)];
+    }
+    return {
+      t, X, lang,
+      pad: dev === 'desktop' ? '28px 32px 56px' : dev === 'mobile' ? '16px 16px 32px' : '24px 24px 48px',
+      columns, rows, filters,
+      getRowId: (r) => r.id, rowLabel: (r) => r.name, searchKeys: ['name', 'school', 'guardian'],
+      defaultSort: { key: 'name', dir: 'asc' },
+      bulkActions: () => [h(NS.Button, { key: 'm', size: 'sm', variant: 'secondary', iconStart: 'mail' }, X.msg), h(NS.Button, { key: 'r', size: 'sm', variant: 'secondary', iconStart: 'bell' }, X.remind)],
+      openRow: (r) => this.setState({ selectedId: r.id, draft: '' }),
+      tableFooter: h('span', null, X.footer(rows.length)),
+      hasView: !!s.view, viewLabel: s.view === 'overdue' ? X.viewOverdue : X.viewUnplaced, viewIcon: s.view === 'overdue' ? 'receipt' : 'user-plus',
+      clearView: () => this.setState({ view: null }),
+      X_sub: '',
+      hasSel: !!selC, sel, sheetHeader, sheetFooter, sheetLabel: selC ? `${X.profile}: ${selC.name}` : X.profile,
+      close: () => this.setState({ selectedId: null }),
+      draft: s.draft, onDraft: (e) => this.setState({ draft: e.target.value }), noDraft: !s.draft.trim(),
+      addNote: () => {
+        if (!s.draft.trim() || !selC) return;
+        const note = { author: d.users.staff.name, role: d.users.staff.role, date: lang === 'fr' ? 'À l’instant' : 'Just now', text: s.draft.trim() };
+        this.setState({ draft: '', extraNotes: { ...s.extraNotes, [selC.id]: [note, ...(s.extraNotes[selC.id] || [])] } });
+      },
+      ...{ X: { ...X, sub: X.sub(d.stats?.placed ?? 0, d.stats?.unplaced ?? 0) } },
+    };
+  }
+}
+</script>
+</body>
+</html>

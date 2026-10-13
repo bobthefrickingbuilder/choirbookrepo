@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="choirbook.css">
+<script src="_ds/choirbook-design-system-9d7b3b08-5cc4-4553-b44b-4db9eb92dfdb/_ds_bundle.js"></script>
+</helmet>
+<div style="width:100%; max-width:1200px; margin:0 auto; padding:{{ pad }}; display:flex; flex-direction:column; gap:20px;">
+  <header style="display:flex; flex-wrap:wrap; align-items:flex-end; gap:12px 16px;">
+    <div style="min-width:0; display:flex; flex-direction:column; gap:6px;">
+      <h1 style="font:500 var(--text-h1)/var(--lh-h1) var(--font-display); letter-spacing:var(--tracking-display); margin:0;">{{ t.comms }}</h1>
+      <p style="margin:0; font-size:15px; color:var(--text-2);">{{ sub }}</p>
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:8px; margin-left:auto;">
+      <sc-if value="{{ isAnn }}" hint-placeholder-val="{{ true }}">
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" icon-start="megaphone" on-click="{{ openCompose }}" hint-size="190px,40px">{{ t.sendAnnouncement }}</x-import>
+      </sc-if>
+    </div>
+  </header>
+
+  <div style="max-width:560px;">
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.SegmentedControl" full-width="{{ true }}" label="Communications section" value="{{ tab }}" on-change="{{ setTab }}" options="{{ tabOptions }}" hint-size="100%,38px"></x-import>
+  </div>
+
+  <sc-if value="{{ isAnn }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex; flex-direction:column; gap:20px;">
+      <sc-if value="{{ hasScheduled }}" hint-placeholder-val="{{ true }}">
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Card" title="Scheduled" padded="{{ false }}" hint-size="100%,100px">
+          <ul style="list-style:none; margin:0; padding:0;">
+            <sc-for list="{{ scheduled }}" as="a" hint-placeholder-count="1">
+              <li style="display:flex; flex-wrap:wrap; align-items:center; gap:8px 16px; padding:14px 20px; border-top:1px solid var(--border-subtle);">
+                <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Icon" name="calendar-clock" size="{{ 18 }}" style="color:var(--info-text);" hint-size="18px,18px"></x-import>
+                <div style="flex:1 1 240px; min-width:0;">
+                  <div style="font:600 15px/1.35 var(--font-ui);">{{ a.title }}</div>
+                  <div style="font-size:13px; color:var(--text-3);">{{ a.audience }} · {{ a.date }}</div>
+                </div>
+                <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" size="sm" variant="ghost" icon-start="pencil" hint-size="70px,32px">Edit</x-import>
+              </li>
+            </sc-for>
+          </ul>
+        </x-import>
+      </sc-if>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Card" title="Sent" padded="{{ false }}" hint-size="100%,320px">
+        <ul style="list-style:none; margin:0; padding:0;">
+          <sc-for list="{{ sent }}" as="a" hint-placeholder-count="4">
+            <li style="display:flex; flex-wrap:wrap; align-items:center; gap:10px 20px; padding:14px 20px; border-top:1px solid var(--border-subtle);">
+              <div style="flex:1 1 260px; min-width:0;">
+                <div style="font:600 15px/1.35 var(--font-ui);">{{ a.title }}</div>
+                <div style="font-size:13px; color:var(--text-3);">{{ a.audience }} · {{ a.author }} · {{ a.date }}</div>
+              </div>
+              <div style="flex:0 1 220px; min-width:160px; display:flex; flex-direction:column; gap:5px;">
+                <span style="font-size:13px; color:var(--text-2); font-variant-numeric:var(--numeric-tabular);">{{ a.readText }}</span>
+                <div aria-hidden="true" style="height:6px; border-radius:var(--radius-full); background:var(--surface-muted-strong); overflow:hidden;"><div style="height:100%; width:{{ a.pct }}; background:var(--accent); border-radius:inherit;"></div></div>
+              </div>
+              <sc-if value="{{ a.hasAck }}" hint-placeholder-val="{{ false }}">
+                <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Badge" tone="warning" icon="clipboard-check" hint-size="140px,22px">{{ a.ackText }}</x-import>
+              </sc-if>
+            </li>
+          </sc-for>
+        </ul>
+      </x-import>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isInbox }}" hint-placeholder-val="{{ false }}">
+    <dc-import name="Messages" data="{{ data }}" t="{{ t }}" lang="{{ lang }}" device="{{ device }}" go="{{ go }}" demo="{{ inboxDemo }}" role="office" hint-size="100%,640px"></dc-import>
+  </sc-if>
+  <sc-if value="{{ isMonthly }}" hint-placeholder-val="{{ false }}">
+    <dc-import name="Monthly Updates" data="{{ data }}" t="{{ t }}" lang="{{ lang }}" device="{{ device }}" go="{{ go }}" demo="{{ demo }}" hint-size="100%,1200px"></dc-import>
+  </sc-if>
+</div>
+
+<x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Modal" open="{{ composeOpen }}" on-close="{{ close }}" size="md" title="New announcement" close-label="Close" footer="{{ composeFooter }}" hint-size="0px,0px">
+  <div style="display:flex; flex-direction:column; gap:18px;">
+    <fieldset style="border:0; margin:0; padding:0;">
+      <legend style="padding:0; margin-bottom:8px; font:600 14px/1.3 var(--font-ui);">Send to</legend>
+      <div style="display:flex; flex-wrap:wrap; gap:6px;">
+        <sc-for list="{{ audChips }}" as="c" hint-placeholder-count="7">
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Chip" selected="{{ c.on }}" on-click="{{ c.toggle }}" hint-size="90px,32px">{{ c.label }}</x-import>
+        </sc-for>
+      </div>
+      <p style="margin:8px 0 0; font-size:13px; color:var(--text-3); font-variant-numeric:var(--numeric-tabular);">{{ reach }}</p>
+    </fieldset>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="Title" required="{{ true }}" value="{{ c.title }}" on-change="{{ onC.title }}" hint-size="100%,72px"></x-import>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="Message" required="{{ true }}" multiline="{{ true }}" rows="{{ 5 }}" value="{{ c.body }}" on-change="{{ onC.body }}" hint-size="100%,170px"></x-import>
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Toggle" label="Also send by email" label-position="end" checked="{{ c.email }}" on-change="{{ toggleEmail }}" hint-size="100%,32px"></x-import>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Toggle" label="Ask people to confirm they’ve read it" description="Shows an “I’ve read this” button and tracks who hasn’t." label-position="end" checked="{{ c.ack }}" on-change="{{ toggleAck }}" hint-size="100%,44px"></x-import>
+    </div>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.RadioGroup" label="When" value="{{ c.when }}" on-change="{{ setWhen }}" options="{{ whenOptions }}" hint-size="100%,100px"></x-import>
+    <sc-if value="{{ isLater }}" hint-placeholder-val="{{ false }}">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.FormRow" hint-size="100%,72px">
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.DatePicker" label="Date" value="{{ c.date }}" on-change="{{ setDate }}" locale="{{ locale }}" hint-size="100%,72px"></x-import>
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TimePicker" label="Time" value="{{ c.time }}" on-change="{{ setTime }}" locale="{{ locale }}" hint-size="100%,72px"></x-import>
+      </x-import>
+    </sc-if>
+  </div>
+</x-import>
+
+<x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.ToastStack" toasts="{{ toasts }}" on-dismiss="{{ dismissToast }}" hint-size="0px,0px"></x-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const AUD = [['everyone', 'Everyone'], ['guardians', 'Guardians'], ['choristers', 'Choristers'], ['S', 'Sopranos'], ['A', 'Altos'], ['T', 'Tenors'], ['B', 'Basses']];
+const BLANK = { aud: { everyone: true }, title: '', body: '', email: true, ack: false, when: 'now', date: '2026-10-19', time: '09:00' };
+class Component extends DCLogic {
+  state = this.initState(this.props);
+  initState(p) {
+    const demo = p.demo || '';
+    const tab = demo === 'inbox' || demo.startsWith('t') ? 'inbox' : demo.startsWith('monthly') ? 'monthly' : 'ann';
+    return { tab, modal: demo === 'compose' ? 'compose' : null, c: demo === 'compose' ? { ...BLANK, aud: { guardians: true }, title: 'Concert dress for Winter Light', body: 'Choristers wear concert blacks with the choir scarf on December 12. If you need a scarf, tell Ruth Campbell by November 26.', ack: true } : { ...BLANK }, sent: p.data?.announcementsSent || [], scheduled: p.data?.announcementsScheduled || [], toasts: [] };
+  }
+  componentDidMount() { this.waitDS(); }
+  waitDS() { if (window.ChoirbookDesignSystem_9d7b3b?.SegmentedControl) this.forceUpdate(); else setTimeout(() => this.waitDS(), 60); }
+  componentDidUpdate(prev) { if (prev.demo !== this.props.demo || prev.data !== this.props.data) this.setState(this.initState(this.props)); }
+  toast(title, body) { const id = String(Date.now()); this.setState((s) => ({ toasts: [...s.toasts, { id, tone: 'success', title, children: body, duration: 5000 }] })); }
+  renderVals() {
+    const p = this.props, s = this.state;
+    const NS = window.ChoirbookDesignSystem_9d7b3b || {};
+    const h = (C, pr, ...c) => (C ? React.createElement(C, pr, ...c) : null);
+    const d = p.data || {}, t = p.t || {};
+    const lang = p.lang ?? 'en', locale = lang === 'fr' ? 'fr-CA' : 'en-CA';
+    const mobile = p.device === 'mobile';
+    const cs = d.choristers || [];
+    const unread = (d.threads || []).filter((x) => x.unread).length;
+    const a = s.c.aud;
+    const secs = ['S', 'A', 'T', 'B'].filter((k) => a[k]);
+    const nCh = a.everyone || a.choristers || a.guardians ? cs.length : cs.filter((x) => secs.includes(x.section)).length;
+    const nG = Math.round(nCh * 1.32);
+    const reachText = a.guardians && !a.everyone && !a.choristers ? `${nG} guardians` : a.choristers && !a.everyone && !a.guardians ? `${nCh} choristers` : `${nCh} choristers and ${nG} guardians`;
+    const audLabel = a.everyone ? 'Everyone' : AUD.filter(([k]) => a[k]).map(([, l]) => l).join(', ');
+    const setC = (k, v) => this.setState((x) => ({ c: { ...x.c, [k]: v } }));
+    const close = () => this.setState({ modal: null });
+    const ok = s.c.title.trim() && s.c.body.trim() && Object.values(a).some(Boolean);
+    const fmt = (iso) => new Intl.DateTimeFormat(locale, { month: 'short', day: 'numeric' }).format(new Date(iso + 'T12:00'));
+    return {
+      t, lang, locale, data: d, device: p.device, go: p.go, demo: p.demo,
+      pad: mobile ? '16px 16px 32px' : p.device === 'tablet' ? '24px 24px 48px' : '28px 32px 56px',
+      sub: s.tab === 'inbox' ? 'Messages from guardians and choristers to the choir office.' : s.tab === 'monthly' ? 'A personal email to each family once a month.' : 'Announcements appear on everyone’s home screen and go out by email.',
+      tab: s.tab, setTab: (v) => this.setState({ tab: v }),
+      tabOptions: [{ value: 'ann', label: 'Announcements', icon: 'megaphone' }, { value: 'inbox', label: unread ? `Inbox ${unread}` : 'Inbox', icon: 'inbox' }, { value: 'monthly', label: 'Monthly updates', icon: 'calendar-clock' }],
+      isAnn: s.tab === 'ann', isInbox: s.tab === 'inbox', isMonthly: s.tab === 'monthly',
+      inboxDemo: (p.demo || '').startsWith('t') ? p.demo : undefined,
+      hasScheduled: s.scheduled.length > 0, scheduled: s.scheduled,
+      sent: s.sent.map((x) => ({ ...x, readText: `Read by ${x.read} of ${x.total}`, pct: `${Math.round((x.read / x.total) * 100)}%`, hasAck: !!x.ack, ackText: x.ack ? `${x.total - x.ack} haven’t confirmed` : '' })),
+      openCompose: () => this.setState({ modal: 'compose', c: { ...BLANK } }), composeOpen: s.modal === 'compose', close,
+      c: s.c, onC: { title: (e) => setC('title', e.target.value), body: (e) => setC('body', e.target.value) },
+      audChips: AUD.map(([k, label]) => ({ label, on: !!a[k], toggle: () => setC('aud', k === 'everyone' ? { everyone: true } : { ...a, everyone: false, [k]: !a[k] }) })),
+      reach: `Reaches ${reachText}.`,
+      toggleEmail: (e) => setC('email', e.target.checked), toggleAck: (e) => setC('ack', e.target.checked),
+      whenOptions: [{ value: 'now', label: 'Send now' }, { value: 'later', label: 'Schedule for later' }],
+      setWhen: (v) => setC('when', v), isLater: s.c.when === 'later',
+      setDate: (v) => setC('date', v), setTime: (v) => setC('time', v),
+      composeFooter: [h(NS.Button, { key: 'c', variant: 'secondary', onClick: close }, 'Cancel'), h(NS.Button, { key: 's', iconStart: s.c.when === 'later' ? 'calendar-clock' : 'send', disabled: !ok, onClick: () => {
+        const item = { id: Date.now(), title: s.c.title.trim(), audience: audLabel, author: d.users?.staff?.name, date: s.c.when === 'later' ? `Scheduled for ${fmt(s.c.date)}, ${s.c.time}` : 'Just now', read: 0, total: nCh + nG, ack: s.c.ack ? 0 : undefined };
+        if (s.c.when === 'later') this.setState((x) => ({ scheduled: [item, ...x.scheduled], modal: null }));
+        else this.setState((x) => ({ sent: [item, ...x.sent], modal: null }));
+        this.toast(s.c.when === 'later' ? 'Announcement scheduled' : 'Announcement sent', s.c.when === 'later' ? `Goes to ${reachText} on ${fmt(s.c.date)}.` : `Sent to ${reachText}.`);
+      } }, s.c.when === 'later' ? 'Schedule announcement' : 'Send announcement')],
+      toasts: s.toasts, dismissToast: (id) => this.setState((x) => ({ toasts: x.toasts.filter((tt) => tt.id !== id) })),
+    };
+  }
+}
+</script>
+</body>
+</html>

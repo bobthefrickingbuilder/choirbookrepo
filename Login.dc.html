@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="choirbook.css">
+<script src="_ds/choirbook-design-system-9d7b3b08-5cc4-4553-b44b-4db9eb92dfdb/_ds_bundle.js"></script>
+</helmet>
+<div style="flex:1; min-height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:28px; padding:{{ pad }}; background:var(--bg-app);">
+  <div style="width:100%; max-width:420px; display:flex; flex-direction:column; gap:20px; padding:{{ cardPad }}; background:var(--surface-card); border:1px solid var(--border-subtle); border-radius:var(--radius-xl); box-shadow:var(--shadow-2);">
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.ChoirLogo" name="Ottawa Regional Youth Choir" short-name="ORYC" subtitle="{{ L.memberLogin }}" size="{{ 44 }}" hint-size="100%,44px"></x-import>
+
+    <sc-if value="{{ isLoginMode }}" hint-placeholder-val="{{ true }}">
+    <form onSubmit="{{ submit }}" style="display:flex; flex-direction:column; gap:18px;">
+      <div style="display:flex; flex-direction:column; gap:4px;">
+        <h1 style="font:500 var(--text-h2)/var(--lh-h2) var(--font-display); margin:0;">{{ L.signIn }}</h1>
+        <p style="font-size:var(--text-body); color:var(--text-2); margin:0;">{{ L.intro }}</p>
+      </div>
+      <sc-if value="{{ hasError }}" hint-placeholder-val="{{ false }}">
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.AlertCard" tone="error" title="{{ L.errTitle }}" hint-size="100%,80px">{{ L.errBody }}</x-import>
+      </sc-if>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="{{ L.email }}" type="email" icon-start="mail" value="{{ email }}" on-change="{{ onEmail }}" auto-complete="email" required="{{ true }}" size="lg" hint-size="100%,72px"></x-import>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="{{ L.password }}" type="{{ pwType }}" icon-start="lock" value="{{ password }}" on-change="{{ onPassword }}" auto-complete="current-password" required="{{ true }}" size="lg" trailing="{{ pwToggle }}" hint-size="100%,72px"></x-import>
+      <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px 12px;">
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Checkbox" label="{{ L.remember }}" checked="{{ remember }}" on-change="{{ toggleRemember }}" hint-size="160px,24px"></x-import>
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextLink" href="#" on-click="{{ goForgot }}" hint-size="120px,20px">{{ L.forgot }}</x-import>
+      </div>
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" type="submit" size="lg" full-width="{{ true }}" loading="{{ loading }}" hint-size="100%,48px">{{ L.signInBtn }}</x-import>
+    </form>
+    </sc-if>
+    <sc-if value="{{ isForgot }}" hint-placeholder-val="{{ false }}">
+      <form onSubmit="{{ sendReset }}" style="display:flex; flex-direction:column; gap:18px;">
+        <div style="display:flex; flex-direction:column; gap:4px;">
+          <h1 style="font:500 var(--text-h2)/var(--lh-h2) var(--font-display); margin:0;">Reset your password</h1>
+          <p style="font-size:var(--text-body); color:var(--text-2); margin:0;">Enter the email you sign in with. We’ll send a link to choose a new password.</p>
+        </div>
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="{{ L.email }}" type="email" icon-start="mail" value="{{ email }}" on-change="{{ onEmail }}" auto-complete="email" required="{{ true }}" size="lg" hint-size="100%,72px"></x-import>
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" type="submit" size="lg" full-width="{{ true }}" icon-start="send" hint-size="100%,48px">Send reset link</x-import>
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" variant="ghost" icon-start="arrow-left" on-click="{{ backToLogin }}" hint-size="140px,40px">Back to sign in</x-import>
+      </form>
+    </sc-if>
+    <sc-if value="{{ isSent }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <span aria-hidden="true" style="width:48px; height:48px; border-radius:var(--radius-full); display:grid; place-items:center; background:var(--success-subtle); color:var(--success-text); border:1px solid var(--success-border);">
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Icon" name="mail" size="{{ 22 }}" hint-size="22px,22px"></x-import>
+        </span>
+        <div style="display:flex; flex-direction:column; gap:6px;">
+          <h1 style="font:500 var(--text-h2)/var(--lh-h2) var(--font-display); margin:0;">Check your email</h1>
+          <p style="color:var(--text-2); margin:0;">If <strong style="color:var(--text-1); font-weight:600;">{{ email }}</strong> has a Choirbook account, a reset link is on its way. It expires in 30 minutes.</p>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:8px;">
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" variant="secondary" icon-start="arrow-left" on-click="{{ backToLogin }}" hint-size="140px,40px">Back to sign in</x-import>
+          <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" variant="ghost" on-click="{{ openReset }}" hint-size="160px,40px">Prototype: open the link</x-import>
+        </div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ isReset }}" hint-placeholder-val="{{ false }}">
+      <form onSubmit="{{ saveNew }}" style="display:flex; flex-direction:column; gap:18px;">
+        <div style="display:flex; flex-direction:column; gap:4px;">
+          <h1 style="font:500 var(--text-h2)/var(--lh-h2) var(--font-display); margin:0;">Choose a new password</h1>
+          <p style="font-size:var(--text-body); color:var(--text-2); margin:0;">For {{ email }}</p>
+        </div>
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="New password" type="{{ pwType }}" icon-start="lock" value="{{ newPw }}" on-change="{{ onNewPw }}" auto-complete="new-password" hint="At least 10 characters. A short sentence works well." error="{{ newErr }}" trailing="{{ pwToggle }}" size="lg" hint-size="100%,90px"></x-import>
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.TextInput" label="Confirm new password" type="{{ pwType }}" icon-start="lock" value="{{ confirmPw }}" on-change="{{ onConfirmPw }}" auto-complete="new-password" error="{{ confirmErr }}" size="lg" hint-size="100%,72px"></x-import>
+        <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" type="submit" size="lg" full-width="{{ true }}" icon-start="check" hint-size="100%,48px">Save and sign in</x-import>
+      </form>
+    </sc-if>
+
+    <div style="display:flex; flex-direction:column; gap:12px; padding-top:16px; border-top:1px solid var(--border-subtle);">
+      <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.SegmentedControl" full-width="{{ true }}" label="{{ L.language }}" value="{{ lang }}" on-change="{{ setLang }}" options="{{ langOptions }}" hint-size="100%,38px"></x-import>
+      <p style="margin:0; font-size:var(--text-body-s); color:var(--text-3); text-align:center;">{{ L.newHere }} <a href="#" onClick="{{ goRegister }}" style="color:var(--link);">{{ L.register }}</a></p>
+    </div>
+  </div>
+
+  <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.PoweredBy" lang="{{ lang }}" hint-size="160px,20px"></x-import>
+
+  <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:6px; padding:6px; border:1px dashed var(--border-strong); border-radius:var(--radius-full);">
+    <span style="padding:0 8px; font:600 11px/1 var(--font-ui); letter-spacing:var(--tracking-overline); text-transform:uppercase; color:var(--text-3);">Prototype · continue as</span>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" size="sm" variant="ghost" on-click="{{ asStaff }}" hint-size="70px,32px">Staff</x-import>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" size="sm" variant="ghost" on-click="{{ asGuardian }}" hint-size="80px,32px">Guardian</x-import>
+    <x-import component-from-global-scope="ChoirbookDesignSystem_9d7b3b.Button" size="sm" variant="ghost" on-click="{{ asChorister }}" hint-size="80px,32px">Chorister</x-import>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const LX = {
+  en: { memberLogin: 'Member login', signIn: 'Sign in', intro: 'Staff, guardians and choristers all sign in here.', email: 'Email', password: 'Password', signInBtn: 'Sign in', remember: 'Keep me signed in', forgot: 'Forgot password?', language: 'Language', newHere: 'New to the choir?', register: 'Register for 2026–27', errTitle: 'Email or password is incorrect', errBody: 'Check both and try again. After 5 tries, sign-in pauses for 15 minutes.', show: 'Show password', hide: 'Hide password' },
+  fr: { memberLogin: 'Connexion des membres', signIn: 'Connexion', intro: 'Le personnel, les parents et les choristes se connectent ici.', email: 'Courriel', password: 'Mot de passe', signInBtn: 'Se connecter', remember: 'Rester connecté', forgot: 'Mot de passe oublié ?', language: 'Langue', newHere: 'Nouveau au chœur ?', register: 'S’inscrire pour 2026-2027', errTitle: 'Courriel ou mot de passe incorrect', errBody: 'Vérifiez les deux et réessayez. Après 5 essais, la connexion est suspendue 15 minutes.', show: 'Afficher le mot de passe', hide: 'Masquer le mot de passe' },
+};
+class Component extends DCLogic {
+  state = this.initState(this.props);
+  initState(p) { const err = p.demo === 'error'; return { mode: ['forgot', 'sent', 'reset'].includes(p.demo) ? p.demo : 'login', email: 'daniel.martin@example.com', password: err ? 'harmonie2026' : '', show: false, loading: false, remember: true, error: err, newPw: p.demo === 'reset' ? 'harmony-every-thursday' : '', confirmPw: p.demo === 'reset' ? 'harmony-every-thursday' : '', resetErr: null }; }
+  componentDidMount() { this.waitDS(); }
+  waitDS() { if (window.ChoirbookDesignSystem_9d7b3b?.IconButton) this.forceUpdate(); else setTimeout(() => this.waitDS(), 60); }
+  componentDidUpdate(prev) { if (prev.demo !== this.props.demo) this.setState(this.initState(this.props)); }
+  renderVals() {
+    const p = this.props, s = this.state;
+    const NS = window.ChoirbookDesignSystem_9d7b3b || {};
+    const lang = p.lang ?? 'en';
+    const L = LX[lang];
+    const mobile = p.device === 'mobile';
+    const go = (r) => (e) => { e?.preventDefault?.(); p.go?.(r); };
+    return {
+      L, lang, pad: mobile ? '24px 16px 32px' : '48px 24px',
+      cardPad: mobile ? '24px 20px' : '32px',
+      email: s.email, password: s.password, hasError: s.error,
+      onEmail: (e) => this.setState({ email: e.target.value, error: false }),
+      onPassword: (e) => this.setState({ password: e.target.value, error: false }),
+      pwType: s.show ? 'text' : 'password',
+      pwToggle: NS.IconButton ? React.createElement(NS.IconButton, { icon: s.show ? 'eye-off' : 'eye', label: s.show ? L.hide : L.show, size: 'sm', variant: 'ghost', onClick: () => this.setState({ show: !s.show }) }) : null,
+      remember: s.remember, toggleRemember: (e) => this.setState({ remember: e.target.checked }),
+      loading: s.loading,
+      submit: (e) => {
+        e.preventDefault();
+        if (!s.password) { this.setState({ error: true }); return; }
+        this.setState({ loading: true });
+        setTimeout(() => { this.setState({ loading: false }); p.go?.('staff-home'); }, 600);
+      },
+      noop: (e) => e?.preventDefault?.(),
+      isLoginMode: s.mode === 'login', isForgot: s.mode === 'forgot', isSent: s.mode === 'sent', isReset: s.mode === 'reset',
+      goForgot: (e) => { e?.preventDefault?.(); this.setState({ mode: 'forgot' }); },
+      backToLogin: () => this.setState({ mode: 'login', error: false }),
+      sendReset: (e) => { e.preventDefault(); this.setState({ mode: 'sent' }); },
+      openReset: () => this.setState({ mode: 'reset' }),
+      newPw: s.newPw, confirmPw: s.confirmPw,
+      onNewPw: (e) => this.setState({ newPw: e.target.value, resetErr: null }), onConfirmPw: (e) => this.setState({ confirmPw: e.target.value, resetErr: null }),
+      newErr: s.resetErr === 'short' ? 'Use at least 10 characters' : undefined, confirmErr: s.resetErr === 'match' ? 'The passwords don’t match' : undefined,
+      saveNew: (e) => { e.preventDefault(); if (s.newPw.length < 10) return this.setState({ resetErr: 'short' }); if (s.newPw !== s.confirmPw) return this.setState({ resetErr: 'match' }); p.go?.('guardian-home'); },
+      langOptions: [{ value: 'en', label: 'English' }, { value: 'fr', label: 'Français' }],
+      setLang: (v) => p.setLang?.(v),
+      goRegister: go('register'), asStaff: go('staff-home'), asGuardian: go('guardian-home'), asChorister: go('chorister-home'),
+    };
+  }
+}
+</script>
+</body>
+</html>

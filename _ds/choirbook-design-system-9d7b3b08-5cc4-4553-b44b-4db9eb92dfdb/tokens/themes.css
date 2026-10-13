@@ -1,0 +1,35 @@
+/* Choir theme layers. A choir supplies ONE brand colour + logo + name.
+   --choir-brand holds the raw brand colour (decorative only: header rule, logo tile).
+   --accent* are contrast-checked derivatives used for anything interactive or textual.
+   Neutrals, state colours, voice parts and attendance never change per choir.
+   Set data-choir on <html> or the app root, alongside data-mode. */
+
+/* Base Choirbook — explicit reset, used to show a choir's own colours inside another choir's scope (e.g. ChoirSwitcher rows). */
+[data-choir="choirbook"]{
+--choir-brand:var(--rubric-500);--choir-on-brand:#FFFFFF;
+--accent:var(--rubric-500);--accent-hover:var(--rubric-600);--accent-pressed:var(--rubric-700);
+--accent-text:var(--rubric-600);--accent-subtle:var(--rubric-50);--accent-subtle-strong:var(--rubric-100);
+--on-accent:#FFFFFF;--focus-ring:var(--rubric-500);--link:var(--accent-text);--link-hover:var(--accent-pressed);
+}
+[data-mode="dark"][data-choir="choirbook"],[data-mode="dark"] [data-choir="choirbook"],[data-choir="choirbook"] [data-mode="dark"]{
+--choir-brand:#E8735C;--choir-on-brand:#16140F;
+--accent:#E8735C;--accent-hover:#EE8A76;--accent-pressed:#DB5F47;
+--accent-text:#EE8A76;--accent-subtle:#35201A;--accent-subtle-strong:#4A2A21;
+--on-accent:#16140F;--focus-ring:#EE8A76;--link:var(--accent-text);--link-hover:var(--accent-hover);
+}
+
+/* ORYC — Ottawa Regional Youth Choir. PLACEHOLDER brand colour (#3A8FD9) pending official ORYC brand values. */
+[data-choir="oryc"]{
+--choir-brand:#3A8FD9;--choir-on-brand:#0E1A27;
+--accent:#1D5596;--accent-hover:#17497F;--accent-pressed:#123B68;
+--accent-text:#1D5596;--accent-subtle:#E8F0F9;--accent-subtle-strong:#D2E2F3;
+--on-accent:#FFFFFF;--focus-ring:#1D5596;
+--link:var(--accent-text);--link-hover:var(--accent-pressed);
+}
+[data-mode="dark"][data-choir="oryc"],[data-mode="dark"] [data-choir="oryc"],[data-choir="oryc"] [data-mode="dark"]{
+--choir-brand:#3A8FD9;--choir-on-brand:#0E1A27;
+--accent:#7FB0E8;--accent-hover:#99C1EE;--accent-pressed:#6A9FDC;
+--accent-text:#99C1EE;--accent-subtle:#172636;--accent-subtle-strong:#1E3349;
+--on-accent:#0E1620;--focus-ring:#99C1EE;
+--link:var(--accent-text);--link-hover:var(--accent-hover);
+}

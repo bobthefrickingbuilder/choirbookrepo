@@ -1,0 +1,30 @@
+/* Choirbook app: loads the Choirbook design system. Screens are styled inline with its tokens. */
+@import url('_ds/choirbook-design-system-9d7b3b08-5cc4-4553-b44b-4db9eb92dfdb/styles.css');
+
+html,body{margin:0;height:100%}
+a{color:var(--link)}
+a:hover{color:var(--link-hover)}
+@keyframes cb-drawer-in{from{transform:translateX(-24px);opacity:0}to{transform:none;opacity:1}}
+
+/* Device shims: the design system switches some components with viewport media queries.
+   Artboards render phones inside a wide viewport, so mirror those rules on [data-device]. */
+[data-device="mobile"] .cb-userbtn__name,[data-device="mobile"] .cb-header__search{display:none}
+[data-device="mobile"] .cb-header{padding:3px 8px 0}
+[data-device="mobile"] .cb-modal-wrap{place-items:end center;padding:0}
+[data-device="mobile"] .cb-modal{max-width:none;border-radius:var(--radius-xl) var(--radius-xl) 0 0;max-height:92%}
+[data-device="mobile"] .cb-modal__foot{border-radius:0;flex-direction:column-reverse}
+[data-device="mobile"] .cb-modal__foot .cb-btn{width:100%}
+[data-device="mobile"] .cb-stepper{display:none}
+[data-device="mobile"] .cb-stepper-compact{display:flex}
+[data-device="mobile"] .cb-form-actions{flex-direction:column-reverse}
+[data-device="mobile"] .cb-form-actions .cb-btn{width:100%}
+[data-device="mobile"] .cb-form-actions__end{flex-direction:column-reverse;width:100%}
+[data-device="mobile"] .cb-toasts{left:12px;right:12px;bottom:76px;width:auto}
+[data-device="mobile"] .cb-next{padding:18px}
+[data-device="mobile"] .cb-next__when{font-size:30px}
+
+@media print{
+  body *{visibility:hidden !important}
+  [data-print-report],[data-print-report] *{visibility:visible !important}
+  [data-print-report]{position:fixed;left:0;top:0;width:100%;box-shadow:none !important;border:0 !important}
+}
