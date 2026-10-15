@@ -11,7 +11,7 @@
     "lint": "npm run lint -w web",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
-    "test:db": "vitest run --config supabase/tests/vitest.config.ts",
+    "test:db": "vitest run --config supabase/tests/vitest.config.mts",
     "db:types": "supabase gen types typescript --linked --schema public > packages/shared/src/database.types.ts"
   },
   "engines": {
