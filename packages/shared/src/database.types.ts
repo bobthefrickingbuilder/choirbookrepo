@@ -1,42 +1,52 @@
-// Generated from supabase/migrations by supabase/scripts/gen-types.mts. Do not edit by hand.
-export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[]
 
 export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.18"
+  }
   public: {
     Tables: {
       absence_reports: {
         Row: {
-          id: string
-          organization_id: string
-          event_id: string
-          person_id: string
-          kind: Database["public"]["Enums"]["absence_kind"]
-          reason: string
           arrives_at: string | null
-          reported_by: string | null
           created_at: string
+          event_id: string
+          id: string
+          kind: Database["public"]["Enums"]["absence_kind"]
+          organization_id: string
+          person_id: string
+          reason: string
+          reported_by: string | null
         }
         Insert: {
-          id?: string
-          organization_id: string
-          event_id: string
-          person_id: string
-          kind?: Database["public"]["Enums"]["absence_kind"]
-          reason: string
           arrives_at?: string | null
-          reported_by?: string | null
           created_at?: string
+          event_id: string
+          id?: string
+          kind?: Database["public"]["Enums"]["absence_kind"]
+          organization_id: string
+          person_id: string
+          reason: string
+          reported_by?: string | null
         }
         Update: {
-          id?: string
-          organization_id?: string
-          event_id?: string
-          person_id?: string
-          kind?: Database["public"]["Enums"]["absence_kind"]
-          reason?: string
           arrives_at?: string | null
-          reported_by?: string | null
           created_at?: string
+          event_id?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["absence_kind"]
+          organization_id?: string
+          person_id?: string
+          reason?: string
+          reported_by?: string | null
         }
         Relationships: [
           {
@@ -44,38 +54,45 @@ export type Database = {
             columns: ["organization_id", "event_id"]
             isOneToOne: false
             referencedRelation: "events"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "absence_reports_organization_id_person_id_fkey"
+            columns: ["organization_id", "person_id"]
+            isOneToOne: false
+            referencedRelation: "member_directory"
+            referencedColumns: ["organization_id", "id"]
           },
           {
             foreignKeyName: "absence_reports_organization_id_person_id_fkey"
             columns: ["organization_id", "person_id"]
             isOneToOne: false
             referencedRelation: "people"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
       announcement_recipients: {
         Row: {
-          organization_id: string
+          acknowledged_at: string | null
           announcement_id: string
+          organization_id: string
           person_id: string
           read_at: string | null
-          acknowledged_at: string | null
         }
         Insert: {
-          organization_id: string
+          acknowledged_at?: string | null
           announcement_id: string
+          organization_id: string
           person_id: string
           read_at?: string | null
-          acknowledged_at?: string | null
         }
         Update: {
-          organization_id?: string
+          acknowledged_at?: string | null
           announcement_id?: string
+          organization_id?: string
           person_id?: string
           read_at?: string | null
-          acknowledged_at?: string | null
         }
         Relationships: [
           {
@@ -83,61 +100,68 @@ export type Database = {
             columns: ["organization_id", "announcement_id"]
             isOneToOne: false
             referencedRelation: "announcements"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "announcement_recipients_organization_id_person_id_fkey"
+            columns: ["organization_id", "person_id"]
+            isOneToOne: false
+            referencedRelation: "member_directory"
+            referencedColumns: ["organization_id", "id"]
           },
           {
             foreignKeyName: "announcement_recipients_organization_id_person_id_fkey"
             columns: ["organization_id", "person_id"]
             isOneToOne: false
             referencedRelation: "people"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
       announcements: {
         Row: {
+          ack_due_on: string | null
+          audience: Json
+          author_id: string | null
+          body: string
+          created_at: string
           id: string
           organization_id: string
-          title: string
-          body: string
-          audience: Json
           pinned: boolean
-          requires_ack: boolean
-          ack_due_on: string | null
           publish_at: string | null
           published_at: string | null
-          author_id: string | null
-          created_at: string
+          requires_ack: boolean
+          title: string
           updated_at: string
         }
         Insert: {
+          ack_due_on?: string | null
+          audience?: Json
+          author_id?: string | null
+          body: string
+          created_at?: string
           id?: string
           organization_id: string
-          title: string
-          body: string
-          audience?: Json
           pinned?: boolean
-          requires_ack?: boolean
-          ack_due_on?: string | null
           publish_at?: string | null
           published_at?: string | null
-          author_id?: string | null
-          created_at?: string
+          requires_ack?: boolean
+          title: string
           updated_at?: string
         }
         Update: {
+          ack_due_on?: string | null
+          audience?: Json
+          author_id?: string | null
+          body?: string
+          created_at?: string
           id?: string
           organization_id?: string
-          title?: string
-          body?: string
-          audience?: Json
           pinned?: boolean
-          requires_ack?: boolean
-          ack_due_on?: string | null
           publish_at?: string | null
           published_at?: string | null
-          author_id?: string | null
-          created_at?: string
+          requires_ack?: boolean
+          title?: string
           updated_at?: string
         }
         Relationships: [
@@ -152,34 +176,34 @@ export type Database = {
       }
       attendance: {
         Row: {
-          organization_id: string
           event_id: string
-          person_id: string
-          status: Database["public"]["Enums"]["attendance_status"]
-          note: string | null
-          source: string
-          marked_by: string | null
           marked_at: string
+          marked_by: string | null
+          note: string | null
+          organization_id: string
+          person_id: string
+          source: string
+          status: Database["public"]["Enums"]["attendance_status"]
         }
         Insert: {
-          organization_id: string
           event_id: string
-          person_id: string
-          status: Database["public"]["Enums"]["attendance_status"]
-          note?: string | null
-          source?: string
-          marked_by?: string | null
           marked_at?: string
+          marked_by?: string | null
+          note?: string | null
+          organization_id: string
+          person_id: string
+          source?: string
+          status: Database["public"]["Enums"]["attendance_status"]
         }
         Update: {
-          organization_id?: string
           event_id?: string
-          person_id?: string
-          status?: Database["public"]["Enums"]["attendance_status"]
-          note?: string | null
-          source?: string
-          marked_by?: string | null
           marked_at?: string
+          marked_by?: string | null
+          note?: string | null
+          organization_id?: string
+          person_id?: string
+          source?: string
+          status?: Database["public"]["Enums"]["attendance_status"]
         }
         Relationships: [
           {
@@ -187,50 +211,57 @@ export type Database = {
             columns: ["organization_id", "event_id"]
             isOneToOne: false
             referencedRelation: "events"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "attendance_organization_id_person_id_fkey"
+            columns: ["organization_id", "person_id"]
+            isOneToOne: false
+            referencedRelation: "member_directory"
+            referencedColumns: ["organization_id", "id"]
           },
           {
             foreignKeyName: "attendance_organization_id_person_id_fkey"
             columns: ["organization_id", "person_id"]
             isOneToOne: false
             referencedRelation: "people"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
       audit_log: {
         Row: {
-          id: number
-          organization_id: string | null
-          actor_id: string | null
           action: string
+          actor_id: string | null
+          changed_columns: string[] | null
+          created_at: string
+          details: Json
           entity: string
           entity_id: string | null
-          changed_columns: string[] | null
-          details: Json
-          created_at: string
+          id: number
+          organization_id: string | null
         }
         Insert: {
-          id?: number
-          organization_id?: string | null
-          actor_id?: string | null
           action: string
+          actor_id?: string | null
+          changed_columns?: string[] | null
+          created_at?: string
+          details?: Json
           entity: string
           entity_id?: string | null
-          changed_columns?: string[] | null
-          details?: Json
-          created_at?: string
+          id?: never
+          organization_id?: string | null
         }
         Update: {
-          id?: number
-          organization_id?: string | null
-          actor_id?: string | null
           action?: string
+          actor_id?: string | null
+          changed_columns?: string[] | null
+          created_at?: string
+          details?: Json
           entity?: string
           entity_id?: string | null
-          changed_columns?: string[] | null
-          details?: Json
-          created_at?: string
+          id?: never
+          organization_id?: string | null
         }
         Relationships: [
           {
@@ -244,27 +275,27 @@ export type Database = {
       }
       availability_replies: {
         Row: {
-          organization_id: string
-          event_id: string
-          person_id: string
           answer: Database["public"]["Enums"]["availability_answer"]
           comment: string | null
+          event_id: string
+          organization_id: string
+          person_id: string
           updated_at: string
         }
         Insert: {
-          organization_id: string
-          event_id: string
-          person_id: string
           answer: Database["public"]["Enums"]["availability_answer"]
           comment?: string | null
+          event_id: string
+          organization_id: string
+          person_id: string
           updated_at?: string
         }
         Update: {
-          organization_id?: string
-          event_id?: string
-          person_id?: string
           answer?: Database["public"]["Enums"]["availability_answer"]
           comment?: string | null
+          event_id?: string
+          organization_id?: string
+          person_id?: string
           updated_at?: string
         }
         Relationships: [
@@ -273,49 +304,56 @@ export type Database = {
             columns: ["organization_id", "event_id"]
             isOneToOne: false
             referencedRelation: "events"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "availability_replies_organization_id_person_id_fkey"
+            columns: ["organization_id", "person_id"]
+            isOneToOne: false
+            referencedRelation: "member_directory"
+            referencedColumns: ["organization_id", "id"]
           },
           {
             foreignKeyName: "availability_replies_organization_id_person_id_fkey"
             columns: ["organization_id", "person_id"]
             isOneToOne: false
             referencedRelation: "people"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
       care_notes: {
         Row: {
+          created_at: string
+          created_by: string | null
+          detail: string | null
           id: string
+          label: string
           organization_id: string
           person_id: string
-          label: string
-          detail: string | null
           severity: string
-          created_by: string | null
-          created_at: string
           updated_at: string
         }
         Insert: {
+          created_at?: string
+          created_by?: string | null
+          detail?: string | null
           id?: string
+          label: string
           organization_id: string
           person_id: string
-          label: string
-          detail?: string | null
           severity?: string
-          created_by?: string | null
-          created_at?: string
           updated_at?: string
         }
         Update: {
+          created_at?: string
+          created_by?: string | null
+          detail?: string | null
           id?: string
+          label?: string
           organization_id?: string
           person_id?: string
-          label?: string
-          detail?: string | null
           severity?: string
-          created_by?: string | null
-          created_at?: string
           updated_at?: string
         }
         Relationships: [
@@ -323,143 +361,164 @@ export type Database = {
             foreignKeyName: "care_notes_organization_id_person_id_fkey"
             columns: ["organization_id", "person_id"]
             isOneToOne: false
+            referencedRelation: "member_directory"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "care_notes_organization_id_person_id_fkey"
+            columns: ["organization_id", "person_id"]
+            isOneToOne: false
             referencedRelation: "people"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
       chaperone_checks: {
         Row: {
+          check_type: string
+          created_at: string
+          expires_on: string
           id: string
           organization_id: string
           person_id: string
-          check_type: string
-          verified_on: string
-          expires_on: string
           verified_by: string | null
-          created_at: string
+          verified_on: string
         }
         Insert: {
+          check_type?: string
+          created_at?: string
+          expires_on: string
           id?: string
           organization_id: string
           person_id: string
-          check_type?: string
-          verified_on: string
-          expires_on: string
           verified_by?: string | null
-          created_at?: string
+          verified_on: string
         }
         Update: {
+          check_type?: string
+          created_at?: string
+          expires_on?: string
           id?: string
           organization_id?: string
           person_id?: string
-          check_type?: string
-          verified_on?: string
-          expires_on?: string
           verified_by?: string | null
-          created_at?: string
+          verified_on?: string
         }
         Relationships: [
           {
             foreignKeyName: "chaperone_checks_organization_id_person_id_fkey"
             columns: ["organization_id", "person_id"]
             isOneToOne: false
+            referencedRelation: "member_directory"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "chaperone_checks_organization_id_person_id_fkey"
+            columns: ["organization_id", "person_id"]
+            isOneToOne: false
             referencedRelation: "people"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
       choristers: {
         Row: {
-          person_id: string
-          organization_id: string
-          section_id: string | null
-          voice_part_id: string | null
-          status: Database["public"]["Enums"]["chorister_status"]
-          joined_on: string | null
-          departed_on: string | null
-          school: string | null
           created_at: string
+          departed_on: string | null
+          joined_on: string | null
+          organization_id: string
+          person_id: string
+          school: string | null
+          section_id: string | null
+          status: Database["public"]["Enums"]["chorister_status"]
           updated_at: string
+          voice_part_id: string | null
         }
         Insert: {
-          person_id: string
-          organization_id: string
-          section_id?: string | null
-          voice_part_id?: string | null
-          status?: Database["public"]["Enums"]["chorister_status"]
-          joined_on?: string | null
-          departed_on?: string | null
-          school?: string | null
           created_at?: string
+          departed_on?: string | null
+          joined_on?: string | null
+          organization_id: string
+          person_id: string
+          school?: string | null
+          section_id?: string | null
+          status?: Database["public"]["Enums"]["chorister_status"]
           updated_at?: string
+          voice_part_id?: string | null
         }
         Update: {
-          person_id?: string
-          organization_id?: string
-          section_id?: string | null
-          voice_part_id?: string | null
-          status?: Database["public"]["Enums"]["chorister_status"]
-          joined_on?: string | null
-          departed_on?: string | null
-          school?: string | null
           created_at?: string
+          departed_on?: string | null
+          joined_on?: string | null
+          organization_id?: string
+          person_id?: string
+          school?: string | null
+          section_id?: string | null
+          status?: Database["public"]["Enums"]["chorister_status"]
           updated_at?: string
+          voice_part_id?: string | null
         }
         Relationships: [
           {
             foreignKeyName: "choristers_organization_id_person_id_fkey"
-            columns: ["person_id", "organization_id"]
-            isOneToOne: true
+            columns: ["organization_id", "person_id"]
+            isOneToOne: false
+            referencedRelation: "member_directory"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "choristers_organization_id_person_id_fkey"
+            columns: ["organization_id", "person_id"]
+            isOneToOne: false
             referencedRelation: "people"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
           {
             foreignKeyName: "choristers_organization_id_section_id_fkey"
             columns: ["organization_id", "section_id"]
             isOneToOne: false
             referencedRelation: "sections"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
           {
             foreignKeyName: "choristers_organization_id_voice_part_id_fkey"
             columns: ["organization_id", "voice_part_id"]
             isOneToOne: false
             referencedRelation: "voice_parts"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
       consent_wording_versions: {
         Row: {
-          id: string
-          organization_id: string
-          kind: Database["public"]["Enums"]["consent_kind"]
-          version: number
           body_en: string
           body_fr: string
-          effective_at: string
           created_by: string | null
+          effective_at: string
+          id: string
+          kind: Database["public"]["Enums"]["consent_kind"]
+          organization_id: string
+          version: number
         }
         Insert: {
-          id?: string
-          organization_id: string
-          kind: Database["public"]["Enums"]["consent_kind"]
-          version: number
           body_en: string
           body_fr: string
-          effective_at?: string
           created_by?: string | null
+          effective_at?: string
+          id?: string
+          kind: Database["public"]["Enums"]["consent_kind"]
+          organization_id: string
+          version: number
         }
         Update: {
-          id?: string
-          organization_id?: string
-          kind?: Database["public"]["Enums"]["consent_kind"]
-          version?: number
           body_en?: string
           body_fr?: string
-          effective_at?: string
           created_by?: string | null
+          effective_at?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["consent_kind"]
+          organization_id?: string
+          version?: number
         }
         Relationships: [
           {
@@ -473,105 +532,119 @@ export type Database = {
       }
       consents: {
         Row: {
+          granted: boolean
           id: string
+          ip: unknown
+          kind: Database["public"]["Enums"]["consent_kind"]
+          method: string
           organization_id: string
           person_id: string
-          kind: Database["public"]["Enums"]["consent_kind"]
-          granted: boolean
-          wording_version_id: string
-          method: string
-          recorded_by: string | null
           recorded_at: string
-          ip: string | null
+          recorded_by: string | null
+          wording_version_id: string
         }
         Insert: {
+          granted: boolean
           id?: string
+          ip?: unknown
+          kind: Database["public"]["Enums"]["consent_kind"]
+          method?: string
           organization_id: string
           person_id: string
-          kind: Database["public"]["Enums"]["consent_kind"]
-          granted: boolean
-          wording_version_id: string
-          method?: string
-          recorded_by?: string | null
           recorded_at?: string
-          ip?: string | null
+          recorded_by?: string | null
+          wording_version_id: string
         }
         Update: {
+          granted?: boolean
           id?: string
+          ip?: unknown
+          kind?: Database["public"]["Enums"]["consent_kind"]
+          method?: string
           organization_id?: string
           person_id?: string
-          kind?: Database["public"]["Enums"]["consent_kind"]
-          granted?: boolean
-          wording_version_id?: string
-          method?: string
-          recorded_by?: string | null
           recorded_at?: string
-          ip?: string | null
+          recorded_by?: string | null
+          wording_version_id?: string
         }
         Relationships: [
           {
             foreignKeyName: "consents_organization_id_person_id_fkey"
             columns: ["organization_id", "person_id"]
             isOneToOne: false
+            referencedRelation: "member_directory"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "consents_organization_id_person_id_fkey"
+            columns: ["organization_id", "person_id"]
+            isOneToOne: false
             referencedRelation: "people"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
           {
             foreignKeyName: "consents_organization_id_wording_version_id_fkey"
             columns: ["organization_id", "wording_version_id"]
             isOneToOne: false
             referencedRelation: "consent_wording_versions"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
       conversations: {
         Row: {
-          id: string
-          organization_id: string
-          member_id: string
-          subject: string
-          category: Database["public"]["Enums"]["message_category"]
-          status: Database["public"]["Enums"]["conversation_status"]
           assigned_to: string | null
-          first_staff_reply_at: string | null
-          last_message_at: string
-          resolved_at: string | null
+          category: Database["public"]["Enums"]["message_category"]
           created_at: string
+          first_staff_reply_at: string | null
+          id: string
+          last_message_at: string
+          member_id: string
+          organization_id: string
+          resolved_at: string | null
+          status: Database["public"]["Enums"]["conversation_status"]
+          subject: string
         }
         Insert: {
-          id?: string
-          organization_id: string
-          member_id: string
-          subject: string
-          category?: Database["public"]["Enums"]["message_category"]
-          status?: Database["public"]["Enums"]["conversation_status"]
           assigned_to?: string | null
-          first_staff_reply_at?: string | null
-          last_message_at?: string
-          resolved_at?: string | null
+          category?: Database["public"]["Enums"]["message_category"]
           created_at?: string
+          first_staff_reply_at?: string | null
+          id?: string
+          last_message_at?: string
+          member_id: string
+          organization_id: string
+          resolved_at?: string | null
+          status?: Database["public"]["Enums"]["conversation_status"]
+          subject: string
         }
         Update: {
-          id?: string
-          organization_id?: string
-          member_id?: string
-          subject?: string
-          category?: Database["public"]["Enums"]["message_category"]
-          status?: Database["public"]["Enums"]["conversation_status"]
           assigned_to?: string | null
-          first_staff_reply_at?: string | null
-          last_message_at?: string
-          resolved_at?: string | null
+          category?: Database["public"]["Enums"]["message_category"]
           created_at?: string
+          first_staff_reply_at?: string | null
+          id?: string
+          last_message_at?: string
+          member_id?: string
+          organization_id?: string
+          resolved_at?: string | null
+          status?: Database["public"]["Enums"]["conversation_status"]
+          subject?: string
         }
         Relationships: [
           {
             foreignKeyName: "conversations_organization_id_assigned_to_fkey"
             columns: ["organization_id", "assigned_to"]
             isOneToOne: false
+            referencedRelation: "member_directory"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "conversations_organization_id_assigned_to_fkey"
+            columns: ["organization_id", "assigned_to"]
+            isOneToOne: false
             referencedRelation: "people"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
           {
             foreignKeyName: "conversations_organization_id_fkey"
@@ -584,68 +657,75 @@ export type Database = {
             foreignKeyName: "conversations_organization_id_member_id_fkey"
             columns: ["organization_id", "member_id"]
             isOneToOne: false
+            referencedRelation: "member_directory"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "conversations_organization_id_member_id_fkey"
+            columns: ["organization_id", "member_id"]
+            isOneToOne: false
             referencedRelation: "people"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
       email_queue: {
         Row: {
-          id: string
-          organization_id: string | null
-          to_email: string
-          to_person_id: string | null
-          to_guardian_id: string | null
-          template: string
-          subject: string
-          payload: Json
-          digest_key: string | null
-          priority: number
-          status: Database["public"]["Enums"]["email_status"]
-          not_before: string
           attempts: number
+          created_at: string
+          digest_key: string | null
+          id: string
           last_error: string | null
+          not_before: string
+          organization_id: string | null
+          payload: Json
+          priority: number
           provider_id: string | null
           sent_at: string | null
-          created_at: string
+          status: Database["public"]["Enums"]["email_status"]
+          subject: string
+          template: string
+          to_email: string
+          to_guardian_id: string | null
+          to_person_id: string | null
         }
         Insert: {
-          id?: string
-          organization_id?: string | null
-          to_email: string
-          to_person_id?: string | null
-          to_guardian_id?: string | null
-          template: string
-          subject: string
-          payload?: Json
-          digest_key?: string | null
-          priority?: number
-          status?: Database["public"]["Enums"]["email_status"]
-          not_before?: string
           attempts?: number
+          created_at?: string
+          digest_key?: string | null
+          id?: string
           last_error?: string | null
+          not_before?: string
+          organization_id?: string | null
+          payload?: Json
+          priority?: number
           provider_id?: string | null
           sent_at?: string | null
-          created_at?: string
+          status?: Database["public"]["Enums"]["email_status"]
+          subject: string
+          template: string
+          to_email: string
+          to_guardian_id?: string | null
+          to_person_id?: string | null
         }
         Update: {
-          id?: string
-          organization_id?: string | null
-          to_email?: string
-          to_person_id?: string | null
-          to_guardian_id?: string | null
-          template?: string
-          subject?: string
-          payload?: Json
-          digest_key?: string | null
-          priority?: number
-          status?: Database["public"]["Enums"]["email_status"]
-          not_before?: string
           attempts?: number
+          created_at?: string
+          digest_key?: string | null
+          id?: string
           last_error?: string | null
+          not_before?: string
+          organization_id?: string | null
+          payload?: Json
+          priority?: number
           provider_id?: string | null
           sent_at?: string | null
-          created_at?: string
+          status?: Database["public"]["Enums"]["email_status"]
+          subject?: string
+          template?: string
+          to_email?: string
+          to_guardian_id?: string | null
+          to_person_id?: string | null
         }
         Relationships: [
           {
@@ -666,6 +746,13 @@ export type Database = {
             foreignKeyName: "email_queue_to_person_id_fkey"
             columns: ["to_person_id"]
             isOneToOne: false
+            referencedRelation: "member_directory"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "email_queue_to_person_id_fkey"
+            columns: ["to_person_id"]
+            isOneToOne: false
             referencedRelation: "people"
             referencedColumns: ["id"]
           },
@@ -673,22 +760,22 @@ export type Database = {
       }
       event_series: {
         Row: {
+          created_at: string
           id: string
           organization_id: string
           rrule: string
-          created_at: string
         }
         Insert: {
+          created_at?: string
           id?: string
           organization_id: string
           rrule: string
-          created_at?: string
         }
         Update: {
+          created_at?: string
           id?: string
           organization_id?: string
           rrule?: string
-          created_at?: string
         }
         Relationships: [
           {
@@ -702,87 +789,87 @@ export type Database = {
       }
       events: {
         Row: {
-          id: string
-          organization_id: string
-          season_id: string | null
-          series_id: string | null
-          type: Database["public"]["Enums"]["event_type"]
-          title: string
-          description: string | null
-          starts_at: string
-          ends_at: string | null
-          all_day: boolean
-          call_at: string | null
-          location: string | null
           address: string | null
-          map_url: string | null
-          dress_code: string | null
-          bring: string | null
-          running_order: Json
-          section_ids: string[]
-          availability_requested: boolean
+          all_day: boolean
           availability_due_at: string | null
-          counts_for_attendance: boolean
-          cancelled_at: string | null
+          availability_requested: boolean
+          bring: string | null
+          call_at: string | null
           cancel_reason: string | null
-          created_by: string | null
+          cancelled_at: string | null
+          counts_for_attendance: boolean
           created_at: string
+          created_by: string | null
+          description: string | null
+          dress_code: string | null
+          ends_at: string | null
+          id: string
+          location: string | null
+          map_url: string | null
+          organization_id: string
+          running_order: Json
+          season_id: string | null
+          section_ids: string[]
+          series_id: string | null
+          starts_at: string
+          title: string
+          type: Database["public"]["Enums"]["event_type"]
           updated_at: string
         }
         Insert: {
-          id?: string
-          organization_id: string
-          season_id?: string | null
-          series_id?: string | null
-          type: Database["public"]["Enums"]["event_type"]
-          title: string
-          description?: string | null
-          starts_at: string
-          ends_at?: string | null
-          all_day?: boolean
-          call_at?: string | null
-          location?: string | null
           address?: string | null
-          map_url?: string | null
-          dress_code?: string | null
-          bring?: string | null
-          running_order?: Json
-          section_ids?: string[]
-          availability_requested?: boolean
+          all_day?: boolean
           availability_due_at?: string | null
-          counts_for_attendance?: boolean
-          cancelled_at?: string | null
+          availability_requested?: boolean
+          bring?: string | null
+          call_at?: string | null
           cancel_reason?: string | null
-          created_by?: string | null
+          cancelled_at?: string | null
+          counts_for_attendance?: boolean
           created_at?: string
+          created_by?: string | null
+          description?: string | null
+          dress_code?: string | null
+          ends_at?: string | null
+          id?: string
+          location?: string | null
+          map_url?: string | null
+          organization_id: string
+          running_order?: Json
+          season_id?: string | null
+          section_ids?: string[]
+          series_id?: string | null
+          starts_at: string
+          title: string
+          type: Database["public"]["Enums"]["event_type"]
           updated_at?: string
         }
         Update: {
-          id?: string
-          organization_id?: string
-          season_id?: string | null
-          series_id?: string | null
-          type?: Database["public"]["Enums"]["event_type"]
-          title?: string
-          description?: string | null
-          starts_at?: string
-          ends_at?: string | null
-          all_day?: boolean
-          call_at?: string | null
-          location?: string | null
           address?: string | null
-          map_url?: string | null
-          dress_code?: string | null
-          bring?: string | null
-          running_order?: Json
-          section_ids?: string[]
-          availability_requested?: boolean
+          all_day?: boolean
           availability_due_at?: string | null
-          counts_for_attendance?: boolean
-          cancelled_at?: string | null
+          availability_requested?: boolean
+          bring?: string | null
+          call_at?: string | null
           cancel_reason?: string | null
-          created_by?: string | null
+          cancelled_at?: string | null
+          counts_for_attendance?: boolean
           created_at?: string
+          created_by?: string | null
+          description?: string | null
+          dress_code?: string | null
+          ends_at?: string | null
+          id?: string
+          location?: string | null
+          map_url?: string | null
+          organization_id?: string
+          running_order?: Json
+          season_id?: string | null
+          section_ids?: string[]
+          series_id?: string | null
+          starts_at?: string
+          title?: string
+          type?: Database["public"]["Enums"]["event_type"]
           updated_at?: string
         }
         Relationships: [
@@ -798,56 +885,56 @@ export type Database = {
             columns: ["organization_id", "season_id"]
             isOneToOne: false
             referencedRelation: "seasons"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
           {
             foreignKeyName: "events_organization_id_series_id_fkey"
             columns: ["organization_id", "series_id"]
             isOneToOne: false
             referencedRelation: "event_series"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
       fee_adjustments: {
         Row: {
-          id: string
-          organization_id: string
-          assignment_id: string
-          kind: Database["public"]["Enums"]["adjustment_kind"]
           amount_cents: number
-          reason: string | null
-          status: Database["public"]["Enums"]["adjustment_status"]
-          requested_by: string | null
-          decided_by: string | null
-          decided_at: string | null
+          assignment_id: string
           created_at: string
+          decided_at: string | null
+          decided_by: string | null
+          id: string
+          kind: Database["public"]["Enums"]["adjustment_kind"]
+          organization_id: string
+          reason: string | null
+          requested_by: string | null
+          status: Database["public"]["Enums"]["adjustment_status"]
         }
         Insert: {
-          id?: string
-          organization_id: string
-          assignment_id: string
-          kind: Database["public"]["Enums"]["adjustment_kind"]
           amount_cents: number
-          reason?: string | null
-          status?: Database["public"]["Enums"]["adjustment_status"]
-          requested_by?: string | null
-          decided_by?: string | null
-          decided_at?: string | null
+          assignment_id: string
           created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          id?: string
+          kind: Database["public"]["Enums"]["adjustment_kind"]
+          organization_id: string
+          reason?: string | null
+          requested_by?: string | null
+          status?: Database["public"]["Enums"]["adjustment_status"]
         }
         Update: {
-          id?: string
-          organization_id?: string
-          assignment_id?: string
-          kind?: Database["public"]["Enums"]["adjustment_kind"]
           amount_cents?: number
-          reason?: string | null
-          status?: Database["public"]["Enums"]["adjustment_status"]
-          requested_by?: string | null
-          decided_by?: string | null
-          decided_at?: string | null
+          assignment_id?: string
           created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          id?: string
+          kind?: Database["public"]["Enums"]["adjustment_kind"]
+          organization_id?: string
+          reason?: string | null
+          requested_by?: string | null
+          status?: Database["public"]["Enums"]["adjustment_status"]
         }
         Relationships: [
           {
@@ -855,34 +942,41 @@ export type Database = {
             columns: ["organization_id", "assignment_id"]
             isOneToOne: false
             referencedRelation: "fee_assignments"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "fee_adjustments_organization_id_assignment_id_fkey"
+            columns: ["organization_id", "assignment_id"]
+            isOneToOne: false
+            referencedRelation: "fee_balances"
+            referencedColumns: ["organization_id", "assignment_id"]
           },
         ]
       }
       fee_assignments: {
         Row: {
-          id: string
-          organization_id: string
-          fee_id: string
-          person_id: string
           amount_cents: number
           created_at: string
+          fee_id: string
+          id: string
+          organization_id: string
+          person_id: string
         }
         Insert: {
-          id?: string
-          organization_id: string
-          fee_id: string
-          person_id: string
           amount_cents: number
           created_at?: string
+          fee_id: string
+          id?: string
+          organization_id: string
+          person_id: string
         }
         Update: {
-          id?: string
-          organization_id?: string
-          fee_id?: string
-          person_id?: string
           amount_cents?: number
           created_at?: string
+          fee_id?: string
+          id?: string
+          organization_id?: string
+          person_id?: string
         }
         Relationships: [
           {
@@ -890,53 +984,60 @@ export type Database = {
             columns: ["organization_id", "fee_id"]
             isOneToOne: false
             referencedRelation: "fees"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "fee_assignments_organization_id_person_id_fkey"
+            columns: ["organization_id", "person_id"]
+            isOneToOne: false
+            referencedRelation: "member_directory"
+            referencedColumns: ["organization_id", "id"]
           },
           {
             foreignKeyName: "fee_assignments_organization_id_person_id_fkey"
             columns: ["organization_id", "person_id"]
             isOneToOne: false
             referencedRelation: "people"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
       feedback: {
         Row: {
+          app_version: string | null
+          body: string
+          created_at: string
           id: string
           organization_id: string | null
-          user_id: string | null
-          body: string
           page: string | null
           role: string | null
-          user_agent: string | null
-          app_version: string | null
           status: string
-          created_at: string
+          user_agent: string | null
+          user_id: string | null
         }
         Insert: {
+          app_version?: string | null
+          body: string
+          created_at?: string
           id?: string
           organization_id?: string | null
-          user_id?: string | null
-          body: string
           page?: string | null
           role?: string | null
-          user_agent?: string | null
-          app_version?: string | null
           status?: string
-          created_at?: string
+          user_agent?: string | null
+          user_id?: string | null
         }
         Update: {
+          app_version?: string | null
+          body?: string
+          created_at?: string
           id?: string
           organization_id?: string | null
-          user_id?: string | null
-          body?: string
           page?: string | null
           role?: string | null
-          user_agent?: string | null
-          app_version?: string | null
           status?: string
-          created_at?: string
+          user_agent?: string | null
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -950,37 +1051,37 @@ export type Database = {
       }
       fees: {
         Row: {
+          allows_instalments: boolean
+          amount_cents: number
+          created_at: string
+          description: string | null
+          due_on: string | null
           id: string
+          name: string
           organization_id: string
           season_id: string | null
-          name: string
-          description: string | null
-          amount_cents: number
-          due_on: string | null
-          allows_instalments: boolean
-          created_at: string
         }
         Insert: {
+          allows_instalments?: boolean
+          amount_cents: number
+          created_at?: string
+          description?: string | null
+          due_on?: string | null
           id?: string
+          name: string
           organization_id: string
           season_id?: string | null
-          name: string
-          description?: string | null
-          amount_cents: number
-          due_on?: string | null
-          allows_instalments?: boolean
-          created_at?: string
         }
         Update: {
+          allows_instalments?: boolean
+          amount_cents?: number
+          created_at?: string
+          description?: string | null
+          due_on?: string | null
           id?: string
+          name?: string
           organization_id?: string
           season_id?: string | null
-          name?: string
-          description?: string | null
-          amount_cents?: number
-          due_on?: string | null
-          allows_instalments?: boolean
-          created_at?: string
         }
         Relationships: [
           {
@@ -995,60 +1096,60 @@ export type Database = {
             columns: ["organization_id", "season_id"]
             isOneToOne: false
             referencedRelation: "seasons"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
       form_responses: {
         Row: {
+          answers: Json
+          created_at: string
+          form_id: string
           id: string
           organization_id: string
-          form_id: string
           person_id: string
-          answers: Json
+          review_note: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          signed_at: string | null
+          signed_ip: unknown
+          signed_name: string | null
           status: Database["public"]["Enums"]["response_status"]
           submitted_at: string | null
-          signed_name: string | null
-          signed_at: string | null
-          signed_ip: string | null
-          reviewed_by: string | null
-          reviewed_at: string | null
-          review_note: string | null
-          created_at: string
           updated_at: string
         }
         Insert: {
+          answers?: Json
+          created_at?: string
+          form_id: string
           id?: string
           organization_id: string
-          form_id: string
           person_id: string
-          answers?: Json
+          review_note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          signed_at?: string | null
+          signed_ip?: unknown
+          signed_name?: string | null
           status?: Database["public"]["Enums"]["response_status"]
           submitted_at?: string | null
-          signed_name?: string | null
-          signed_at?: string | null
-          signed_ip?: string | null
-          reviewed_by?: string | null
-          reviewed_at?: string | null
-          review_note?: string | null
-          created_at?: string
           updated_at?: string
         }
         Update: {
+          answers?: Json
+          created_at?: string
+          form_id?: string
           id?: string
           organization_id?: string
-          form_id?: string
           person_id?: string
-          answers?: Json
+          review_note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          signed_at?: string | null
+          signed_ip?: unknown
+          signed_name?: string | null
           status?: Database["public"]["Enums"]["response_status"]
           submitted_at?: string | null
-          signed_name?: string | null
-          signed_at?: string | null
-          signed_ip?: string | null
-          reviewed_by?: string | null
-          reviewed_at?: string | null
-          review_note?: string | null
-          created_at?: string
           updated_at?: string
         }
         Relationships: [
@@ -1057,64 +1158,71 @@ export type Database = {
             columns: ["organization_id", "form_id"]
             isOneToOne: false
             referencedRelation: "forms"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "form_responses_organization_id_person_id_fkey"
+            columns: ["organization_id", "person_id"]
+            isOneToOne: false
+            referencedRelation: "member_directory"
+            referencedColumns: ["organization_id", "id"]
           },
           {
             foreignKeyName: "form_responses_organization_id_person_id_fkey"
             columns: ["organization_id", "person_id"]
             isOneToOne: false
             referencedRelation: "people"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
       forms: {
         Row: {
-          id: string
-          organization_id: string
-          season_id: string | null
-          title: string
-          kind: Database["public"]["Enums"]["form_kind"]
+          created_at: string
           description: string | null
-          fields: Json
           due_on: string | null
-          requires_signature: boolean
+          fields: Json
           guardian_signature_required: boolean
+          id: string
+          kind: Database["public"]["Enums"]["form_kind"]
+          organization_id: string
+          requires_signature: boolean
+          season_id: string | null
           section_ids: string[]
           status: Database["public"]["Enums"]["form_status"]
-          created_at: string
+          title: string
           updated_at: string
         }
         Insert: {
-          id?: string
-          organization_id: string
-          season_id?: string | null
-          title: string
-          kind?: Database["public"]["Enums"]["form_kind"]
+          created_at?: string
           description?: string | null
-          fields?: Json
           due_on?: string | null
-          requires_signature?: boolean
+          fields?: Json
           guardian_signature_required?: boolean
+          id?: string
+          kind?: Database["public"]["Enums"]["form_kind"]
+          organization_id: string
+          requires_signature?: boolean
+          season_id?: string | null
           section_ids?: string[]
           status?: Database["public"]["Enums"]["form_status"]
-          created_at?: string
+          title: string
           updated_at?: string
         }
         Update: {
-          id?: string
-          organization_id?: string
-          season_id?: string | null
-          title?: string
-          kind?: Database["public"]["Enums"]["form_kind"]
+          created_at?: string
           description?: string | null
-          fields?: Json
           due_on?: string | null
-          requires_signature?: boolean
+          fields?: Json
           guardian_signature_required?: boolean
+          id?: string
+          kind?: Database["public"]["Enums"]["form_kind"]
+          organization_id?: string
+          requires_signature?: boolean
+          season_id?: string | null
           section_ids?: string[]
           status?: Database["public"]["Enums"]["form_status"]
-          created_at?: string
+          title?: string
           updated_at?: string
         }
         Relationships: [
@@ -1130,37 +1238,37 @@ export type Database = {
             columns: ["organization_id", "season_id"]
             isOneToOne: false
             referencedRelation: "seasons"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
       guardian_links: {
         Row: {
-          organization_id: string
-          guardian_id: string
           chorister_id: string
-          relationship: string | null
-          is_primary: boolean
+          guardian_id: string
           is_emergency_contact: boolean
+          is_primary: boolean
+          organization_id: string
           receives_copies: boolean
+          relationship: string | null
         }
         Insert: {
-          organization_id: string
-          guardian_id: string
           chorister_id: string
-          relationship?: string | null
-          is_primary?: boolean
+          guardian_id: string
           is_emergency_contact?: boolean
+          is_primary?: boolean
+          organization_id: string
           receives_copies?: boolean
+          relationship?: string | null
         }
         Update: {
-          organization_id?: string
-          guardian_id?: string
           chorister_id?: string
-          relationship?: string | null
-          is_primary?: boolean
+          guardian_id?: string
           is_emergency_contact?: boolean
+          is_primary?: boolean
+          organization_id?: string
           receives_copies?: boolean
+          relationship?: string | null
         }
         Relationships: [
           {
@@ -1168,62 +1276,62 @@ export type Database = {
             columns: ["organization_id", "chorister_id"]
             isOneToOne: false
             referencedRelation: "choristers"
-            referencedColumns: ["person_id", "organization_id"]
+            referencedColumns: ["organization_id", "person_id"]
           },
           {
             foreignKeyName: "guardian_links_organization_id_guardian_id_fkey"
             columns: ["organization_id", "guardian_id"]
             isOneToOne: false
             referencedRelation: "guardians"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
       guardian_signatures: {
         Row: {
+          created_at: string
+          expires_at: string
+          guardian_id: string
           id: string
           organization_id: string
           response_id: string
-          guardian_id: string
-          token_hash: string
-          expires_at: string
-          sent_at: string | null
-          used_at: string | null
-          signed_name: string | null
-          signed_ip: string | null
-          signed_user_agent: string | null
           revoked_at: string | null
-          created_at: string
+          sent_at: string | null
+          signed_ip: unknown
+          signed_name: string | null
+          signed_user_agent: string | null
+          token_hash: string
+          used_at: string | null
         }
         Insert: {
+          created_at?: string
+          expires_at: string
+          guardian_id: string
           id?: string
           organization_id: string
           response_id: string
-          guardian_id: string
-          token_hash: string
-          expires_at: string
-          sent_at?: string | null
-          used_at?: string | null
-          signed_name?: string | null
-          signed_ip?: string | null
-          signed_user_agent?: string | null
           revoked_at?: string | null
-          created_at?: string
+          sent_at?: string | null
+          signed_ip?: unknown
+          signed_name?: string | null
+          signed_user_agent?: string | null
+          token_hash: string
+          used_at?: string | null
         }
         Update: {
+          created_at?: string
+          expires_at?: string
+          guardian_id?: string
           id?: string
           organization_id?: string
           response_id?: string
-          guardian_id?: string
-          token_hash?: string
-          expires_at?: string
-          sent_at?: string | null
-          used_at?: string | null
-          signed_name?: string | null
-          signed_ip?: string | null
-          signed_user_agent?: string | null
           revoked_at?: string | null
-          created_at?: string
+          sent_at?: string | null
+          signed_ip?: unknown
+          signed_name?: string | null
+          signed_user_agent?: string | null
+          token_hash?: string
+          used_at?: string | null
         }
         Relationships: [
           {
@@ -1231,49 +1339,49 @@ export type Database = {
             columns: ["organization_id", "guardian_id"]
             isOneToOne: false
             referencedRelation: "guardians"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
           {
             foreignKeyName: "guardian_signatures_organization_id_response_id_fkey"
             columns: ["organization_id", "response_id"]
             isOneToOne: false
             referencedRelation: "form_responses"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
       guardians: {
         Row: {
-          id: string
-          organization_id: string
-          first_name: string
-          last_name: string
-          email: string | null
-          phone: string | null
-          lang: Database["public"]["Enums"]["lang"]
           created_at: string
+          email: string | null
+          first_name: string
+          id: string
+          lang: Database["public"]["Enums"]["lang"]
+          last_name: string
+          organization_id: string
+          phone: string | null
           updated_at: string
         }
         Insert: {
-          id?: string
-          organization_id: string
-          first_name: string
-          last_name: string
-          email?: string | null
-          phone?: string | null
-          lang?: Database["public"]["Enums"]["lang"]
           created_at?: string
+          email?: string | null
+          first_name: string
+          id?: string
+          lang?: Database["public"]["Enums"]["lang"]
+          last_name: string
+          organization_id: string
+          phone?: string | null
           updated_at?: string
         }
         Update: {
-          id?: string
-          organization_id?: string
-          first_name?: string
-          last_name?: string
-          email?: string | null
-          phone?: string | null
-          lang?: Database["public"]["Enums"]["lang"]
           created_at?: string
+          email?: string | null
+          first_name?: string
+          id?: string
+          lang?: Database["public"]["Enums"]["lang"]
+          last_name?: string
+          organization_id?: string
+          phone?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -1288,25 +1396,25 @@ export type Database = {
       }
       instalments: {
         Row: {
+          amount_cents: number
+          assignment_id: string
+          due_on: string
           id: string
           organization_id: string
-          assignment_id: string
-          due_on: string
-          amount_cents: number
         }
         Insert: {
-          id?: string
-          organization_id: string
+          amount_cents: number
           assignment_id: string
           due_on: string
-          amount_cents: number
+          id?: string
+          organization_id: string
         }
         Update: {
-          id?: string
-          organization_id?: string
+          amount_cents?: number
           assignment_id?: string
           due_on?: string
-          amount_cents?: number
+          id?: string
+          organization_id?: string
         }
         Relationships: [
           {
@@ -1314,52 +1422,59 @@ export type Database = {
             columns: ["organization_id", "assignment_id"]
             isOneToOne: false
             referencedRelation: "fee_assignments"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "instalments_organization_id_assignment_id_fkey"
+            columns: ["organization_id", "assignment_id"]
+            isOneToOne: false
+            referencedRelation: "fee_balances"
+            referencedColumns: ["organization_id", "assignment_id"]
           },
         ]
       }
       learning_tracks: {
         Row: {
+          created_at: string
+          duration_seconds: number | null
           id: string
+          kind: string
+          label: string
           organization_id: string
           piece_id: string
-          label: string
-          kind: string
-          voice_part_id: string | null
-          section_id: string | null
-          storage_path: string
-          size_bytes: number | null
-          duration_seconds: number | null
           released_at: string | null
-          created_at: string
+          section_id: string | null
+          size_bytes: number | null
+          storage_path: string
+          voice_part_id: string | null
         }
         Insert: {
+          created_at?: string
+          duration_seconds?: number | null
           id?: string
+          kind?: string
+          label: string
           organization_id: string
           piece_id: string
-          label: string
-          kind?: string
-          voice_part_id?: string | null
-          section_id?: string | null
-          storage_path: string
-          size_bytes?: number | null
-          duration_seconds?: number | null
           released_at?: string | null
-          created_at?: string
+          section_id?: string | null
+          size_bytes?: number | null
+          storage_path: string
+          voice_part_id?: string | null
         }
         Update: {
+          created_at?: string
+          duration_seconds?: number | null
           id?: string
+          kind?: string
+          label?: string
           organization_id?: string
           piece_id?: string
-          label?: string
-          kind?: string
-          voice_part_id?: string | null
-          section_id?: string | null
-          storage_path?: string
-          size_bytes?: number | null
-          duration_seconds?: number | null
           released_at?: string | null
-          created_at?: string
+          section_id?: string | null
+          size_bytes?: number | null
+          storage_path?: string
+          voice_part_id?: string | null
         }
         Relationships: [
           {
@@ -1367,103 +1482,110 @@ export type Database = {
             columns: ["organization_id", "piece_id"]
             isOneToOne: false
             referencedRelation: "pieces"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
           {
             foreignKeyName: "learning_tracks_organization_id_section_id_fkey"
             columns: ["organization_id", "section_id"]
             isOneToOne: false
             referencedRelation: "sections"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
           {
             foreignKeyName: "learning_tracks_organization_id_voice_part_id_fkey"
             columns: ["organization_id", "voice_part_id"]
             isOneToOne: false
             referencedRelation: "voice_parts"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
       member_roles: {
         Row: {
+          created_at: string
           organization_id: string
           person_id: string
           role_id: string
           section_id: string | null
-          created_at: string
         }
         Insert: {
+          created_at?: string
           organization_id: string
           person_id: string
           role_id: string
           section_id?: string | null
-          created_at?: string
         }
         Update: {
+          created_at?: string
           organization_id?: string
           person_id?: string
           role_id?: string
           section_id?: string | null
-          created_at?: string
         }
         Relationships: [
           {
             foreignKeyName: "member_roles_organization_id_person_id_fkey"
             columns: ["organization_id", "person_id"]
             isOneToOne: false
+            referencedRelation: "member_directory"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "member_roles_organization_id_person_id_fkey"
+            columns: ["organization_id", "person_id"]
+            isOneToOne: false
             referencedRelation: "people"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
           {
             foreignKeyName: "member_roles_organization_id_role_id_fkey"
             columns: ["organization_id", "role_id"]
             isOneToOne: false
             referencedRelation: "roles"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
           {
             foreignKeyName: "member_roles_organization_id_section_id_fkey"
             columns: ["organization_id", "section_id"]
             isOneToOne: false
             referencedRelation: "sections"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
       message_reports: {
         Row: {
-          id: string
-          organization_id: string
-          message_id: string
-          reporter_person_id: string
-          reason: string
-          status: string
-          reviewed_by: string | null
-          reviewed_at: string | null
           created_at: string
+          id: string
+          message_id: string
+          organization_id: string
+          reason: string
+          reporter_person_id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
         }
         Insert: {
-          id?: string
-          organization_id: string
-          message_id: string
-          reporter_person_id: string
-          reason: string
-          status?: string
-          reviewed_by?: string | null
-          reviewed_at?: string | null
           created_at?: string
+          id?: string
+          message_id: string
+          organization_id: string
+          reason: string
+          reporter_person_id: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
         }
         Update: {
-          id?: string
-          organization_id?: string
-          message_id?: string
-          reporter_person_id?: string
-          reason?: string
-          status?: string
-          reviewed_by?: string | null
-          reviewed_at?: string | null
           created_at?: string
+          id?: string
+          message_id?: string
+          organization_id?: string
+          reason?: string
+          reporter_person_id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
         }
         Relationships: [
           {
@@ -1471,143 +1593,164 @@ export type Database = {
             columns: ["organization_id", "message_id"]
             isOneToOne: false
             referencedRelation: "messages"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "message_reports_organization_id_reporter_person_id_fkey"
+            columns: ["organization_id", "reporter_person_id"]
+            isOneToOne: false
+            referencedRelation: "member_directory"
+            referencedColumns: ["organization_id", "id"]
           },
           {
             foreignKeyName: "message_reports_organization_id_reporter_person_id_fkey"
             columns: ["organization_id", "reporter_person_id"]
             isOneToOne: false
             referencedRelation: "people"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
       messages: {
         Row: {
-          id: string
-          organization_id: string
-          conversation_id: string
           author_person_id: string | null
           body: string
+          conversation_id: string
+          created_at: string
           held_for_review: boolean
           hidden_at: string | null
           hidden_by: string | null
-          created_at: string
+          id: string
+          organization_id: string
         }
         Insert: {
-          id?: string
-          organization_id: string
-          conversation_id: string
           author_person_id?: string | null
           body: string
+          conversation_id: string
+          created_at?: string
           held_for_review?: boolean
           hidden_at?: string | null
           hidden_by?: string | null
-          created_at?: string
+          id?: string
+          organization_id: string
         }
         Update: {
-          id?: string
-          organization_id?: string
-          conversation_id?: string
           author_person_id?: string | null
           body?: string
+          conversation_id?: string
+          created_at?: string
           held_for_review?: boolean
           hidden_at?: string | null
           hidden_by?: string | null
-          created_at?: string
+          id?: string
+          organization_id?: string
         }
         Relationships: [
           {
             foreignKeyName: "messages_organization_id_author_person_id_fkey"
             columns: ["organization_id", "author_person_id"]
             isOneToOne: false
+            referencedRelation: "member_directory"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "messages_organization_id_author_person_id_fkey"
+            columns: ["organization_id", "author_person_id"]
+            isOneToOne: false
             referencedRelation: "people"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
           {
             foreignKeyName: "messages_organization_id_conversation_id_fkey"
             columns: ["organization_id", "conversation_id"]
             isOneToOne: false
             referencedRelation: "conversations"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
       monthly_update_deliveries: {
         Row: {
-          organization_id: string
-          update_id: string
-          person_id: string
           content: Json
-          sent_at: string | null
           opened_at: string | null
+          organization_id: string
+          person_id: string
+          sent_at: string | null
+          update_id: string
         }
         Insert: {
-          organization_id: string
-          update_id: string
-          person_id: string
           content?: Json
-          sent_at?: string | null
           opened_at?: string | null
+          organization_id: string
+          person_id: string
+          sent_at?: string | null
+          update_id: string
         }
         Update: {
-          organization_id?: string
-          update_id?: string
-          person_id?: string
           content?: Json
-          sent_at?: string | null
           opened_at?: string | null
+          organization_id?: string
+          person_id?: string
+          sent_at?: string | null
+          update_id?: string
         }
         Relationships: [
           {
             foreignKeyName: "monthly_update_deliveries_organization_id_person_id_fkey"
             columns: ["organization_id", "person_id"]
             isOneToOne: false
+            referencedRelation: "member_directory"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "monthly_update_deliveries_organization_id_person_id_fkey"
+            columns: ["organization_id", "person_id"]
+            isOneToOne: false
             referencedRelation: "people"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
           {
             foreignKeyName: "monthly_update_deliveries_organization_id_update_id_fkey"
             columns: ["organization_id", "update_id"]
             isOneToOne: false
             referencedRelation: "monthly_updates"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
       monthly_updates: {
         Row: {
-          id: string
-          organization_id: string
-          month: string
-          status: string
           conductor_note: string | null
+          created_at: string
           free_text: string | null
+          id: string
+          month: string
+          organization_id: string
           send_at: string | null
           sent_at: string | null
-          created_at: string
+          status: string
         }
         Insert: {
-          id?: string
-          organization_id: string
-          month: string
-          status?: string
           conductor_note?: string | null
+          created_at?: string
           free_text?: string | null
+          id?: string
+          month: string
+          organization_id: string
           send_at?: string | null
           sent_at?: string | null
-          created_at?: string
+          status?: string
         }
         Update: {
-          id?: string
-          organization_id?: string
-          month?: string
-          status?: string
           conductor_note?: string | null
+          created_at?: string
           free_text?: string | null
+          id?: string
+          month?: string
+          organization_id?: string
           send_at?: string | null
           sent_at?: string | null
-          created_at?: string
+          status?: string
         }
         Relationships: [
           {
@@ -1621,61 +1764,61 @@ export type Database = {
       }
       notification_preferences: {
         Row: {
-          user_id: string
           category: Database["public"]["Enums"]["notification_category"]
-          in_app: boolean
           email_digest: boolean
+          in_app: boolean
           push: boolean
+          user_id: string
         }
         Insert: {
-          user_id: string
           category: Database["public"]["Enums"]["notification_category"]
-          in_app?: boolean
           email_digest?: boolean
+          in_app?: boolean
           push?: boolean
+          user_id: string
         }
         Update: {
-          user_id?: string
           category?: Database["public"]["Enums"]["notification_category"]
-          in_app?: boolean
           email_digest?: boolean
+          in_app?: boolean
           push?: boolean
+          user_id?: string
         }
         Relationships: []
       }
       notifications: {
         Row: {
-          id: string
-          organization_id: string
-          user_id: string
-          category: Database["public"]["Enums"]["notification_category"]
-          title: string
           body: string | null
-          link: string | null
-          read_at: string | null
+          category: Database["public"]["Enums"]["notification_category"]
           created_at: string
+          id: string
+          link: string | null
+          organization_id: string
+          read_at: string | null
+          title: string
+          user_id: string
         }
         Insert: {
-          id?: string
-          organization_id: string
-          user_id: string
-          category: Database["public"]["Enums"]["notification_category"]
-          title: string
           body?: string | null
-          link?: string | null
-          read_at?: string | null
+          category: Database["public"]["Enums"]["notification_category"]
           created_at?: string
+          id?: string
+          link?: string | null
+          organization_id: string
+          read_at?: string | null
+          title: string
+          user_id: string
         }
         Update: {
-          id?: string
-          organization_id?: string
-          user_id?: string
-          category?: Database["public"]["Enums"]["notification_category"]
-          title?: string
           body?: string | null
-          link?: string | null
-          read_at?: string | null
+          category?: Database["public"]["Enums"]["notification_category"]
           created_at?: string
+          id?: string
+          link?: string | null
+          organization_id?: string
+          read_at?: string | null
+          title?: string
+          user_id?: string
         }
         Relationships: [
           {
@@ -1689,103 +1832,103 @@ export type Database = {
       }
       organizations: {
         Row: {
-          id: string
-          slug: string
-          name: string
-          short_name: string | null
-          kind: Database["public"]["Enums"]["choir_kind"]
           brand_color: string | null
-          logo_path: string | null
-          timezone: string
-          default_lang: Database["public"]["Enums"]["lang"]
-          is_demo: boolean
-          settings: Json
           created_at: string
+          default_lang: Database["public"]["Enums"]["lang"]
+          id: string
+          is_demo: boolean
+          kind: Database["public"]["Enums"]["choir_kind"]
+          logo_path: string | null
+          name: string
+          settings: Json
+          short_name: string | null
+          slug: string
+          timezone: string
           updated_at: string
         }
         Insert: {
-          id?: string
-          slug: string
-          name: string
-          short_name?: string | null
-          kind?: Database["public"]["Enums"]["choir_kind"]
           brand_color?: string | null
-          logo_path?: string | null
-          timezone?: string
-          default_lang?: Database["public"]["Enums"]["lang"]
-          is_demo?: boolean
-          settings?: Json
           created_at?: string
+          default_lang?: Database["public"]["Enums"]["lang"]
+          id?: string
+          is_demo?: boolean
+          kind?: Database["public"]["Enums"]["choir_kind"]
+          logo_path?: string | null
+          name: string
+          settings?: Json
+          short_name?: string | null
+          slug: string
+          timezone?: string
           updated_at?: string
         }
         Update: {
-          id?: string
-          slug?: string
-          name?: string
-          short_name?: string | null
-          kind?: Database["public"]["Enums"]["choir_kind"]
           brand_color?: string | null
-          logo_path?: string | null
-          timezone?: string
-          default_lang?: Database["public"]["Enums"]["lang"]
-          is_demo?: boolean
-          settings?: Json
           created_at?: string
+          default_lang?: Database["public"]["Enums"]["lang"]
+          id?: string
+          is_demo?: boolean
+          kind?: Database["public"]["Enums"]["choir_kind"]
+          logo_path?: string | null
+          name?: string
+          settings?: Json
+          short_name?: string | null
+          slug?: string
+          timezone?: string
           updated_at?: string
         }
         Relationships: []
       }
       payments: {
         Row: {
-          id: string
-          organization_id: string
-          assignment_id: string | null
-          person_id: string | null
-          payer_name: string | null
           amount_cents: number
-          refunded_cents: number
+          assignment_id: string | null
+          created_at: string
+          id: string
           method: Database["public"]["Enums"]["payment_method"]
-          status: Database["public"]["Enums"]["payment_status"]
-          stripe_payment_intent_id: string | null
-          receipt_number: string | null
           note: string | null
+          organization_id: string
+          payer_name: string | null
+          person_id: string | null
+          receipt_number: string | null
           received_at: string | null
           recorded_by: string | null
-          created_at: string
+          refunded_cents: number
+          status: Database["public"]["Enums"]["payment_status"]
+          stripe_payment_intent_id: string | null
         }
         Insert: {
-          id?: string
-          organization_id: string
-          assignment_id?: string | null
-          person_id?: string | null
-          payer_name?: string | null
           amount_cents: number
-          refunded_cents?: number
+          assignment_id?: string | null
+          created_at?: string
+          id?: string
           method: Database["public"]["Enums"]["payment_method"]
-          status?: Database["public"]["Enums"]["payment_status"]
-          stripe_payment_intent_id?: string | null
-          receipt_number?: string | null
           note?: string | null
+          organization_id: string
+          payer_name?: string | null
+          person_id?: string | null
+          receipt_number?: string | null
           received_at?: string | null
           recorded_by?: string | null
-          created_at?: string
+          refunded_cents?: number
+          status?: Database["public"]["Enums"]["payment_status"]
+          stripe_payment_intent_id?: string | null
         }
         Update: {
-          id?: string
-          organization_id?: string
-          assignment_id?: string | null
-          person_id?: string | null
-          payer_name?: string | null
           amount_cents?: number
-          refunded_cents?: number
+          assignment_id?: string | null
+          created_at?: string
+          id?: string
           method?: Database["public"]["Enums"]["payment_method"]
-          status?: Database["public"]["Enums"]["payment_status"]
-          stripe_payment_intent_id?: string | null
-          receipt_number?: string | null
           note?: string | null
+          organization_id?: string
+          payer_name?: string | null
+          person_id?: string | null
+          receipt_number?: string | null
           received_at?: string | null
           recorded_by?: string | null
-          created_at?: string
+          refunded_cents?: number
+          status?: Database["public"]["Enums"]["payment_status"]
+          stripe_payment_intent_id?: string | null
         }
         Relationships: [
           {
@@ -1793,7 +1936,14 @@ export type Database = {
             columns: ["organization_id", "assignment_id"]
             isOneToOne: false
             referencedRelation: "fee_assignments"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "payments_organization_id_assignment_id_fkey"
+            columns: ["organization_id", "assignment_id"]
+            isOneToOne: false
+            referencedRelation: "fee_balances"
+            referencedColumns: ["organization_id", "assignment_id"]
           },
           {
             foreignKeyName: "payments_organization_id_fkey"
@@ -1806,71 +1956,78 @@ export type Database = {
             foreignKeyName: "payments_organization_id_person_id_fkey"
             columns: ["organization_id", "person_id"]
             isOneToOne: false
+            referencedRelation: "member_directory"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "payments_organization_id_person_id_fkey"
+            columns: ["organization_id", "person_id"]
+            isOneToOne: false
             referencedRelation: "people"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
       people: {
         Row: {
-          id: string
-          organization_id: string
-          user_id: string | null
-          first_name: string
-          last_name: string
-          preferred_name: string | null
-          email: string | null
-          phone: string | null
-          date_of_birth: string | null
-          pronouns: string | null
-          lang: Database["public"]["Enums"]["lang"]
-          status: Database["public"]["Enums"]["person_status"]
-          contact_visibility: Database["public"]["Enums"]["contact_visibility"]
-          photo_path: string | null
-          messaging_suspended_at: string | null
           archived_at: string | null
+          contact_visibility: Database["public"]["Enums"]["contact_visibility"]
           created_at: string
+          date_of_birth: string | null
+          email: string | null
+          first_name: string
+          id: string
+          lang: Database["public"]["Enums"]["lang"]
+          last_name: string
+          messaging_suspended_at: string | null
+          organization_id: string
+          phone: string | null
+          photo_path: string | null
+          preferred_name: string | null
+          pronouns: string | null
+          status: Database["public"]["Enums"]["person_status"]
           updated_at: string
+          user_id: string | null
         }
         Insert: {
-          id?: string
-          organization_id: string
-          user_id?: string | null
-          first_name: string
-          last_name: string
-          preferred_name?: string | null
-          email?: string | null
-          phone?: string | null
-          date_of_birth?: string | null
-          pronouns?: string | null
-          lang?: Database["public"]["Enums"]["lang"]
-          status?: Database["public"]["Enums"]["person_status"]
-          contact_visibility?: Database["public"]["Enums"]["contact_visibility"]
-          photo_path?: string | null
-          messaging_suspended_at?: string | null
           archived_at?: string | null
+          contact_visibility?: Database["public"]["Enums"]["contact_visibility"]
           created_at?: string
+          date_of_birth?: string | null
+          email?: string | null
+          first_name: string
+          id?: string
+          lang?: Database["public"]["Enums"]["lang"]
+          last_name: string
+          messaging_suspended_at?: string | null
+          organization_id: string
+          phone?: string | null
+          photo_path?: string | null
+          preferred_name?: string | null
+          pronouns?: string | null
+          status?: Database["public"]["Enums"]["person_status"]
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
-          id?: string
-          organization_id?: string
-          user_id?: string | null
-          first_name?: string
-          last_name?: string
-          preferred_name?: string | null
-          email?: string | null
-          phone?: string | null
-          date_of_birth?: string | null
-          pronouns?: string | null
-          lang?: Database["public"]["Enums"]["lang"]
-          status?: Database["public"]["Enums"]["person_status"]
-          contact_visibility?: Database["public"]["Enums"]["contact_visibility"]
-          photo_path?: string | null
-          messaging_suspended_at?: string | null
           archived_at?: string | null
+          contact_visibility?: Database["public"]["Enums"]["contact_visibility"]
           created_at?: string
+          date_of_birth?: string | null
+          email?: string | null
+          first_name?: string
+          id?: string
+          lang?: Database["public"]["Enums"]["lang"]
+          last_name?: string
+          messaging_suspended_at?: string | null
+          organization_id?: string
+          phone?: string | null
+          photo_path?: string | null
+          preferred_name?: string | null
+          pronouns?: string | null
+          status?: Database["public"]["Enums"]["person_status"]
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -1884,43 +2041,43 @@ export type Database = {
       }
       pieces: {
         Row: {
+          arranger: string | null
+          composer: string | null
+          created_at: string
+          duration_seconds: number | null
           id: string
+          language: string | null
+          notes: string | null
           organization_id: string
           title: string
-          composer: string | null
-          arranger: string | null
-          voicing: string | null
-          language: string | null
-          duration_seconds: number | null
-          notes: string | null
-          created_at: string
           updated_at: string
+          voicing: string | null
         }
         Insert: {
+          arranger?: string | null
+          composer?: string | null
+          created_at?: string
+          duration_seconds?: number | null
           id?: string
+          language?: string | null
+          notes?: string | null
           organization_id: string
           title: string
-          composer?: string | null
-          arranger?: string | null
-          voicing?: string | null
-          language?: string | null
-          duration_seconds?: number | null
-          notes?: string | null
-          created_at?: string
           updated_at?: string
+          voicing?: string | null
         }
         Update: {
+          arranger?: string | null
+          composer?: string | null
+          created_at?: string
+          duration_seconds?: number | null
           id?: string
+          language?: string | null
+          notes?: string | null
           organization_id?: string
           title?: string
-          composer?: string | null
-          arranger?: string | null
-          voicing?: string | null
-          language?: string | null
-          duration_seconds?: number | null
-          notes?: string | null
-          created_at?: string
           updated_at?: string
+          voicing?: string | null
         }
         Relationships: [
           {
@@ -1934,58 +2091,58 @@ export type Database = {
       }
       platform_admins: {
         Row: {
-          user_id: string
           created_at: string
+          user_id: string
         }
         Insert: {
-          user_id: string
           created_at?: string
+          user_id: string
         }
         Update: {
-          user_id?: string
           created_at?: string
+          user_id?: string
         }
         Relationships: []
       }
       practice_assignments: {
         Row: {
+          bars: string | null
+          created_at: string
+          created_by: string | null
+          due_on: string | null
           id: string
+          instructions: string | null
           organization_id: string
           piece_id: string
-          title: string
-          instructions: string | null
-          bars: string | null
-          due_on: string | null
-          section_ids: string[]
           released_at: string | null
-          created_by: string | null
-          created_at: string
+          section_ids: string[]
+          title: string
         }
         Insert: {
+          bars?: string | null
+          created_at?: string
+          created_by?: string | null
+          due_on?: string | null
           id?: string
+          instructions?: string | null
           organization_id: string
           piece_id: string
-          title: string
-          instructions?: string | null
-          bars?: string | null
-          due_on?: string | null
-          section_ids?: string[]
           released_at?: string | null
-          created_by?: string | null
-          created_at?: string
+          section_ids?: string[]
+          title: string
         }
         Update: {
+          bars?: string | null
+          created_at?: string
+          created_by?: string | null
+          due_on?: string | null
           id?: string
+          instructions?: string | null
           organization_id?: string
           piece_id?: string
-          title?: string
-          instructions?: string | null
-          bars?: string | null
-          due_on?: string | null
-          section_ids?: string[]
           released_at?: string | null
-          created_by?: string | null
-          created_at?: string
+          section_ids?: string[]
+          title?: string
         }
         Relationships: [
           {
@@ -1993,28 +2150,28 @@ export type Database = {
             columns: ["organization_id", "piece_id"]
             isOneToOne: false
             referencedRelation: "pieces"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
       practice_completions: {
         Row: {
-          organization_id: string
           assignment_id: string
-          person_id: string
           completed_at: string
+          organization_id: string
+          person_id: string
         }
         Insert: {
-          organization_id: string
           assignment_id: string
-          person_id: string
           completed_at?: string
+          organization_id: string
+          person_id: string
         }
         Update: {
-          organization_id?: string
           assignment_id?: string
-          person_id?: string
           completed_at?: string
+          organization_id?: string
+          person_id?: string
         }
         Relationships: [
           {
@@ -2022,91 +2179,105 @@ export type Database = {
             columns: ["organization_id", "assignment_id"]
             isOneToOne: false
             referencedRelation: "practice_assignments"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "practice_completions_organization_id_person_id_fkey"
+            columns: ["organization_id", "person_id"]
+            isOneToOne: false
+            referencedRelation: "member_directory"
+            referencedColumns: ["organization_id", "id"]
           },
           {
             foreignKeyName: "practice_completions_organization_id_person_id_fkey"
             columns: ["organization_id", "person_id"]
             isOneToOne: false
             referencedRelation: "people"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
       practice_log: {
         Row: {
+          created_at: string
           id: string
+          minutes: number
+          note: string | null
           organization_id: string
           person_id: string
           piece_id: string | null
           practised_on: string
-          minutes: number
-          note: string | null
-          created_at: string
         }
         Insert: {
+          created_at?: string
           id?: string
+          minutes: number
+          note?: string | null
           organization_id: string
           person_id: string
           piece_id?: string | null
           practised_on?: string
-          minutes: number
-          note?: string | null
-          created_at?: string
         }
         Update: {
+          created_at?: string
           id?: string
+          minutes?: number
+          note?: string | null
           organization_id?: string
           person_id?: string
           piece_id?: string | null
           practised_on?: string
-          minutes?: number
-          note?: string | null
-          created_at?: string
         }
         Relationships: [
           {
             foreignKeyName: "practice_log_organization_id_person_id_fkey"
             columns: ["organization_id", "person_id"]
             isOneToOne: false
+            referencedRelation: "member_directory"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "practice_log_organization_id_person_id_fkey"
+            columns: ["organization_id", "person_id"]
+            isOneToOne: false
             referencedRelation: "people"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
           {
             foreignKeyName: "practice_log_organization_id_piece_id_fkey"
             columns: ["organization_id", "piece_id"]
             isOneToOne: false
             referencedRelation: "pieces"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
       profiles: {
         Row: {
-          id: string
-          display_name: string | null
-          lang: Database["public"]["Enums"]["lang"]
-          theme: Database["public"]["Enums"]["theme_mode"]
-          last_organization_id: string | null
           created_at: string
+          display_name: string | null
+          id: string
+          lang: Database["public"]["Enums"]["lang"]
+          last_organization_id: string | null
+          theme: Database["public"]["Enums"]["theme_mode"]
           updated_at: string
         }
         Insert: {
-          id: string
-          display_name?: string | null
-          lang?: Database["public"]["Enums"]["lang"]
-          theme?: Database["public"]["Enums"]["theme_mode"]
-          last_organization_id?: string | null
           created_at?: string
+          display_name?: string | null
+          id: string
+          lang?: Database["public"]["Enums"]["lang"]
+          last_organization_id?: string | null
+          theme?: Database["public"]["Enums"]["theme_mode"]
           updated_at?: string
         }
         Update: {
-          id?: string
-          display_name?: string | null
-          lang?: Database["public"]["Enums"]["lang"]
-          theme?: Database["public"]["Enums"]["theme_mode"]
-          last_organization_id?: string | null
           created_at?: string
+          display_name?: string | null
+          id?: string
+          lang?: Database["public"]["Enums"]["lang"]
+          last_organization_id?: string | null
+          theme?: Database["public"]["Enums"]["theme_mode"]
           updated_at?: string
         }
         Relationships: [
@@ -2121,52 +2292,112 @@ export type Database = {
       }
       push_subscriptions: {
         Row: {
-          id: string
-          user_id: string
-          endpoint: string
-          p256dh: string
           auth: string
-          user_agent: string | null
           created_at: string
+          endpoint: string
+          id: string
+          p256dh: string
+          user_agent: string | null
+          user_id: string
         }
         Insert: {
-          id?: string
-          user_id: string
-          endpoint: string
-          p256dh: string
           auth: string
-          user_agent?: string | null
           created_at?: string
+          endpoint: string
+          id?: string
+          p256dh: string
+          user_agent?: string | null
+          user_id: string
         }
         Update: {
-          id?: string
-          user_id?: string
-          endpoint?: string
-          p256dh?: string
           auth?: string
-          user_agent?: string | null
           created_at?: string
+          endpoint?: string
+          id?: string
+          p256dh?: string
+          user_agent?: string | null
+          user_id?: string
         }
         Relationships: []
       }
       role_permissions: {
         Row: {
+          area:
+            | "dashboard"
+            | "roster"
+            | "care"
+            | "staff_notes"
+            | "calendar"
+            | "attendance"
+            | "music"
+            | "announcements"
+            | "inbox"
+            | "monthly_updates"
+            | "forms"
+            | "fees"
+            | "tickets"
+            | "seating"
+            | "volunteers"
+            | "reports"
+            | "users"
+            | "settings"
+            | "moderation"
+            | "audit"
+          level: "none" | "view" | "edit"
           organization_id: string
           role_id: string
-          area: string
-          level: string
         }
         Insert: {
+          area:
+            | "dashboard"
+            | "roster"
+            | "care"
+            | "staff_notes"
+            | "calendar"
+            | "attendance"
+            | "music"
+            | "announcements"
+            | "inbox"
+            | "monthly_updates"
+            | "forms"
+            | "fees"
+            | "tickets"
+            | "seating"
+            | "volunteers"
+            | "reports"
+            | "users"
+            | "settings"
+            | "moderation"
+            | "audit"
+          level?: "none" | "view" | "edit"
           organization_id: string
           role_id: string
-          area: string
-          level?: string
         }
         Update: {
+          area?:
+            | "dashboard"
+            | "roster"
+            | "care"
+            | "staff_notes"
+            | "calendar"
+            | "attendance"
+            | "music"
+            | "announcements"
+            | "inbox"
+            | "monthly_updates"
+            | "forms"
+            | "fees"
+            | "tickets"
+            | "seating"
+            | "volunteers"
+            | "reports"
+            | "users"
+            | "settings"
+            | "moderation"
+            | "audit"
+          level?: "none" | "view" | "edit"
           organization_id?: string
           role_id?: string
-          area?: string
-          level?: string
         }
         Relationships: [
           {
@@ -2174,43 +2405,43 @@ export type Database = {
             columns: ["organization_id", "role_id"]
             isOneToOne: false
             referencedRelation: "roles"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
       roles: {
         Row: {
-          id: string
-          organization_id: string
-          key: string | null
-          name_en: string
-          name_fr: string
+          created_at: string
           description_en: string | null
           description_fr: string | null
+          id: string
+          key: string | null
           locked: boolean
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          organization_id: string
-          key?: string | null
           name_en: string
           name_fr: string
+          organization_id: string
+        }
+        Insert: {
+          created_at?: string
           description_en?: string | null
           description_fr?: string | null
+          id?: string
+          key?: string | null
           locked?: boolean
-          created_at?: string
+          name_en: string
+          name_fr: string
+          organization_id: string
         }
         Update: {
-          id?: string
-          organization_id?: string
-          key?: string | null
-          name_en?: string
-          name_fr?: string
+          created_at?: string
           description_en?: string | null
           description_fr?: string | null
+          id?: string
+          key?: string | null
           locked?: boolean
-          created_at?: string
+          name_en?: string
+          name_fr?: string
+          organization_id?: string
         }
         Relationships: [
           {
@@ -2224,37 +2455,37 @@ export type Database = {
       }
       score_files: {
         Row: {
+          created_at: string
           id: string
+          label: string
           organization_id: string
           piece_id: string
-          label: string
-          storage_path: string
-          size_bytes: number | null
-          section_id: string | null
           released_at: string | null
-          created_at: string
+          section_id: string | null
+          size_bytes: number | null
+          storage_path: string
         }
         Insert: {
+          created_at?: string
           id?: string
+          label?: string
           organization_id: string
           piece_id: string
-          label?: string
-          storage_path: string
-          size_bytes?: number | null
-          section_id?: string | null
           released_at?: string | null
-          created_at?: string
+          section_id?: string | null
+          size_bytes?: number | null
+          storage_path: string
         }
         Update: {
+          created_at?: string
           id?: string
+          label?: string
           organization_id?: string
           piece_id?: string
-          label?: string
-          storage_path?: string
-          size_bytes?: number | null
-          section_id?: string | null
           released_at?: string | null
-          created_at?: string
+          section_id?: string | null
+          size_bytes?: number | null
+          storage_path?: string
         }
         Relationships: [
           {
@@ -2262,50 +2493,50 @@ export type Database = {
             columns: ["organization_id", "piece_id"]
             isOneToOne: false
             referencedRelation: "pieces"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
           {
             foreignKeyName: "score_files_organization_id_section_id_fkey"
             columns: ["organization_id", "section_id"]
             isOneToOne: false
             referencedRelation: "sections"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
       seasons: {
         Row: {
-          id: string
-          organization_id: string
-          name: string
-          starts_on: string
-          ends_on: string
-          is_current: boolean
           created_at: string
+          ends_on: string
+          id: string
+          is_current: boolean
+          name: string
+          organization_id: string
+          starts_on: string
         }
         Insert: {
-          id?: string
-          organization_id: string
-          name: string
-          starts_on: string
-          ends_on: string
-          is_current?: boolean
           created_at?: string
+          ends_on: string
+          id?: string
+          is_current?: boolean
+          name: string
+          organization_id: string
+          starts_on: string
         }
         Update: {
-          id?: string
-          organization_id?: string
-          name?: string
-          starts_on?: string
-          ends_on?: string
-          is_current?: boolean
           created_at?: string
+          ends_on?: string
+          id?: string
+          is_current?: boolean
+          name?: string
+          organization_id?: string
+          starts_on?: string
         }
         Relationships: [
           {
             foreignKeyName: "seasons_organization_id_fkey"
             columns: ["organization_id"]
-            isOneToOne: true
+            isOneToOne: false
             referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
@@ -2313,33 +2544,33 @@ export type Database = {
       }
       seating_charts: {
         Row: {
-          id: string
-          organization_id: string
-          event_id: string
-          name: string
-          layout: Json
-          published_at: string | null
           created_at: string
+          event_id: string
+          id: string
+          layout: Json
+          name: string
+          organization_id: string
+          published_at: string | null
           updated_at: string
         }
         Insert: {
-          id?: string
-          organization_id: string
-          event_id: string
-          name?: string
-          layout?: Json
-          published_at?: string | null
           created_at?: string
+          event_id: string
+          id?: string
+          layout?: Json
+          name?: string
+          organization_id: string
+          published_at?: string | null
           updated_at?: string
         }
         Update: {
-          id?: string
-          organization_id?: string
-          event_id?: string
-          name?: string
-          layout?: Json
-          published_at?: string | null
           created_at?: string
+          event_id?: string
+          id?: string
+          layout?: Json
+          name?: string
+          organization_id?: string
+          published_at?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -2348,28 +2579,28 @@ export type Database = {
             columns: ["organization_id", "event_id"]
             isOneToOne: false
             referencedRelation: "events"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
       seating_positions: {
         Row: {
-          organization_id: string
           chart_id: string
+          organization_id: string
           person_id: string
           row_label: string
           seat: number
         }
         Insert: {
-          organization_id: string
           chart_id: string
+          organization_id: string
           person_id: string
           row_label: string
           seat: number
         }
         Update: {
-          organization_id?: string
           chart_id?: string
+          organization_id?: string
           person_id?: string
           row_label?: string
           seat?: number
@@ -2380,40 +2611,47 @@ export type Database = {
             columns: ["organization_id", "chart_id"]
             isOneToOne: false
             referencedRelation: "seating_charts"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "seating_positions_organization_id_person_id_fkey"
+            columns: ["organization_id", "person_id"]
+            isOneToOne: false
+            referencedRelation: "member_directory"
+            referencedColumns: ["organization_id", "id"]
           },
           {
             foreignKeyName: "seating_positions_organization_id_person_id_fkey"
             columns: ["organization_id", "person_id"]
             isOneToOne: false
             referencedRelation: "people"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
       sections: {
         Row: {
           id: string
-          organization_id: string
           key: string
           name_en: string
           name_fr: string
+          organization_id: string
           sort: number
         }
         Insert: {
           id?: string
-          organization_id: string
           key: string
           name_en: string
           name_fr: string
+          organization_id: string
           sort?: number
         }
         Update: {
           id?: string
-          organization_id?: string
           key?: string
           name_en?: string
           name_fr?: string
+          organization_id?: string
           sort?: number
         }
         Relationships: [
@@ -2428,28 +2666,28 @@ export type Database = {
       }
       seller_links: {
         Row: {
-          id: string
-          organization_id: string
-          event_id: string
-          person_id: string
           code: string
           created_at: string
+          event_id: string
+          id: string
+          organization_id: string
+          person_id: string
         }
         Insert: {
-          id?: string
-          organization_id: string
-          event_id: string
-          person_id: string
           code: string
           created_at?: string
+          event_id: string
+          id?: string
+          organization_id: string
+          person_id: string
         }
         Update: {
-          id?: string
-          organization_id?: string
-          event_id?: string
-          person_id?: string
           code?: string
           created_at?: string
+          event_id?: string
+          id?: string
+          organization_id?: string
+          person_id?: string
         }
         Relationships: [
           {
@@ -2457,33 +2695,40 @@ export type Database = {
             columns: ["organization_id", "event_id"]
             isOneToOne: false
             referencedRelation: "events"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "seller_links_organization_id_person_id_fkey"
+            columns: ["organization_id", "person_id"]
+            isOneToOne: false
+            referencedRelation: "member_directory"
+            referencedColumns: ["organization_id", "id"]
           },
           {
             foreignKeyName: "seller_links_organization_id_person_id_fkey"
             columns: ["organization_id", "person_id"]
             isOneToOne: false
             referencedRelation: "people"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
       set_list_items: {
         Row: {
-          organization_id: string
           event_id: string
+          organization_id: string
           piece_id: string
           position: number
         }
         Insert: {
-          organization_id: string
           event_id: string
+          organization_id: string
           piece_id: string
           position: number
         }
         Update: {
-          organization_id?: string
           event_id?: string
+          organization_id?: string
           piece_id?: string
           position?: number
         }
@@ -2493,43 +2738,43 @@ export type Database = {
             columns: ["organization_id", "event_id"]
             isOneToOne: false
             referencedRelation: "events"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
           {
             foreignKeyName: "set_list_items_organization_id_piece_id_fkey"
             columns: ["organization_id", "piece_id"]
             isOneToOne: false
             referencedRelation: "pieces"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
       staff_notes: {
         Row: {
-          id: string
-          organization_id: string
-          person_id: string
           author_id: string | null
           body: string
           created_at: string
+          id: string
+          organization_id: string
+          person_id: string
           updated_at: string
         }
         Insert: {
-          id?: string
-          organization_id: string
-          person_id: string
           author_id?: string | null
           body: string
           created_at?: string
+          id?: string
+          organization_id: string
+          person_id: string
           updated_at?: string
         }
         Update: {
-          id?: string
-          organization_id?: string
-          person_id?: string
           author_id?: string | null
           body?: string
           created_at?: string
+          id?: string
+          organization_id?: string
+          person_id?: string
           updated_at?: string
         }
         Relationships: [
@@ -2537,38 +2782,45 @@ export type Database = {
             foreignKeyName: "staff_notes_organization_id_person_id_fkey"
             columns: ["organization_id", "person_id"]
             isOneToOne: false
+            referencedRelation: "member_directory"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "staff_notes_organization_id_person_id_fkey"
+            columns: ["organization_id", "person_id"]
+            isOneToOne: false
             referencedRelation: "people"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
       terms: {
         Row: {
+          absence_limit: number | null
+          ends_on: string
           id: string
+          name: string
           organization_id: string
           season_id: string
-          name: string
           starts_on: string
-          ends_on: string
-          absence_limit: number | null
         }
         Insert: {
+          absence_limit?: number | null
+          ends_on: string
           id?: string
+          name: string
           organization_id: string
           season_id: string
-          name: string
           starts_on: string
-          ends_on: string
-          absence_limit?: number | null
         }
         Update: {
+          absence_limit?: number | null
+          ends_on?: string
           id?: string
+          name?: string
           organization_id?: string
           season_id?: string
-          name?: string
           starts_on?: string
-          ends_on?: string
-          absence_limit?: number | null
         }
         Relationships: [
           {
@@ -2576,49 +2828,49 @@ export type Database = {
             columns: ["organization_id", "season_id"]
             isOneToOne: false
             referencedRelation: "seasons"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
       ticket_orders: {
         Row: {
+          buyer_email: string
+          buyer_name: string
+          created_at: string
+          event_id: string
           id: string
           organization_id: string
-          event_id: string
-          buyer_name: string
-          buyer_email: string
-          seller_link_id: string | null
-          total_cents: number
           refunded_cents: number
+          seller_link_id: string | null
           status: Database["public"]["Enums"]["order_status"]
           stripe_checkout_session_id: string | null
-          created_at: string
+          total_cents: number
         }
         Insert: {
+          buyer_email: string
+          buyer_name: string
+          created_at?: string
+          event_id: string
           id?: string
           organization_id: string
-          event_id: string
-          buyer_name: string
-          buyer_email: string
-          seller_link_id?: string | null
-          total_cents: number
           refunded_cents?: number
+          seller_link_id?: string | null
           status?: Database["public"]["Enums"]["order_status"]
           stripe_checkout_session_id?: string | null
-          created_at?: string
+          total_cents: number
         }
         Update: {
+          buyer_email?: string
+          buyer_name?: string
+          created_at?: string
+          event_id?: string
           id?: string
           organization_id?: string
-          event_id?: string
-          buyer_name?: string
-          buyer_email?: string
-          seller_link_id?: string | null
-          total_cents?: number
           refunded_cents?: number
+          seller_link_id?: string | null
           status?: Database["public"]["Enums"]["order_status"]
           stripe_checkout_session_id?: string | null
-          created_at?: string
+          total_cents?: number
         }
         Relationships: [
           {
@@ -2626,50 +2878,50 @@ export type Database = {
             columns: ["organization_id", "event_id"]
             isOneToOne: false
             referencedRelation: "events"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
           {
             foreignKeyName: "ticket_orders_organization_id_seller_link_id_fkey"
             columns: ["organization_id", "seller_link_id"]
             isOneToOne: false
             referencedRelation: "seller_links"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
       ticket_types: {
         Row: {
-          id: string
-          organization_id: string
-          event_id: string
-          name: string
-          price_cents: number
           capacity: number | null
-          sales_start_at: string | null
-          sales_end_at: string | null
           created_at: string
+          event_id: string
+          id: string
+          name: string
+          organization_id: string
+          price_cents: number
+          sales_end_at: string | null
+          sales_start_at: string | null
         }
         Insert: {
-          id?: string
-          organization_id: string
-          event_id: string
-          name: string
-          price_cents: number
           capacity?: number | null
-          sales_start_at?: string | null
-          sales_end_at?: string | null
           created_at?: string
+          event_id: string
+          id?: string
+          name: string
+          organization_id: string
+          price_cents: number
+          sales_end_at?: string | null
+          sales_start_at?: string | null
         }
         Update: {
-          id?: string
-          organization_id?: string
-          event_id?: string
-          name?: string
-          price_cents?: number
           capacity?: number | null
-          sales_start_at?: string | null
-          sales_end_at?: string | null
           created_at?: string
+          event_id?: string
+          id?: string
+          name?: string
+          organization_id?: string
+          price_cents?: number
+          sales_end_at?: string | null
+          sales_start_at?: string | null
         }
         Relationships: [
           {
@@ -2677,100 +2929,107 @@ export type Database = {
             columns: ["organization_id", "event_id"]
             isOneToOne: false
             referencedRelation: "events"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
       tickets: {
         Row: {
-          id: string
-          organization_id: string
-          order_id: string | null
-          ticket_type_id: string
-          issued_to: string | null
-          is_comp: boolean
           code: string
+          created_at: string
+          id: string
+          is_comp: boolean
+          issued_to: string | null
+          order_id: string | null
+          organization_id: string
           scanned_at: string | null
           scanned_by: string | null
+          ticket_type_id: string
           voided_at: string | null
-          created_at: string
         }
         Insert: {
-          id?: string
-          organization_id: string
-          order_id?: string | null
-          ticket_type_id: string
-          issued_to?: string | null
-          is_comp?: boolean
           code?: string
+          created_at?: string
+          id?: string
+          is_comp?: boolean
+          issued_to?: string | null
+          order_id?: string | null
+          organization_id: string
           scanned_at?: string | null
           scanned_by?: string | null
+          ticket_type_id: string
           voided_at?: string | null
-          created_at?: string
         }
         Update: {
-          id?: string
-          organization_id?: string
-          order_id?: string | null
-          ticket_type_id?: string
-          issued_to?: string | null
-          is_comp?: boolean
           code?: string
+          created_at?: string
+          id?: string
+          is_comp?: boolean
+          issued_to?: string | null
+          order_id?: string | null
+          organization_id?: string
           scanned_at?: string | null
           scanned_by?: string | null
+          ticket_type_id?: string
           voided_at?: string | null
-          created_at?: string
         }
         Relationships: [
           {
             foreignKeyName: "tickets_organization_id_issued_to_fkey"
             columns: ["organization_id", "issued_to"]
             isOneToOne: false
+            referencedRelation: "member_directory"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "tickets_organization_id_issued_to_fkey"
+            columns: ["organization_id", "issued_to"]
+            isOneToOne: false
             referencedRelation: "people"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
           {
             foreignKeyName: "tickets_organization_id_order_id_fkey"
             columns: ["organization_id", "order_id"]
             isOneToOne: false
             referencedRelation: "ticket_orders"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
           {
             foreignKeyName: "tickets_organization_id_ticket_type_id_fkey"
             columns: ["organization_id", "ticket_type_id"]
             isOneToOne: false
             referencedRelation: "ticket_types"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
       voice_parts: {
         Row: {
           id: string
-          organization_id: string
-          section_id: string
           key: string
           name_en: string
           name_fr: string
+          organization_id: string
+          section_id: string
           sort: number
         }
         Insert: {
           id?: string
-          organization_id: string
-          section_id: string
           key: string
           name_en: string
           name_fr: string
+          organization_id: string
+          section_id: string
           sort?: number
         }
         Update: {
           id?: string
-          organization_id?: string
-          section_id?: string
           key?: string
           name_en?: string
           name_fr?: string
+          organization_id?: string
+          section_id?: string
           sort?: number
         }
         Relationships: [
@@ -2779,37 +3038,37 @@ export type Database = {
             columns: ["organization_id", "section_id"]
             isOneToOne: false
             referencedRelation: "sections"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
       volunteer_jobs: {
         Row: {
+          created_at: string
+          description: string | null
+          event_id: string | null
           id: string
           organization_id: string
-          event_id: string | null
-          title: string
-          description: string | null
           requires_police_check: boolean
-          created_at: string
+          title: string
         }
         Insert: {
+          created_at?: string
+          description?: string | null
+          event_id?: string | null
           id?: string
           organization_id: string
-          event_id?: string | null
-          title: string
-          description?: string | null
           requires_police_check?: boolean
-          created_at?: string
+          title: string
         }
         Update: {
+          created_at?: string
+          description?: string | null
+          event_id?: string | null
           id?: string
           organization_id?: string
-          event_id?: string | null
-          title?: string
-          description?: string | null
           requires_police_check?: boolean
-          created_at?: string
+          title?: string
         }
         Relationships: [
           {
@@ -2817,7 +3076,7 @@ export type Database = {
             columns: ["organization_id", "event_id"]
             isOneToOne: false
             referencedRelation: "events"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
           {
             foreignKeyName: "volunteer_jobs_organization_id_fkey"
@@ -2830,67 +3089,74 @@ export type Database = {
       }
       volunteer_signups: {
         Row: {
-          organization_id: string
-          slot_id: string
-          person_id: string
           created_at: string
           hours_logged: number | null
+          organization_id: string
+          person_id: string
+          slot_id: string
         }
         Insert: {
-          organization_id: string
-          slot_id: string
-          person_id: string
           created_at?: string
           hours_logged?: number | null
+          organization_id: string
+          person_id: string
+          slot_id: string
         }
         Update: {
-          organization_id?: string
-          slot_id?: string
-          person_id?: string
           created_at?: string
           hours_logged?: number | null
+          organization_id?: string
+          person_id?: string
+          slot_id?: string
         }
         Relationships: [
           {
             foreignKeyName: "volunteer_signups_organization_id_person_id_fkey"
             columns: ["organization_id", "person_id"]
             isOneToOne: false
+            referencedRelation: "member_directory"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "volunteer_signups_organization_id_person_id_fkey"
+            columns: ["organization_id", "person_id"]
+            isOneToOne: false
             referencedRelation: "people"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
           {
             foreignKeyName: "volunteer_signups_organization_id_slot_id_fkey"
             columns: ["organization_id", "slot_id"]
             isOneToOne: false
             referencedRelation: "volunteer_slots"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
       volunteer_slots: {
         Row: {
-          id: string
-          organization_id: string
-          job_id: string
-          starts_at: string
           ends_at: string
+          id: string
+          job_id: string
           needed: number
+          organization_id: string
+          starts_at: string
         }
         Insert: {
-          id?: string
-          organization_id: string
-          job_id: string
-          starts_at: string
           ends_at: string
+          id?: string
+          job_id: string
           needed?: number
+          organization_id: string
+          starts_at: string
         }
         Update: {
-          id?: string
-          organization_id?: string
-          job_id?: string
-          starts_at?: string
           ends_at?: string
+          id?: string
+          job_id?: string
           needed?: number
+          organization_id?: string
+          starts_at?: string
         }
         Relationships: [
           {
@@ -2898,7 +3164,7 @@ export type Database = {
             columns: ["organization_id", "job_id"]
             isOneToOne: false
             referencedRelation: "volunteer_jobs"
-            referencedColumns: ["id", "organization_id"]
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
@@ -2906,51 +3172,85 @@ export type Database = {
     Views: {
       fee_balances: {
         Row: {
+          adjusted_cents: number | null
+          amount_cents: number | null
           assignment_id: string | null
-          organization_id: string | null
-          person_id: string | null
+          due_on: string | null
           fee_id: string | null
           name: string | null
-          due_on: string | null
-          amount_cents: number | null
+          organization_id: string | null
           paid_cents: number | null
-          adjusted_cents: number | null
+          person_id: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "fee_assignments_organization_id_fee_id_fkey"
+            columns: ["organization_id", "fee_id"]
+            isOneToOne: false
+            referencedRelation: "fees"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "fee_assignments_organization_id_person_id_fkey"
+            columns: ["organization_id", "person_id"]
+            isOneToOne: false
+            referencedRelation: "member_directory"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "fee_assignments_organization_id_person_id_fkey"
+            columns: ["organization_id", "person_id"]
+            isOneToOne: false
+            referencedRelation: "people"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
       }
       member_directory: {
         Row: {
-          id: string | null
-          organization_id: string | null
+          email: string | null
           first_name: string | null
+          id: string | null
+          is_staff: boolean | null
           last_name: string | null
+          organization_id: string | null
+          phone: string | null
+          photo_path: string | null
           preferred_name: string | null
           pronouns: string | null
           section_id: string | null
           voice_part_id: string | null
-          is_staff: boolean | null
-          email: string | null
-          phone: string | null
-          photo_path: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "people_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Functions: {
       email_budget_today: {
         Args: { org: string }
-        Returns: { sent_today: number; remaining_today: number; queued_for_choir: number }[]
+        Returns: {
+          queued_for_choir: number
+          remaining_today: number
+          sent_today: number
+        }[]
       }
-      email_daily_cap: {
-        Args: never
-        Returns: number
-      }
-      link_existing_account: {
-        Args: { person: string }
-        Returns: boolean
-      }
+      email_daily_cap: { Args: never; Returns: number }
+      link_existing_account: { Args: { person: string }; Returns: boolean }
       log_event: {
-        Args: { org: string; action: string; entity: string; entity_id?: string; details?: Json }
+        Args: {
+          action: string
+          details?: Json
+          entity: string
+          entity_id?: string
+          org: string
+        }
         Returns: undefined
       }
     }
@@ -2962,30 +3262,250 @@ export type Database = {
       availability_answer: "yes" | "no" | "maybe"
       choir_kind: "youth" | "adult"
       chorister_status: "auditioning" | "active" | "on_leave" | "departed"
-      consent_kind: "participation" | "code_of_conduct" | "photo_video" | "medical_info"
+      consent_kind:
+        | "participation"
+        | "code_of_conduct"
+        | "photo_video"
+        | "medical_info"
       contact_visibility: "private" | "choir"
       conversation_status: "open" | "resolved"
       email_status: "queued" | "sending" | "sent" | "failed" | "suppressed"
-      event_type: "rehearsal" | "sectional" | "concert" | "tour" | "social" | "deadline"
-      form_kind: "registration" | "permission" | "medical" | "consent" | "agreement" | "survey" | "other"
+      event_type:
+        | "rehearsal"
+        | "sectional"
+        | "concert"
+        | "tour"
+        | "social"
+        | "deadline"
+      form_kind:
+        | "registration"
+        | "permission"
+        | "medical"
+        | "consent"
+        | "agreement"
+        | "survey"
+        | "other"
       form_status: "draft" | "open" | "closed"
       lang: "en" | "fr"
       message_category: "absence" | "music" | "fees" | "general"
-      notification_category: "announcements" | "schedule" | "music" | "messages" | "forms" | "fees" | "tickets" | "volunteers" | "system"
-      order_status: "pending" | "paid" | "refunded" | "partially_refunded" | "cancelled"
+      notification_category:
+        | "announcements"
+        | "schedule"
+        | "music"
+        | "messages"
+        | "forms"
+        | "fees"
+        | "tickets"
+        | "volunteers"
+        | "system"
+      order_status:
+        | "pending"
+        | "paid"
+        | "refunded"
+        | "partially_refunded"
+        | "cancelled"
       payment_method: "card" | "cash" | "cheque" | "etransfer"
-      payment_status: "pending" | "succeeded" | "failed" | "refunded" | "partially_refunded"
+      payment_status:
+        | "pending"
+        | "succeeded"
+        | "failed"
+        | "refunded"
+        | "partially_refunded"
       person_status: "invited" | "active" | "archived"
       response_status: "in_progress" | "submitted" | "changes" | "approved"
       theme_mode: "auto" | "light" | "dark"
     }
-    CompositeTypes: { [_ in never]: never }
+    CompositeTypes: {
+      [_ in never]: never
+    }
   }
 }
 
-type PublicSchema = Database["public"]
-export type Tables<T extends keyof PublicSchema["Tables"]> = PublicSchema["Tables"][T]["Row"]
-export type TablesInsert<T extends keyof PublicSchema["Tables"]> = PublicSchema["Tables"][T]["Insert"]
-export type TablesUpdate<T extends keyof PublicSchema["Tables"]> = PublicSchema["Tables"][T]["Update"]
-export type Views<T extends keyof PublicSchema["Views"]> = PublicSchema["Views"][T]["Row"]
-export type Enums<T extends keyof PublicSchema["Enums"]> = PublicSchema["Enums"][T]
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
+
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
+
+export type Tables<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    : never) = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
+    : never
+
+export type TablesInsert<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never) = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
+    : never
+
+export type TablesUpdate<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never) = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
+    : never
+
+export type Enums<
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends (DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    : never) = never,
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof DatabaseWithoutInternals },
+  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never) = never,
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never
+
+export const Constants = {
+  public: {
+    Enums: {
+      absence_kind: ["absent", "late"],
+      adjustment_kind: ["waiver", "financial_aid", "family_discount", "other"],
+      adjustment_status: ["requested", "approved", "declined"],
+      attendance_status: ["present", "late", "absent", "excused"],
+      availability_answer: ["yes", "no", "maybe"],
+      choir_kind: ["youth", "adult"],
+      chorister_status: ["auditioning", "active", "on_leave", "departed"],
+      consent_kind: [
+        "participation",
+        "code_of_conduct",
+        "photo_video",
+        "medical_info",
+      ],
+      contact_visibility: ["private", "choir"],
+      conversation_status: ["open", "resolved"],
+      email_status: ["queued", "sending", "sent", "failed", "suppressed"],
+      event_type: [
+        "rehearsal",
+        "sectional",
+        "concert",
+        "tour",
+        "social",
+        "deadline",
+      ],
+      form_kind: [
+        "registration",
+        "permission",
+        "medical",
+        "consent",
+        "agreement",
+        "survey",
+        "other",
+      ],
+      form_status: ["draft", "open", "closed"],
+      lang: ["en", "fr"],
+      message_category: ["absence", "music", "fees", "general"],
+      notification_category: [
+        "announcements",
+        "schedule",
+        "music",
+        "messages",
+        "forms",
+        "fees",
+        "tickets",
+        "volunteers",
+        "system",
+      ],
+      order_status: [
+        "pending",
+        "paid",
+        "refunded",
+        "partially_refunded",
+        "cancelled",
+      ],
+      payment_method: ["card", "cash", "cheque", "etransfer"],
+      payment_status: [
+        "pending",
+        "succeeded",
+        "failed",
+        "refunded",
+        "partially_refunded",
+      ],
+      person_status: ["invited", "active", "archived"],
+      response_status: ["in_progress", "submitted", "changes", "approved"],
+      theme_mode: ["auto", "light", "dark"],
+    },
+  },
+} as const

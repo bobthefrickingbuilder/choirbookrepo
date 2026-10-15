@@ -27,7 +27,9 @@ npm run test:db      # database security tests (in-memory Postgres, no Docker ne
 npm test             # unit tests
 npm run typecheck
 npm run lint
-npm run db:types:local   # regenerate packages/shared/src/database.types.ts after changing a migration
+npx supabase db push     # apply new migrations to the linked Supabase project
+npm run db:types         # regenerate packages/shared/src/database.types.ts from the linked project
+npm run db:types:local   # same, from the migrations alone (no project needed)
 ```
 
 ## How security works

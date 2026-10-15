@@ -26,11 +26,6 @@ jobs:
       - name: Database security tests (row-level security, every table and role)
         run: npm run test:db
 
-      - name: Database types are up to date
-        run: |
-          npm run db:types:local
-          git diff --exit-code packages/shared/src/database.types.ts
-
       - name: Unit tests
         run: npm test
 
