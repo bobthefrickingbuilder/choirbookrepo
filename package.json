@@ -1,0 +1,29 @@
+{
+  "name": "choirbook",
+  "private": true,
+  "workspaces": [
+    "web",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w web",
+    "build": "npm run build -w web",
+    "lint": "npm run lint -w web",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "test:db": "vitest run --config supabase/tests/vitest.config.ts",
+    "db:types": "supabase gen types typescript --linked --schema public > packages/shared/src/database.types.ts"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.10",
+    "@types/node": "^22.20.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "supabase": "^2.121.0",
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.5"
+  }
+}
