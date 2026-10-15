@@ -1,0 +1,225 @@
+/* App layout on top of the Choirbook design system (packages/ui). Breakpoints
+   follow the design system: phone < 600px, tablet 600–1023px, laptop ≥ 1024px. */
+
+html,
+body {
+  height: 100%;
+}
+
+.skip-link {
+  position: absolute;
+  left: 12px;
+  top: -48px;
+  z-index: var(--z-toast);
+  padding: 8px 14px;
+  border-radius: var(--radius-md);
+  background: var(--surface-card);
+  box-shadow: var(--shadow-2);
+}
+.skip-link:focus {
+  top: 12px;
+}
+
+/* ---- App shell ---- */
+.shell {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--bg-app);
+}
+.shell__body {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+.shell__sidebar {
+  display: none;
+  flex: none;
+}
+.shell__main {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+.shell__main:focus {
+  outline: none;
+}
+.shell__bottomnav {
+  display: none;
+}
+.shell__scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 29;
+  background: var(--scrim);
+  animation: cb-fade-in var(--duration-base) var(--ease-enter, ease-out);
+}
+.shell__drawer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 30;
+  display: flex;
+  box-shadow: var(--shadow-3);
+  animation: cb-drawer-in var(--duration-slow) var(--ease-enter, ease-out);
+}
+@keyframes cb-drawer-in {
+  from { transform: translateX(-24px); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
+/* Laptop: permanent sidebar, no menu button. */
+@media (min-width: 1024px) {
+  .shell__sidebar {
+    display: flex;
+  }
+  .shell__menu-btn,
+  .shell__drawer,
+  .shell__scrim {
+    display: none;
+  }
+}
+
+/* Phone, member view: bottom navigation instead of the drawer. */
+@media (max-width: 599px) {
+  .shell--bottomnav .shell__bottomnav {
+    display: block;
+  }
+  .shell--bottomnav .shell__menu-btn {
+    display: none;
+  }
+}
+
+/* ---- Page container ---- */
+.page {
+  width: 100%;
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: 28px 32px 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+@media (max-width: 1023px) {
+  .page { padding: 24px 24px 48px; }
+}
+@media (max-width: 599px) {
+  .page { padding: 16px 16px 32px; gap: 20px; }
+}
+.page__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px 16px;
+}
+.page__title {
+  font: var(--weight-medium) var(--text-h1) / var(--lh-h1) var(--font-display);
+  letter-spacing: var(--tracking-display);
+}
+.page__lede {
+  color: var(--text-2);
+  max-width: 65ch;
+}
+.overline {
+  font: 600 11px/1.2 var(--font-ui);
+  letter-spacing: var(--tracking-overline);
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+/* ---- Public pages (sign-in and friends) ---- */
+.public {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  padding: 48px 24px;
+  background: var(--bg-app);
+}
+.public__card {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 32px;
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-2);
+}
+.public__card--wide {
+  max-width: 560px;
+}
+@media (max-width: 599px) {
+  .public { padding: 24px 16px 32px; justify-content: flex-start; }
+  .public__card { padding: 24px 20px; }
+}
+.public__heading {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.public__heading h1 {
+  font: var(--weight-medium) var(--text-h2) / var(--lh-h2) var(--font-display);
+}
+.public__heading p {
+  color: var(--text-2);
+}
+.public__foot {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-subtle);
+}
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.row-between {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+}
+.divider-text {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-3);
+  font-size: var(--text-body-s);
+}
+.divider-text::before,
+.divider-text::after {
+  content: '';
+  flex: 1;
+  border-top: 1px solid var(--border-subtle);
+}
+.icon-disc {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full);
+  display: grid;
+  place-items: center;
+  background: var(--success-subtle);
+  color: var(--success-text);
+  border: 1px solid var(--success-border);
+}
+.muted {
+  color: var(--text-3);
+  font-size: var(--text-body-s);
+}
+.center {
+  text-align: center;
+}

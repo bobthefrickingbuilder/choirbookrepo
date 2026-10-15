@@ -367,6 +367,24 @@ describe('accounts and the member directory', () => {
     });
   });
 
+  it('only the server can link an existing account to a new choir', async () => {
+    await expectDenied(db, U.adminA, (tx) => tx.query(`select public.link_existing_account($1)`, [P.choristerA2]));
+    await db.transaction(async (tx) => {
+      // Sam (choir B) is added to choir A's roster with the same email…
+      await tx.query(
+        `insert into public.people (id, organization_id, first_name, last_name, email) values ('20000000-0000-4000-a000-0000000000ee', $1, 'Sam', 'Brook', 'choristerb1@example.com')`,
+        [ORG_A],
+      );
+      await tx.exec(`set local role service_role`);
+      const r = await tx.query<{ linked: boolean }>(`select public.link_existing_account('20000000-0000-4000-a000-0000000000ee') as linked`);
+      expect(r.rows[0]!.linked).toBe(true);
+      await tx.exec(`reset role`);
+      const p = (await tx.query<{ user_id: string }>(`select user_id from public.people where id = '20000000-0000-4000-a000-0000000000ee'`)).rows[0]!;
+      expect(p.user_id).toBe(U.choristerB1);
+      await tx.rollback();
+    });
+  });
+
   it('members see each other’s names but not contact details unless shared', async () => {
     const dir = await asUser(db, U.choristerA2, (tx) =>
       rows<{ id: string; email: string | null; phone: string | null }>(tx, `select id, email, phone from public.member_directory where id = $1`, [P.choristerA1]),

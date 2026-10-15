@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+  <body style="margin:0;padding:24px;background:#FAF7F1;font-family:Arial,Helvetica,sans-serif;color:#1C1915;">
+    <div style="max-width:520px;margin:0 auto;background:#FFFFFF;border:1px solid #E7E0D3;border-radius:10px;padding:28px;">
+      <p style="font-family:Georgia,serif;font-size:26px;margin:0 0 20px;"><span style="color:#B9391F;">C</span>hoirbook</p>
+      <h1 style="font-family:Georgia,serif;font-weight:normal;font-size:22px;margin:0 0 12px;">Your sign-in link</h1>
+      <p style="margin:0 0 20px;line-height:1.5;">Use this button to sign in. It works once and expires in one hour.</p>
+      <p style="margin:0 0 28px;"><a href="{{ .RedirectTo }}&token_hash={{ .TokenHash }}&type=magiclink" style="display:inline-block;background:#B9391F;color:#FFFFFF;text-decoration:none;padding:12px 20px;border-radius:6px;">Sign in to Choirbook</a></p>
+      <hr style="border:0;border-top:1px solid #E7E0D3;margin:0 0 24px;" />
+      <div lang="fr">
+        <h1 style="font-family:Georgia,serif;font-weight:normal;font-size:22px;margin:0 0 12px;">Votre lien de connexion</h1>
+        <p style="margin:0 0 20px;line-height:1.5;">Utilisez ce bouton pour vous connecter. Il fonctionne une seule fois et expire dans une heure.</p>
+        <p style="margin:0 0 28px;"><a href="{{ .RedirectTo }}&token_hash={{ .TokenHash }}&type=magiclink" style="display:inline-block;background:#B9391F;color:#FFFFFF;text-decoration:none;padding:12px 20px;border-radius:6px;">Se connecter à Choirbook</a></p>
+      </div>
+      <p style="margin:0;color:#6B6358;font-size:13px;line-height:1.5;">If you did not ask for this, you can ignore this email. · Si vous n’avez rien demandé, ignorez ce courriel.</p>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+  <body style="margin:0;padding:24px;background:#FAF7F1;font-family:Arial,Helvetica,sans-serif;color:#1C1915;">
+    <div style="max-width:520px;margin:0 auto;background:#FFFFFF;border:1px solid #E7E0D3;border-radius:10px;padding:28px;">
+      <p style="font-family:Georgia,serif;font-size:26px;margin:0 0 20px;"><span style="color:#B9391F;">C</span>hoirbook</p>
+      <h1 style="font-family:Georgia,serif;font-weight:normal;font-size:22px;margin:0 0 12px;">You are invited to Choirbook</h1>
+      <p style="margin:0 0 20px;line-height:1.5;">Your choir uses Choirbook for rehearsals, music, forms and messages. Choose a password to finish setting up your account. This link works once.</p>
+      <p style="margin:0 0 28px;"><a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=invite&next=/welcome" style="display:inline-block;background:#B9391F;color:#FFFFFF;text-decoration:none;padding:12px 20px;border-radius:6px;">Accept the invitation</a></p>
+      <hr style="border:0;border-top:1px solid #E7E0D3;margin:0 0 24px;" />
+      <div lang="fr">
+        <h1 style="font-family:Georgia,serif;font-weight:normal;font-size:22px;margin:0 0 12px;">Vous êtes invité à Choirbook</h1>
+        <p style="margin:0 0 20px;line-height:1.5;">Votre chœur utilise Choirbook pour les répétitions, la musique, les formulaires et les messages. Choisissez un mot de passe pour terminer la création de votre compte. Ce lien fonctionne une seule fois.</p>
+        <p style="margin:0 0 28px;"><a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=invite&next=/welcome" style="display:inline-block;background:#B9391F;color:#FFFFFF;text-decoration:none;padding:12px 20px;border-radius:6px;">Accepter l’invitation</a></p>
+      </div>
+      <p style="margin:0;color:#6B6358;font-size:13px;line-height:1.5;">Not expecting this? You can ignore this email. · Vous ne vous y attendiez pas? Ignorez ce courriel.</p>
+    </div>
+  </body>
+</html>

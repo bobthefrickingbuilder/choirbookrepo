@@ -7,7 +7,9 @@
     ".": "./src/index.ts",
     "./i18n": "./src/i18n/index.ts",
     "./schemas": "./src/schemas/index.ts",
-    "./database.types": "./src/database.types.ts"
+    "./database.types": "./src/database.types.ts",
+    "./permissions": "./src/permissions.ts",
+    "./rules/age": "./src/rules/age.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

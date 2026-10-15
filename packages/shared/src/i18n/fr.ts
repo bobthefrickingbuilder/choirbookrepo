@@ -44,6 +44,21 @@ export const fr: Messages = {
     signOut: 'Se déconnecter',
     signOutEverywhere: 'Se déconnecter sur tous les appareils',
     signedOutEverywhere: 'Vous êtes déconnecté sur tous vos appareils.',
+    settings: 'Paramètres du compte',
+    settingsIntro: 'Ces paramètres vous suivent dans tous vos chœurs.',
+    themeAuto: 'Comme mon appareil',
+    signOutHere: 'Se déconnecter sur cet appareil',
+    signOutEverywhereHint: 'À utiliser si vous vous êtes connecté sur un appareil partagé ou perdu.',
+    sessions: 'Déconnexion',
+  },
+  home: {
+    welcome: 'Bienvenue, {name}',
+    staffIntro: 'Votre tableau de bord montrera ce qui vous attend aujourd’hui : présences, frais, formulaires et messages.',
+    memberIntro: 'Votre prochaine répétition, vos exercices et tout ce qui vous attend apparaîtront ici.',
+    yourRoles: 'Vos rôles dans {choir}',
+    noChoirTitle: 'Vous ne faites pas encore partie d’un chœur',
+    noChoirBody:
+      'Demandez une invitation au bureau de votre chœur. Si vous en avez déjà une, utilisez le lien de ce courriel.',
   },
   auth: {
     signInTitle: 'Se connecter à Choirbook',

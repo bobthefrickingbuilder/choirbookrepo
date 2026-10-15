@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+  <body style="margin:0;padding:24px;background:#FAF7F1;font-family:Arial,Helvetica,sans-serif;color:#1C1915;">
+    <div style="max-width:520px;margin:0 auto;background:#FFFFFF;border:1px solid #E7E0D3;border-radius:10px;padding:28px;">
+      <p style="font-family:Georgia,serif;font-size:26px;margin:0 0 20px;"><span style="color:#B9391F;">C</span>hoirbook</p>
+      <h1 style="font-family:Georgia,serif;font-weight:normal;font-size:22px;margin:0 0 12px;">Choose a new password</h1>
+      <p style="margin:0 0 20px;line-height:1.5;">Someone asked to reset the password for this email address. The link works once and expires in one hour.</p>
+      <p style="margin:0 0 28px;"><a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=recovery&next=/reset-password" style="display:inline-block;background:#B9391F;color:#FFFFFF;text-decoration:none;padding:12px 20px;border-radius:6px;">Reset my password</a></p>
+      <hr style="border:0;border-top:1px solid #E7E0D3;margin:0 0 24px;" />
+      <div lang="fr">
+        <h1 style="font-family:Georgia,serif;font-weight:normal;font-size:22px;margin:0 0 12px;">Choisir un nouveau mot de passe</h1>
+        <p style="margin:0 0 20px;line-height:1.5;">Une demande de réinitialisation a été faite pour cette adresse. Le lien fonctionne une seule fois et expire dans une heure.</p>
+        <p style="margin:0 0 28px;"><a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=recovery&next=/reset-password" style="display:inline-block;background:#B9391F;color:#FFFFFF;text-decoration:none;padding:12px 20px;border-radius:6px;">Réinitialiser mon mot de passe</a></p>
+      </div>
+      <p style="margin:0;color:#6B6358;font-size:13px;line-height:1.5;">If this was not you, ignore this email; your password stays the same. · Si ce n’était pas vous, ignorez ce courriel; votre mot de passe ne change pas.</p>
+    </div>
+  </body>
+</html>

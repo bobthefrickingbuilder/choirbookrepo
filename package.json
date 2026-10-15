@@ -12,7 +12,8 @@
     "typecheck": "npm run typecheck --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
     "test:db": "vitest run --config supabase/tests/vitest.config.mts",
-    "db:types": "supabase gen types typescript --linked --schema public > packages/shared/src/database.types.ts"
+    "db:types": "supabase gen types typescript --linked --schema public > packages/shared/src/database.types.ts",
+    "db:types:local": "node supabase/scripts/gen-types.mts"
   },
   "engines": {
     "node": ">=22"
@@ -25,5 +26,6 @@
     "supabase": "^2.121.0",
     "typescript": "^5.9.3",
     "vitest": "^5.0.5"
-  }
+  },
+  "type": "module"
 }

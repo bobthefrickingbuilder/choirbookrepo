@@ -1,0 +1,51 @@
+name: Checks
+
+# Runs on every pull request and every push to main. Free for public repositories,
+# and within the free monthly minutes for private ones.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+
+      - name: Database security tests (row-level security, every table and role)
+        run: npm run test:db
+
+      - name: Database types are up to date
+        run: |
+          npm run db:types:local
+          git diff --exit-code packages/shared/src/database.types.ts
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Type check
+        run: |
+          npx next typegen web
+          npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+        env:
+          # Placeholders: the build does not contact Supabase.
+          NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: sb_publishable_placeholder_for_build
+          NEXT_TELEMETRY_DISABLED: '1'
