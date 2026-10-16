@@ -159,7 +159,12 @@ export function readRosterCsv(text: string, ctx: ImportContext): ImportResult {
   const existing = new Set([...ctx.existingEmails].map((e) => e.toLowerCase()));
   const seen = new Map<string, number>();
   const sectionByName = new Map<string, string>();
-  for (const s of ctx.sections) for (const n of [s.key, ...s.names]) sectionByName.set(key(n), s.key);
+  // Singular or plural both work ("Alto" or "Altos", "Basse" or "Basses").
+  const singular = (k: string) => (k.length > 3 ? k.replace(/s$/, '') : k);
+  for (const s of ctx.sections) for (const n of [s.key, ...s.names]) {
+    sectionByName.set(key(n), s.key);
+    sectionByName.set(singular(key(n)), s.key);
+  }
   const partByName = new Map<string, { key: string; sectionKey: string }>();
   // Keys like "S1" keep their digit, so match on letters and digits.
   const partKey = (n: string) => n.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -215,7 +220,7 @@ export function readRosterCsv(text: string, ctx: ImportContext): ImportResult {
     const rawSection = get(r, 'section');
     let sectionKey: string | null = null;
     if (rawSection) {
-      sectionKey = sectionByName.get(key(rawSection)) ?? null;
+      sectionKey = sectionByName.get(key(rawSection)) ?? sectionByName.get(singular(key(rawSection))) ?? null;
       if (!sectionKey) warnings.push('unknown_section');
     }
     const rawPart = get(r, 'voice_part');

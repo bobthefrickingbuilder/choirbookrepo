@@ -108,6 +108,12 @@ describe('a messy real-world member list', () => {
     expect(byLine(10)).toMatchObject({ first_name: 'Zoé', last_name: 'Côté', errors: ['future_date'], section_key: 'S', voice_part_key: 'S1' });
   });
 
+  it('matches section names in the singular or plural', () => {
+    const only = { ...ctx, sections: [{ key: 'A', names: ['Altos'] }, { key: 'B', names: ['Basses'] }] };
+    const r = readRosterCsv(['First,Last,Section', 'A,B,alto', 'C,D,Basse', 'E,F,ALTOS'].join('\n'), only);
+    expect(r.rows.map((x) => x.section_key)).toEqual(['A', 'B', 'A']);
+  });
+
   it('splits a single "Name" column', () => {
     const r = readRosterCsv('Name,Email\nAnna Maria Lopez,anna@example.com', ctx);
     expect(r.missingColumns).toEqual([]);

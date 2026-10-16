@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
-// End-to-end tests run against the demo choir, on a phone-sized screen.
+// End-to-end tests run against the demo choir: chorister flows on a phone,
+// staff flows on a tablet-sized screen.
 // BASE_URL picks the site: the local dev server by default, or a Vercel URL.
 const baseURL = process.env.BASE_URL ?? 'http://localhost:3000';
 
@@ -19,5 +20,8 @@ export default defineConfig({
     locale: 'en-CA',
     timezoneId: 'America/Toronto',
   },
-  projects: [{ name: 'phone', use: { ...devices['Pixel 7'] } }],
+  projects: [
+    { name: 'phone', testMatch: /chorister\.spec\.ts/, use: { ...devices['Pixel 7'] } },
+    { name: 'tablet', testMatch: /staff\.spec\.ts/, use: { ...devices['Desktop Chrome'], viewport: { width: 1024, height: 768 }, hasTouch: true } },
+  ],
 });
