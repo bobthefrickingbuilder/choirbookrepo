@@ -399,6 +399,54 @@ describe('accounts and the member directory', () => {
   });
 });
 
+describe('guardian signature requests', () => {
+  const FORM = '38000000-0000-4000-a000-000000000001';
+  beforeAll(async () => {
+    // Maya (choir A, 16) submits the tour form; her mother is on file.
+    await db.exec(`
+      insert into public.guardians (id, organization_id, first_name, last_name, email)
+        values ('32000000-0000-4000-a000-0000000000a2', '${ORG_A}', 'Mei', 'Chen', 'mei.chen@example.com');
+      insert into public.guardian_links (organization_id, guardian_id, chorister_id, is_primary)
+        values ('${ORG_A}', '32000000-0000-4000-a000-0000000000a2', '${P.choristerA2}', true);
+      insert into public.form_responses (id, organization_id, form_id, person_id, status)
+        values ('38100000-0000-4000-a000-0000000000a2', '${ORG_A}', '${FORM}', '${P.choristerA2}', 'submitted');
+    `);
+  });
+
+  it('sends each guardian of a minor a single-use link, storing only its hash', async () => {
+    const sent = await asUser(db, U.choristerA2, async (tx) =>
+      (await rows<{ n: number }>(tx, `select public.request_guardian_signatures('38100000-0000-4000-a000-0000000000a2') as n`))[0]!.n,
+    );
+    expect(sent).toBe(1);
+    // asUser rolled back; run it for real as the member to check what was stored.
+    await db.transaction(async (tx) => {
+      await tx.query(`select set_config('request.jwt.claims', $1, true)`, [JSON.stringify({ sub: U.choristerA2 })]);
+      await tx.exec('set local role authenticated');
+      await tx.query(`select public.request_guardian_signatures('38100000-0000-4000-a000-0000000000a2')`);
+      await tx.exec('reset role');
+      const sig = (await tx.query<{ token_hash: string }>(`select token_hash from public.guardian_signatures where response_id = '38100000-0000-4000-a000-0000000000a2'`)).rows[0]!;
+      const mail = (await tx.query<{ payload: { token: string } }>(`select payload from public.email_queue where template = 'guardian_signature' order by created_at desc limit 1`)).rows[0]!;
+      const hash = (await tx.query<{ h: string }>(`select encode(extensions.digest($1, 'sha256'), 'hex') as h`, [mail.payload.token])).rows[0]!.h;
+      expect(sig.token_hash).toBe(hash);
+      expect(sig.token_hash).not.toBe(mail.payload.token);
+      await tx.rollback();
+    });
+  });
+
+  it('refuses for someone else’s form, and does nothing for adults', async () => {
+    await expectDenied(db, U.choristerA1, (tx) => tx.query(`select public.request_guardian_signatures('38100000-0000-4000-a000-0000000000a2')`));
+    const adult = await asUser(db, U.choristerA1, async (tx) =>
+      (await rows<{ n: number }>(tx, `select public.request_guardian_signatures('38100000-0000-4000-a000-000000000001') as n`))[0]!.n,
+    );
+    expect(adult).toBe(0);
+  });
+
+  it('staff can see the email queue but not the link inside it', async () => {
+    await expectDenied(db, U.adminA, (tx) => tx.query(`select payload from public.email_queue`));
+    expect(await count(U.adminA, 'email_queue')).toBeGreaterThan(0);
+  });
+});
+
 describe('audit, email and demo rules', () => {
   it('records which columns changed on a member record, without the values', async () => {
     await asUser(db, U.adminA, async (tx) => {

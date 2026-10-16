@@ -733,3 +733,42 @@ body {
 .log-form > :nth-child(2) {
   flex: 1 1 200px;
 }
+.fee-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+  margin: 0 0 8px;
+}
+.fee-grid dt,
+.answer-list dt {
+  font-size: var(--text-body-s);
+  color: var(--text-3);
+}
+.fee-grid dd,
+.answer-list dd {
+  margin: 0;
+}
+.answer-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+}
+.receipt {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 32px;
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+}
+.receipt__choir {
+  font: var(--weight-medium) 22px/1.2 var(--font-display);
+}
+@media print {
+  body * { visibility: hidden !important; }
+  [data-print-report], [data-print-report] * { visibility: visible !important; }
+  [data-print-report] { position: fixed; left: 0; top: 0; width: 100%; box-shadow: none !important; border: 0 !important; }
+  .no-print { display: none !important; }
+}

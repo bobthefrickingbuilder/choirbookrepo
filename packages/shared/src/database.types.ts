@@ -3307,6 +3307,10 @@ export type Database = {
         }
         Returns: undefined
       }
+      request_guardian_signatures: {
+        Args: { response: string }
+        Returns: number
+      }
       reset_demo: { Args: { demo_password: string }; Returns: Json }
     }
     Enums: {
