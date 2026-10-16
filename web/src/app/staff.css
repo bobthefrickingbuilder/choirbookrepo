@@ -691,3 +691,114 @@ details.history summary {
     height: 56px;
   }
 }
+
+/* ---- Reports ---- */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.kpi {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  background: var(--surface-muted);
+  border-radius: var(--radius-md);
+}
+.kpi strong {
+  font: 500 26px/1.1 var(--font-display);
+  font-variant-numeric: var(--numeric-tabular);
+}
+.bars__row {
+  display: grid;
+  grid-template-columns: minmax(7rem, 14rem) minmax(0, 1fr) 4.5rem;
+  gap: 10px;
+  align-items: center;
+  min-height: 28px;
+  font-size: 13.5px;
+}
+.bars__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-2);
+}
+.bars__track {
+  height: 10px;
+  border-radius: 5px;
+  background: var(--surface-muted-strong);
+  overflow: hidden;
+}
+.bars__fill {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  border-radius: 5px;
+}
+.bars__value {
+  text-align: right;
+  font-variant-numeric: var(--numeric-tabular);
+  font-weight: 600;
+}
+.section-title {
+  margin: 0 0 8px;
+}
+.board {
+  display: grid;
+  grid-template-columns: 340px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+@media (max-width: 899px) {
+  .board {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.board__doc {
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 32px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+@media (max-width: 599px) {
+  .board__doc {
+    padding: 20px 18px;
+  }
+}
+.board__head h1 {
+  font: var(--weight-medium) 32px/1.15 var(--font-display);
+  margin: 4px 0;
+}
+.board__doc h2 {
+  font: 600 13px/1.2 var(--font-ui);
+  letter-spacing: var(--tracking-overline);
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin: 0 0 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.board__doc ul,
+.board__doc ol {
+  margin: 0;
+  padding-left: 1.3em;
+  line-height: 1.6;
+}
+@media print {
+  .board {
+    display: block;
+  }
+  .board__doc {
+    border: 0;
+    padding: 0;
+  }
+  .bars__fill {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
