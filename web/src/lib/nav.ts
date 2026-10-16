@@ -22,6 +22,7 @@ export const AREAS = {
   announcements: 'announcements',
   absences: 'absences',
   volunteering: 'volunteering',
+  audit: 'audit',
 } as const;
 export type AreaId = keyof typeof AREAS;
 
@@ -76,6 +77,7 @@ export function buildNav(ctx: ChoirContext, t: Messages): { sections: NavSection
     ctx.can('users') && item('users', t.nav.users, 'shield-check'),
     ctx.can('reports') && item('reports', t.nav.reports, 'gauge'),
     ctx.can('settings') && item('settings', t.nav.settings, 'settings'),
+    ctx.can('audit') && item('audit', t.staff.auditTitle, 'history'),
   ];
   const keep = <T,>(xs: (T | false)[]) => xs.filter((x): x is T => Boolean(x));
 

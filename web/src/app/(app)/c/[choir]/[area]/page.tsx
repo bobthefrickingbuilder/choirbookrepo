@@ -25,6 +25,7 @@ const title = (id: AreaId, t: Messages): string =>
     announcements: t.nav.announcements,
     absences: t.nav.attendance,
     volunteering: t.nav.volunteers,
+    audit: t.staff.auditTitle,
   })[id];
 
 // Each area gets its real screen in Phases 3–5. Until then, a clear placeholder.

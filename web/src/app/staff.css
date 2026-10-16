@@ -802,3 +802,45 @@ details.history summary {
     print-color-adjust: exact;
   }
 }
+.chip-static {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 4px 2px 10px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-full);
+  font-size: 13.5px;
+}
+.color-input {
+  width: 44px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--border-control);
+  border-radius: var(--radius-sm);
+  background: none;
+}
+.perm-table td,
+.perm-table th {
+  white-space: nowrap;
+}
+.perm-select {
+  font: 500 13px/1.2 var(--font-ui);
+  padding: 4px 6px;
+  min-height: 32px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-control);
+  background: var(--surface-card);
+  color: var(--text-1);
+}
+.perm {
+  font: 500 13px/1.2 var(--font-ui);
+}
+.perm--edit {
+  color: var(--success-text);
+}
+.perm--view {
+  color: var(--info-text, var(--text-1));
+}
+.perm--none {
+  color: var(--text-3);
+}
