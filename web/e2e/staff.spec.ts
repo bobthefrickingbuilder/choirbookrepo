@@ -111,7 +111,11 @@ test('music: library, a piece with its files and assignments, add and delete a p
   await expect(page.getByText(/storage used/)).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Concert set lists' }).or(page.getByText('Concert set lists'))).toBeVisible();
   const title = `${stamp()} piece`;
-  await page.getByRole('button', { name: 'Add piece' }).click();
+  // On a slow connection the button can be clicked before the page is ready; retry until the dialog opens.
+  await expect(async () => {
+    await page.getByRole('button', { name: 'Add piece' }).click();
+    await expect(page.getByRole('dialog').getByLabel('Title')).toBeVisible({ timeout: 2_000 });
+  }).toPass();
   await page.getByRole('dialog').getByLabel('Title').fill(title);
   await page.getByRole('dialog').getByRole('button', { name: 'Save' }).click();
   await expect(page.getByRole('heading', { name: title })).toBeVisible();
@@ -176,7 +180,11 @@ test('tickets: sales by concert and the door scanner refuses an unknown code', a
   await expect(page.getByRole('heading', { name: 'Tickets', level: 1 })).toBeVisible();
   await expect(page.getByText('Sales by chorister').first()).toBeVisible();
   await page.getByRole('link', { name: 'Scan at the door' }).first().click();
-  await page.getByLabel('Ticket code').fill('00000000');
+  // Typing before the page is ready is lost; retype until the Check button turns on.
+  await expect(async () => {
+    await page.getByLabel('Ticket code').fill('00000000');
+    await expect(page.getByRole('button', { name: 'Check' })).toBeEnabled({ timeout: 2_000 });
+  }).toPass();
   await page.getByRole('button', { name: 'Check' }).click();
   await expect(page.getByText('Ticket not found')).toBeVisible();
 });
