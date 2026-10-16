@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import QRCode from 'qrcode';
 import { CopyText, SalesLinkButton } from '@/components/member/SmallActions';
+import { TicketsView } from '@/components/staff/TicketsView';
 import { publicEnv } from '@/lib/env';
 import { formatRange } from '@/lib/format';
 import { getT } from '@/lib/prefs';
@@ -13,11 +14,13 @@ import { createClient } from '@/lib/supabase/server';
 export const metadata: Metadata = { title: 'Tickets' };
 
 // Tickets for members: complimentary tickets with a door code, and a personal
-// sales link per concert. (Staff ticket management comes in Phase 4.)
-export default async function TicketsPage({ params }: PageProps<'/c/[choir]/tickets'>) {
+// sales link per concert. Ticket staff see the management view instead.
+export default async function TicketsPage({ params, searchParams }: PageProps<'/c/[choir]/tickets'>) {
   const { choir } = await params;
+  const { mine } = await searchParams;
   const [ctx, { lang, t }] = await Promise.all([getChoirContext(choir), getT()]);
   if (!ctx) notFound();
+  if (ctx.isStaff && ctx.can('tickets') && mine !== '1') return <TicketsView ctx={ctx} slug={choir} lang={lang} t={t} />;
   const supabase = await createClient();
   const nowIso = new Date().toISOString();
   const [{ data: comps }, { data: concerts }, { data: sales }] = await Promise.all([
