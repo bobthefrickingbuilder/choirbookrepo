@@ -126,6 +126,7 @@ export type Database = {
           body: string
           created_at: string
           id: string
+          notified_at: string | null
           organization_id: string
           pinned: boolean
           publish_at: string | null
@@ -141,6 +142,7 @@ export type Database = {
           body: string
           created_at?: string
           id?: string
+          notified_at?: string | null
           organization_id: string
           pinned?: boolean
           publish_at?: string | null
@@ -156,6 +158,7 @@ export type Database = {
           body?: string
           created_at?: string
           id?: string
+          notified_at?: string | null
           organization_id?: string
           pinned?: boolean
           publish_at?: string | null
@@ -784,6 +787,35 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "people"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      event_checkin_keys: {
+        Row: {
+          created_at: string
+          event_id: string
+          organization_id: string
+          secret: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          organization_id: string
+          secret?: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          organization_id?: string
+          secret?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_checkin_keys_organization_id_event_id_fkey"
+            columns: ["organization_id", "event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
@@ -3278,6 +3310,13 @@ export type Database = {
           updated_at: string
         }[]
       }
+      checkin_code: {
+        Args: { event: string }
+        Returns: {
+          code: string
+          seconds_left: number
+        }[]
+      }
       demo_accounts: {
         Args: never
         Returns: {
@@ -3295,6 +3334,7 @@ export type Database = {
         }[]
       }
       email_daily_cap: { Args: never; Returns: number }
+      generate_monthly_update: { Args: { target: string }; Returns: number }
       is_demo_user: { Args: never; Returns: boolean }
       link_existing_account: { Args: { person: string }; Returns: boolean }
       log_event: {
@@ -3307,6 +3347,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      music_storage_used: { Args: { org: string }; Returns: number }
       my_ticket_sales: {
         Args: { org: string }
         Returns: {
@@ -3316,12 +3357,33 @@ export type Database = {
           tickets: number
         }[]
       }
+      notify_due_announcements: { Args: never; Returns: number }
+      notify_people: {
+        Args: {
+          body?: string
+          body_fr?: string
+          category: Database["public"]["Enums"]["notification_category"]
+          link?: string
+          org: string
+          people: string[]
+          title: string
+          title_fr?: string
+        }
+        Returns: number
+      }
+      publish_announcement: { Args: { ann_id: string }; Returns: number }
+      qr_check_in: { Args: { code: string; event: string }; Returns: string }
       rebuild_demo: { Args: { demo_password: string }; Returns: Json }
       request_guardian_signatures: {
         Args: { response: string }
         Returns: number
       }
       reset_demo: { Args: { demo_password: string }; Returns: Json }
+      send_monthly_update: { Args: { target: string }; Returns: number }
+      set_messaging_suspended: {
+        Args: { person: string; suspended: boolean }
+        Returns: undefined
+      }
       volunteer_slot_fill: {
         Args: { org: string }
         Returns: {
