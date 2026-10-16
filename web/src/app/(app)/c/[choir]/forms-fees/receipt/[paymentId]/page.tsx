@@ -13,12 +13,14 @@ export default async function ReceiptPage({ params }: PageProps<'/c/[choir]/form
   const [ctx, { lang, t }] = await Promise.all([getChoirContext(choir), getT()]);
   if (!ctx) notFound();
   const supabase = await createClient();
-  const { data: p } = await supabase
+  // The payer, or fee staff (who reprint receipts for families).
+  let query = supabase
     .from('payments')
     .select('id, amount_cents, refunded_cents, method, received_at, receipt_number, payer_name, status, assignment_id, fee_assignments(fees(name))')
     .eq('id', paymentId)
-    .eq('person_id', ctx.personId)
-    .maybeSingle();
+    .eq('organization_id', ctx.org.id);
+  if (!ctx.can('fees')) query = query.eq('person_id', ctx.personId);
+  const { data: p } = await query.maybeSingle();
   if (!p || (p.status !== 'succeeded' && p.status !== 'partially_refunded')) notFound();
   const method = { card: t.member.methodCard, cash: t.member.methodCash, cheque: t.member.methodCheque, etransfer: t.member.methodEtransfer }[p.method];
 

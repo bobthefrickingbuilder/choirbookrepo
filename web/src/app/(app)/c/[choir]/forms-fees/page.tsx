@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { AidRequest, PayButton } from '@/components/member/FeeActions';
+import { FinanceView } from '@/components/staff/FinanceView';
 import { getFeeBalances } from '@/lib/data/member';
 import { formatDate, formatMoney, todayLocal } from '@/lib/format';
 import { recordCheckout } from '@/lib/payments';
@@ -24,6 +25,11 @@ export default async function FormsFeesPage({ params, searchParams }: PageProps<
   const sp = await searchParams;
   const [ctx, { lang, t }] = await Promise.all([getChoirContext(choir), getT()]);
   if (!ctx) notFound();
+
+  // Staff see the office view (choristers who are also staff can switch to their own).
+  if (ctx.isStaff && (ctx.can('forms') || ctx.can('fees')) && sp.mine !== '1' && typeof sp.paid !== 'string') {
+    return <FinanceView ctx={ctx} slug={choir} lang={lang} t={t} tab={typeof sp.tab === 'string' ? sp.tab : undefined} />;
+  }
 
   // Coming back from Stripe: confirm and record the payment before showing balances.
   let payNotice: { tone: 'success' | 'info'; text: string } | null = null;

@@ -456,3 +456,35 @@ details.history summary {
 .inbox-controls > * {
   min-width: 180px;
 }
+.response-row {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.response-row:last-child {
+  border-bottom: 0;
+}
+.stat-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+.stat-strip > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+}
+.stat-strip strong {
+  font: 500 24px/1.1 var(--font-display);
+  font-variant-numeric: var(--numeric-tabular);
+}
+.simple-table tbody th {
+  font: 600 14px/1.35 var(--font-ui);
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--text-1);
+  background: none;
+}
