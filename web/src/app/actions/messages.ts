@@ -71,6 +71,21 @@ export async function sendMessage(slug: string, conversationId: string, body: st
     .from('messages')
     .insert({ organization_id: ctx.org.id, conversation_id: conversationId, author_person_id: ctx.personId, body: parsed.data.body });
   if (error) return { ok: false, error: error.message.includes('paused') ? 'paused' : 'failed' };
+  // A reply from the office lets the member know in the app.
+  if (ctx.isStaff) {
+    const { data: conv } = await supabase.from('conversations').select('member_id, subject').eq('id', conversationId).maybeSingle();
+    if (conv && conv.member_id !== ctx.personId) {
+      await supabase.rpc('notify_people', {
+        org: ctx.org.id,
+        people: [conv.member_id],
+        category: 'messages',
+        title: `Reply: ${conv.subject}`,
+        title_fr: `Réponse : ${conv.subject}`,
+        body: parsed.data.body.slice(0, 200),
+        link: `/c/${slug}/messages/${conversationId}`,
+      });
+    }
+  }
   revalidatePath(`/c/${slug}/messages/${conversationId}`);
   return { ok: true };
 }

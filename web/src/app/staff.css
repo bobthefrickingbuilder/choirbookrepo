@@ -390,3 +390,69 @@ details.history summary {
   margin: 0;
   padding: 0;
 }
+
+/* ---- Tabs and chips ---- */
+.tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--border-default);
+  overflow-x: auto;
+}
+.tabs__tab {
+  padding: 10px 14px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  font: 600 14.5px/1.2 var(--font-ui);
+  color: var(--text-2);
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  white-space: nowrap;
+}
+.tabs__tab:hover {
+  color: var(--text-1);
+}
+.tabs__tab[aria-current='page'] {
+  color: var(--accent-text);
+  border-bottom-color: var(--accent);
+}
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.chip-link {
+  padding: 6px 12px;
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-full);
+  font: 600 13.5px/1.2 var(--font-ui);
+  color: var(--text-2);
+  text-decoration: none;
+  background: var(--surface-card);
+}
+.chip-link[aria-current='true'] {
+  background: var(--accent-subtle);
+  border-color: var(--accent);
+  color: var(--accent-text);
+}
+.profile-grid--wide-left {
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+}
+@media (max-width: 899px) {
+  .profile-grid--wide-left {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.inbox-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+}
+.inbox-controls > * {
+  min-width: 180px;
+}
