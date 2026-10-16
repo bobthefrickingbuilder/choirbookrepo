@@ -51,3 +51,8 @@ export function todayLocal(tz = CHOIR_TZ) {
 export function isUpcoming(iso: string, graceHours = 3) {
   return Date.parse(iso) > Date.now() - graceHours * 3600_000;
 }
+
+/** An instant some days from now (negative for the past), as ISO text. */
+export function isoDaysFromNow(days: number) {
+  return new Date(Date.now() + days * 86_400_000).toISOString();
+}
