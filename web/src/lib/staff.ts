@@ -71,6 +71,9 @@ export function staffStrings(t: import('@choirbook/shared/i18n').Messages) {
       demo: t.staff.demoBlocked,
       failed: t.staff.failed,
       invalid: t.staff.failed,
+      slot_full: t.staff.slotFull,
+      too_soon: t.staff.tooSoon,
+      payments_off: t.staff.paymentsOff,
     } as Record<string, string>,
   };
 }

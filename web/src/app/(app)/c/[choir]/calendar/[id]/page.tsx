@@ -73,6 +73,7 @@ export default async function EventPage({ params, searchParams }: PageProps<'/c/
             upcoming={upcoming}
             availabilityRequested={e.availability_requested}
             canAttendance={ctx.can('attendance') && e.counts_for_attendance}
+            canSeating={ctx.can('seating') && (e.type === 'concert' || e.type === 'tour')}
             s={staffStrings(t)}
           />
         </Card>

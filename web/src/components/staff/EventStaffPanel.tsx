@@ -15,6 +15,7 @@ export function EventStaffPanel({
   upcoming,
   availabilityRequested,
   canAttendance,
+  canSeating,
   s,
 }: {
   slug: string;
@@ -23,6 +24,7 @@ export function EventStaffPanel({
   upcoming: boolean;
   availabilityRequested: boolean;
   canAttendance: boolean;
+  canSeating: boolean;
   s: StaffStrings;
 }) {
   const router = useRouter();
@@ -54,6 +56,11 @@ export function EventStaffPanel({
         {canAttendance ? (
           <Button variant="secondary" iconStart="clipboard-check" href={`/c/${slug}/attendance/${id}`}>
             {s.takeAttendance}
+          </Button>
+        ) : null}
+        {canSeating ? (
+          <Button variant="secondary" iconStart="layout-grid" href={`/c/${slug}/calendar/${id}/seating`}>
+            {s.seatingChart}
           </Button>
         ) : null}
         {upcoming && !cancelled ? (
