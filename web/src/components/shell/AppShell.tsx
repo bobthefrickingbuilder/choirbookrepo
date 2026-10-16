@@ -52,6 +52,10 @@ export interface AppShellProps {
   homeHref: string;
   profileHref: string;
   notificationsHref: string;
+  /** Optional strip above the header (the demo banner). */
+  banner?: React.ReactNode;
+  /** Optional floating layer (the guided tour). */
+  overlay?: React.ReactNode;
   children: React.ReactNode;
 }
 
@@ -127,6 +131,7 @@ export function AppShell(props: AppShellProps) {
       <a className="skip-link" href="#main">
         {strings.skipToContent}
       </a>
+      {props.banner}
       <AppHeader
         start={
           <>
@@ -187,6 +192,7 @@ export function AppShell(props: AppShellProps) {
           <BottomNav items={bottomItems} activeId={activeId} onNavigate={navigate} fixed={false} label={strings.mainNav} />
         </div>
       ) : null}
+      {props.overlay}
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { emailOnlySchema, newPasswordSchema, safeNextPath, signInSchema } from '
 import { format, isLang } from '@choirbook/shared/i18n';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { demoRoleFor } from '@/lib/demo';
 import { publicEnv } from '@/lib/env';
 import { getT, LANG_COOKIE, PREF_COOKIE_OPTIONS, THEME_COOKIE, isTheme } from '@/lib/prefs';
 import { createClient } from '@/lib/supabase/server';
@@ -107,9 +108,12 @@ export async function chooseNewPassword(_prev: AuthFormState, fd: FormData): Pro
 /** Signs out on this device, or on every device (revokes all sessions). */
 export async function signOut(fd: FormData): Promise<void> {
   const supabase = await createClient();
-  const everywhere = fd.get('scope') === 'global';
+  const { data } = await supabase.auth.getClaims();
+  const demo = demoRoleFor(data?.claims?.sub);
+  // Demo accounts are shared: signing out "everywhere" would sign out every visitor.
+  const everywhere = fd.get('scope') === 'global' && !demo;
   await supabase.auth.signOut({ scope: everywhere ? 'global' : 'local' });
-  redirect(everywhere ? '/sign-in?signedOut=everywhere' : '/sign-in');
+  redirect(demo ? '/demo' : everywhere ? '/sign-in?signedOut=everywhere' : '/sign-in');
 }
 
 export async function setLanguage(lang: string): Promise<void> {

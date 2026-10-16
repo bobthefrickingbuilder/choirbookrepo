@@ -12,11 +12,31 @@ create schema extensions;
 grant usage on schema auth, storage, extensions, public to anon, authenticated, service_role;
 
 create table auth.users (
+  instance_id uuid,
   id uuid primary key default gen_random_uuid(),
+  aud text,
+  role text,
   email text,
+  encrypted_password text,
   email_confirmed_at timestamptz,
+  raw_app_meta_data jsonb,
   raw_user_meta_data jsonb not null default '{}'::jsonb,
-  created_at timestamptz not null default now()
+  confirmation_token text,
+  email_change text,
+  email_change_token_new text,
+  recovery_token text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz
+);
+create table auth.identities (
+  id uuid primary key,
+  user_id uuid not null references auth.users (id) on delete cascade,
+  provider_id text not null,
+  identity_data jsonb not null,
+  provider text not null,
+  last_sign_in_at timestamptz,
+  created_at timestamptz,
+  updated_at timestamptz
 );
 
 -- Same behaviour as Supabase: the user id comes from the request's JWT claims.

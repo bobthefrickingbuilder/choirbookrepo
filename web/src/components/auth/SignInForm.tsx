@@ -2,6 +2,7 @@
 
 import type { Messages } from '@choirbook/shared/i18n';
 import { AlertCard, Button, Icon, TextInput, TextLink } from '@choirbook/ui';
+import Link from 'next/link';
 import { useActionState, useState } from 'react';
 import { sendMagicLink, signInWithPassword, type AuthFormState } from '@/app/actions/auth';
 import { PasswordField } from './PasswordField';
@@ -84,6 +85,9 @@ export function SignInForm({ t, next, notice }: { t: Messages; next: string; not
       >
         {t.auth.sendMagicLink}
       </Button>
+      <p className="muted center">
+        <Link href="/demo">{t.auth.demoCta}</Link>
+      </p>
     </form>
   );
 }

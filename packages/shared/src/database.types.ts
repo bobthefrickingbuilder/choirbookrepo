@@ -3233,6 +3233,14 @@ export type Database = {
       }
     }
     Functions: {
+      demo_accounts: {
+        Args: never
+        Returns: {
+          email: string
+          role: string
+          user_id: string
+        }[]
+      }
       email_budget_today: {
         Args: { org: string }
         Returns: {
@@ -3242,6 +3250,7 @@ export type Database = {
         }[]
       }
       email_daily_cap: { Args: never; Returns: number }
+      is_demo_user: { Args: never; Returns: boolean }
       link_existing_account: { Args: { person: string }; Returns: boolean }
       log_event: {
         Args: {
@@ -3253,6 +3262,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      reset_demo: { Args: { demo_password: string }; Returns: Json }
     }
     Enums: {
       absence_kind: "absent" | "late"
