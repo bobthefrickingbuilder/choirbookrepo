@@ -19,6 +19,9 @@ export const AREAS = {
   settings: 'settings',
   profile: 'profile',
   notifications: 'notifications',
+  announcements: 'announcements',
+  absences: 'absences',
+  volunteering: 'volunteering',
 } as const;
 export type AreaId = keyof typeof AREAS;
 
@@ -40,7 +43,22 @@ export function buildNav(ctx: ChoirContext, t: Messages): { sections: NavSection
     item('profile', t.nav.profile, 'user-round'),
   ];
 
-  if (!ctx.isStaff) return { sections: [{ items: member }], bottom: member };
+  if (!ctx.isStaff) {
+    // Phones show the five essentials in the bottom bar; larger screens list everything.
+    const sidebar = [
+      item('home', t.nav.home, 'house'),
+      item('music', t.nav.music, 'music'),
+      item('calendar', t.nav.calendar, 'calendar'),
+      item('messages', t.nav.messages, 'message-square'),
+      item('announcements', t.nav.announcements, 'megaphone'),
+      item('absences', t.nav.attendance, 'clipboard-check'),
+      item('forms', t.nav.formsFees, 'clipboard-list'),
+      item('tickets', t.nav.tickets, 'ticket'),
+      item('volunteering', t.nav.volunteers, 'user-check'),
+      item('profile', t.nav.profile, 'user-round'),
+    ];
+    return { sections: [{ items: sidebar }], bottom: member };
+  }
 
   const choir = [
     ctx.can('roster') && item('roster', t.nav.roster, 'users'),

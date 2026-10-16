@@ -322,6 +322,35 @@ export type Database = {
           },
         ]
       }
+      calendar_feeds: {
+        Row: {
+          created_at: string
+          organization_id: string
+          token: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          organization_id: string
+          token?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          organization_id?: string
+          token?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "calendar_feeds_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       care_notes: {
         Row: {
           created_at: string
@@ -3233,6 +3262,22 @@ export type Database = {
       }
     }
     Functions: {
+      calendar_feed: {
+        Args: { feed_token: string }
+        Returns: {
+          address: string
+          all_day: boolean
+          choir_name: string
+          description: string
+          ends_at: string
+          id: string
+          location: string
+          starts_at: string
+          title: string
+          type: Database["public"]["Enums"]["event_type"]
+          updated_at: string
+        }[]
+      }
       demo_accounts: {
         Args: never
         Returns: {

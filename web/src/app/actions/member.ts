@@ -3,6 +3,7 @@
 import { absenceSchema, availabilitySchema, practiceLogSchema } from '@choirbook/shared/schemas';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
+import { publicEnv } from '@/lib/env';
 import { getChoirContext } from '@/lib/session';
 import { createClient } from '@/lib/supabase/server';
 
@@ -90,6 +91,25 @@ export async function setPracticeDone(slug: string, assignmentId: string, done: 
   if (error) return fail('failed');
   revalidatePath(`/c/${slug}`, 'layout');
   return { ok: true };
+}
+
+/** The member's private season feed link (created the first time). */
+export async function getCalendarFeedUrl(slug: string): Promise<string | null> {
+  const ctx = await memberContext(slug);
+  if (!ctx) return null;
+  const supabase = await createClient();
+  const { data: auth } = await supabase.auth.getClaims();
+  const userId = auth?.claims?.sub;
+  if (!userId) return null;
+  let { data } = await supabase.from('calendar_feeds').select('token').eq('organization_id', ctx.org.id).maybeSingle();
+  if (!data) {
+    ({ data } = await supabase
+      .from('calendar_feeds')
+      .insert({ user_id: userId, organization_id: ctx.org.id })
+      .select('token')
+      .single());
+  }
+  return data ? `${publicEnv().NEXT_PUBLIC_SITE_URL}/api/calendar/${data.token}.ics` : null;
 }
 
 export async function logPractice(slug: string, input: { pieceId: string | null; minutes: number; note?: string }): Promise<ActionResult> {

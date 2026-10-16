@@ -163,7 +163,7 @@ export const en = {
     yes: 'Yes',
     no: 'No',
     maybe: 'Maybe',
-    comment: 'Comment (optional)',
+    comment: 'Comment',
     saveAnswer: 'Save my answer',
     answerSaved: 'Thanks, your answer is saved.',
     absencesTitle: 'Attendance',

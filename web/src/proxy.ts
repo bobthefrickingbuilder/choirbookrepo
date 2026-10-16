@@ -6,7 +6,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 // on member pages to the sign-in page.
 
 // Pages anyone may open without signing in (each also covers its sub-pages).
-const PUBLIC_PATHS = ['/sign-in', '/forgot-password', '/auth', '/demo', '/privacy', '/terms', '/setup', '/api/cron'];
+const PUBLIC_PATHS = ['/sign-in', '/forgot-password', '/auth', '/demo', '/privacy', '/terms', '/setup', '/api/cron', '/api/calendar'];
 
 export async function proxy(request: NextRequest) {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;

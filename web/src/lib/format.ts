@@ -46,3 +46,8 @@ export function daysBetween(fromDate: string, toDate: string) {
 export function todayLocal(tz = CHOIR_TZ) {
   return localParts(new Date().toISOString(), tz).date;
 }
+
+/** Has this not started yet (with a little grace, so "tonight" stays actionable until it ends)? */
+export function isUpcoming(iso: string, graceHours = 3) {
+  return Date.parse(iso) > Date.now() - graceHours * 3600_000;
+}

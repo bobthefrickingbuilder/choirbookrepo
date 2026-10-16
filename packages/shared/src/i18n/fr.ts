@@ -167,7 +167,7 @@ export const fr: Messages = {
     yes: 'Oui',
     no: 'Non',
     maybe: 'Peut-être',
-    comment: 'Commentaire (facultatif)',
+    comment: 'Commentaire',
     saveAnswer: 'Enregistrer ma réponse',
     answerSaved: 'Merci, votre réponse est enregistrée.',
     absencesTitle: 'Présences',
