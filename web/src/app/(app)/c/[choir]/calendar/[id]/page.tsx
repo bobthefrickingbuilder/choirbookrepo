@@ -1,17 +1,21 @@
 import { format } from '@choirbook/shared/i18n';
-import { Badge, Button, Card, DateLeaf, EVENT_TYPES, Icon, VoicePartBadge } from '@choirbook/ui';
+import { AlertCard, Badge, Button, Card, DateLeaf, EVENT_TYPES, Icon, VoicePartBadge } from '@choirbook/ui';
 import { notFound } from 'next/navigation';
 import { z } from 'zod';
 import { AbsenceButtons } from '@/components/member/AbsenceButtons';
 import { AvailabilityForm } from '@/components/member/AvailabilityForm';
+import { AvailabilitySummary } from '@/components/staff/AvailabilitySummary';
+import { EventStaffPanel } from '@/components/staff/EventStaffPanel';
+import { staffStrings } from '@/lib/staff';
 import { formatDate, formatRange, formatTime, isUpcoming, localParts } from '@/lib/format';
 import { hrefFor } from '@/lib/nav';
 import { getT } from '@/lib/prefs';
 import { getChoirContext } from '@/lib/session';
 import { createClient } from '@/lib/supabase/server';
 
-export default async function EventPage({ params }: PageProps<'/c/[choir]/calendar/[id]'>) {
+export default async function EventPage({ params, searchParams }: PageProps<'/c/[choir]/calendar/[id]'>) {
   const { choir, id } = await params;
+  const { created } = await searchParams;
   if (!z.uuid().safeParse(id).success) notFound();
   const [ctx, { lang, t }] = await Promise.all([getChoirContext(choir), getT()]);
   if (!ctx) notFound();
@@ -55,6 +59,28 @@ export default async function EventPage({ params }: PageProps<'/c/[choir]/calend
           ) : null}
         </div>
       </header>
+
+      {ctx.isStaff && typeof created === 'string' && Number(created) > 1 ? (
+        <AlertCard tone="success">{format(t.staff.createdN, { n: Number(created) })}</AlertCard>
+      ) : null}
+
+      {ctx.can('calendar', 'edit') ? (
+        <Card title={t.staff.staffPanel}>
+          <EventStaffPanel
+            slug={choir}
+            id={e.id}
+            cancelled={Boolean(e.cancelled_at)}
+            upcoming={upcoming}
+            availabilityRequested={e.availability_requested}
+            canAttendance={ctx.can('attendance') && e.counts_for_attendance}
+            s={staffStrings(t)}
+          />
+        </Card>
+      ) : null}
+
+      {ctx.isStaff && ctx.can('calendar') && (e.availability_requested || upcoming) ? (
+        <AvailabilitySummary orgId={ctx.org.id} event={e} lang={lang} t={t} />
+      ) : null}
 
       <Card title={t.member.whereAndWhen}>
         <ul className="detail-list">

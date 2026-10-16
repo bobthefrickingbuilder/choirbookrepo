@@ -1,3 +1,4 @@
+import { Button } from '@choirbook/ui';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { CalendarView } from '@/components/member/CalendarView';
@@ -30,7 +31,16 @@ export default async function CalendarPage({ params, searchParams }: PageProps<'
 
   return (
     <div className="page">
-      <h1 className="page__title">{t.member.calendarTitle}</h1>
+      <div className="page__head">
+        <h1 className="page__title">{t.member.calendarTitle}</h1>
+        {ctx.can('calendar', 'edit') ? (
+          <div className="page__actions">
+            <Button iconStart="plus" href={`/c/${choir}/calendar/new`}>
+              {t.staff.newEvent}
+            </Button>
+          </div>
+        ) : null}
+      </div>
       <CalendarView
         slug={choir}
         events={calendarEvents}

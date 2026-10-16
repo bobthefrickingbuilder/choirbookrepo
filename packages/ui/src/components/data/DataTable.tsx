@@ -208,9 +208,8 @@ export function DataTable<R>({
       <div className="cb-table__scroll">
         {' '}
         <table className="cb-table__t">
-          {caption ? <caption className="cb-sr-only">{caption}</caption> : null}{' '}
+          {caption ? <caption className="cb-sr-only">{caption}</caption> : null}
           <thead>
-            {' '}
             <tr>
               {selectable ? (
                 <th className="is-check">
@@ -264,7 +263,7 @@ export function DataTable<R>({
                 );
               })}
             </tr>
-          </thead>{' '}
+          </thead>
           <tbody>
             {view.map((r) => {
               const id = getRowId(r);

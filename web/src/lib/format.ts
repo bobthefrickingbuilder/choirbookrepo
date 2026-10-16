@@ -56,3 +56,27 @@ export function isUpcoming(iso: string, graceHours = 3) {
 export function isoDaysFromNow(days: number) {
   return new Date(Date.now() + days * 86_400_000).toISOString();
 }
+
+/**
+ * The instant for a wall-clock date and time in the choir's time zone
+ * ("2026-11-05", "18:30" → the matching UTC instant), daylight saving included.
+ */
+export function zonedInstant(date: string, time: string, tz = CHOIR_TZ): Date {
+  const [y, m, d] = date.split('-').map(Number) as [number, number, number];
+  const [h, mi] = time.split(':').map(Number) as [number, number];
+  const wanted = Date.UTC(y, m - 1, d, h, mi);
+  let guess = wanted;
+  // Two rounds settle the offset even across a daylight-saving change.
+  for (let i = 0; i < 2; i++) {
+    const p = localParts(new Date(guess).toISOString(), tz);
+    const shown = Date.parse(`${p.date}T${p.time}:00Z`);
+    guess += wanted - shown;
+  }
+  return new Date(guess);
+}
+
+/** YYYY-MM-DD plus a number of days. */
+export function addDays(date: string, days: number) {
+  const t = Date.parse(`${date}T12:00:00Z`) + days * 86_400_000;
+  return new Date(t).toISOString().slice(0, 10);
+}
