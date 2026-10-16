@@ -1,5 +1,5 @@
 import { format } from '@choirbook/shared/i18n';
-import { Card, EmptyState } from '@choirbook/ui';
+import { Button, Card, EmptyState } from '@choirbook/ui';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { MusicList } from '@/components/member/MusicList';
@@ -47,9 +47,18 @@ export default async function MusicPage({ params }: PageProps<'/c/[choir]/music'
 
   return (
     <div className="page" style={{ maxWidth: 860 }}>
-      <div>
-        <h1 className="page__title">{t.member.musicTitle}</h1>
-        <p className="page__lede">{t.member.musicIntro}</p>
+      <div className="page__head">
+        <div>
+          <h1 className="page__title">{t.member.musicTitle}</h1>
+          <p className="page__lede">{t.member.musicIntro}</p>
+        </div>
+        {ctx.isStaff && ctx.can('music') ? (
+          <div className="page__actions">
+            <Button iconStart="settings" variant="secondary" href={`/c/${choir}/music/manage`}>
+              {t.staff.manageLibrary}
+            </Button>
+          </div>
+        ) : null}
       </div>
       {items.length === 0 ? (
         <Card padded={false}>

@@ -350,3 +350,43 @@ details.history summary {
     grid-column: 2;
   }
 }
+
+.icon-disc--sm {
+  width: 36px;
+  height: 36px;
+  background: var(--surface-muted);
+  color: var(--text-2);
+  border: 0;
+}
+.setlist {
+  margin: 6px 0 0;
+  padding-left: 1.4em;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.setlist-edit {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.setlist-edit li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+.setlist-edit__n {
+  width: 1.6em;
+  font-variant-numeric: var(--numeric-tabular);
+  color: var(--text-3);
+}
+.plain-fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
