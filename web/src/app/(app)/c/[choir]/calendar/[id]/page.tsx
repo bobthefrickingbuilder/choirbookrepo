@@ -16,14 +16,18 @@ export default async function EventPage({ params }: PageProps<'/c/[choir]/calend
   const [ctx, { lang, t }] = await Promise.all([getChoirContext(choir), getT()]);
   if (!ctx) notFound();
   const supabase = await createClient();
-  const [{ data: e }, { data: report }, { data: reply }, { data: setList }, { data: sections }] = await Promise.all([
+  const [{ data: e }, { data: report }, { data: reply }, { data: setList }, { data: sections }, { data: charts }] = await Promise.all([
     supabase.from('events').select('*').eq('id', id).eq('organization_id', ctx.org.id).maybeSingle(),
     supabase.from('absence_reports').select('kind, reason').eq('event_id', id).eq('person_id', ctx.personId).maybeSingle(),
     supabase.from('availability_replies').select('answer, comment').eq('event_id', id).eq('person_id', ctx.personId).maybeSingle(),
     supabase.from('set_list_items').select('position, pieces(id, title, composer)').eq('event_id', id).order('position'),
     supabase.from('sections').select('id, key').eq('organization_id', ctx.org.id),
+    supabase.from('seating_charts').select('id, name, layout, seating_positions(person_id, row_label, seat)').eq('event_id', id).not('published_at', 'is', null),
   ]);
   if (!e) notFound();
+  const chart = charts?.[0];
+  const layoutRows = (chart?.layout as { rows?: { label: string; seats: number }[] } | null)?.rows ?? [];
+  const myPos = chart?.seating_positions.find((p) => p.person_id === ctx.personId);
 
   const type = EVENT_TYPES[e.type];
   const upcoming = isUpcoming(e.starts_at);
@@ -162,6 +166,29 @@ export default async function EventPage({ params }: PageProps<'/c/[choir]/calend
               pastEvent: t.member.pastEvent,
             }}
           />
+        </Card>
+      ) : null}
+
+      {chart ? (
+        <Card title={t.member.seatingTitle}>
+          <div className="stack">
+            <p>
+              <strong>{myPos ? format(t.member.seatingRow, { row: myPos.row_label, seat: myPos.seat }) : t.member.seatingNotPlaced}</strong>
+            </p>
+            {/* Rows are drawn back to front, as seen from the audience; the front row is at the bottom. */}
+            <div className="seat-chart" aria-hidden="true">
+              {layoutRows.map((r) => (
+                <div key={r.label} className="seat-row">
+                  <span className="seat-row__label">{r.label}</span>
+                  {Array.from({ length: r.seats }, (_, i) => {
+                    const taken = chart.seating_positions.find((p) => p.row_label === r.label && p.seat === i + 1);
+                    const mine = taken?.person_id === ctx.personId;
+                    return <span key={i} className={'seat' + (mine ? ' seat--me' : taken ? ' seat--taken' : '')} />;
+                  })}
+                </div>
+              ))}
+            </div>
+          </div>
         </Card>
       ) : null}
 

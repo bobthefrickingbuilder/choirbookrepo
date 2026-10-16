@@ -3307,11 +3307,28 @@ export type Database = {
         }
         Returns: undefined
       }
+      my_ticket_sales: {
+        Args: { org: string }
+        Returns: {
+          code: string
+          event_id: string
+          orders: number
+          tickets: number
+        }[]
+      }
+      rebuild_demo: { Args: { demo_password: string }; Returns: Json }
       request_guardian_signatures: {
         Args: { response: string }
         Returns: number
       }
       reset_demo: { Args: { demo_password: string }; Returns: Json }
+      volunteer_slot_fill: {
+        Args: { org: string }
+        Returns: {
+          slot_id: string
+          taken: number
+        }[]
+      }
     }
     Enums: {
       absence_kind: "absent" | "late"

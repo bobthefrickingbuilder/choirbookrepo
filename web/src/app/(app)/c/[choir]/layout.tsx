@@ -15,9 +15,12 @@ export default async function ChoirLayout({ children, params }: LayoutProps<'/c/
   // Not a member of this choir (or it does not exist): same answer either way.
   if (!ctx || !user) notFound();
 
-  // Remember this choir for next time (best effort).
+  // Remember this choir for next time (best effort), and count unread notifications.
   const supabase = await createClient();
-  await supabase.from('profiles').update({ last_organization_id: ctx.org.id }).eq('id', user.id);
+  const [, { count: unreadCount }] = await Promise.all([
+    supabase.from('profiles').update({ last_organization_id: ctx.org.id }).eq('id', user.id),
+    supabase.from('notifications').select('id', { count: 'exact', head: true }).eq('organization_id', ctx.org.id).is('read_at', null),
+  ]);
 
   const { sections, bottom } = buildNav(ctx, t);
   const roleName = ctx.roles[0] ? (lang === 'fr' ? ctx.roles[0].nameFr : ctx.roles[0].nameEn) : t.roles.chorister;
@@ -57,6 +60,7 @@ export default async function ChoirLayout({ children, params }: LayoutProps<'/c/
       homeHref={hrefFor(slug, 'home')}
       profileHref={hrefFor(slug, 'profile')}
       notificationsHref={hrefFor(slug, 'notifications')}
+      unreadCount={unreadCount ?? 0}
       banner={
         demoRole ? (
           <DemoBanner

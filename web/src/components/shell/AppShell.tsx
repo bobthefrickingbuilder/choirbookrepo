@@ -52,6 +52,7 @@ export interface AppShellProps {
   homeHref: string;
   profileHref: string;
   notificationsHref: string;
+  unreadCount?: number;
   /** Optional strip above the header (the demo banner). */
   banner?: React.ReactNode;
   /** Optional floating layer (the guided tour). */
@@ -154,7 +155,12 @@ export function AppShell(props: AppShellProps) {
           </>
         }
         actions={
-          <IconButton icon="bell" label={strings.notifications} onClick={() => router.push(props.notificationsHref as never)} />
+          <IconButton
+            icon="bell"
+            label={strings.notifications}
+            count={props.unreadCount || undefined}
+            onClick={() => router.push(props.notificationsHref as never)}
+          />
         }
         end={
           <UserMenu

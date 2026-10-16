@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
   const password = process.env.DEMO_PASSWORD;
   if (!password) return NextResponse.json({ error: 'DEMO_PASSWORD is not set' }, { status: 500 });
 
-  const { data, error } = await createAdminClient().rpc('reset_demo', { demo_password: password });
+  const { data, error } = await createAdminClient().rpc('rebuild_demo', { demo_password: password });
   if (error) {
     console.error('Demo reset failed', error);
     return NextResponse.json({ error: 'Demo reset failed' }, { status: 500 });
