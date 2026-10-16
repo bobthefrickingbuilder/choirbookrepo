@@ -117,6 +117,15 @@ describe('demo choir', () => {
     ).rejects.toThrow(/Demo accounts cannot join/);
   });
 
+  it('the nightly rebuild starts the audit log clean, with a few sample staff entries', async () => {
+    await db.query(`select public.rebuild_demo('test-demo-password')`);
+    const log = await db.query<{ actor_id: string | null }>(`select actor_id from public.audit_log where organization_id = $1`, [DEMO_ORG]);
+    expect(log.rows).toHaveLength(5);
+    expect(log.rows.every((r) => r.actor_id)).toBe(true);
+    const notes = await db.query<{ n: number }>(`select count(*)::int as n from public.staff_notes where organization_id = $1 and author_id is null`, [DEMO_ORG]);
+    expect(notes.rows[0]!.n).toBe(0);
+  });
+
   it('leaves the real choirs untouched', async () => {
     const r = await db.query<{ n: number }>(`select count(*)::int as n from public.people where organization_id = $1`, [ORG_A]);
     expect(r.rows[0]!.n).toBe(6);
