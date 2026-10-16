@@ -1,3 +1,4 @@
+import { staffEn } from './staff.en';
 // English strings. Every key here must exist in fr.ts (enforced by its type).
 // Voice: calm, plain and specific. Sentence case. Buttons start with a verb.
 export const en = {
@@ -409,6 +410,7 @@ export const en = {
       ['See other roles', 'Use the banner at the top to see Choirbook as a section leader or the treasurer. Each sees only what their role allows.'],
     ],
   },
+  staff: staffEn,
   common: {
     backHome: 'Back to home',
     cancel: 'Cancel',

@@ -1,5 +1,6 @@
 import '@choirbook/ui/styles.css';
 import './app.css';
+import './staff.css';
 import type { Metadata, Viewport } from 'next';
 import { InlineScript, THEME_SCRIPT } from '@/components/InlineScript';
 import { getLang, getTheme } from '@/lib/prefs';

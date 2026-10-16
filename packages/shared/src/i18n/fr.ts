@@ -1,4 +1,5 @@
 import type { Messages } from './en';
+import { staffFr } from './staff.fr';
 
 // Chaînes françaises. Première version : à faire relire par une personne de langue maternelle française canadienne.
 export const fr: Messages = {
@@ -413,6 +414,7 @@ export const fr: Messages = {
       ['Voir d’autres rôles', 'Utilisez le bandeau du haut pour voir Choirbook comme chef de pupitre ou trésorerie. Chacun ne voit que ce que son rôle permet.'],
     ],
   },
+  staff: staffFr,
   common: {
     backHome: 'Retour à l’accueil',
     cancel: 'Annuler',
