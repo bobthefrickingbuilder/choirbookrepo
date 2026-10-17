@@ -2,9 +2,10 @@
  * A script that runs while the HTML is parsed, before first paint (see the Next.js
  * guide "Preventing flash before hydration"). Only for small, trusted, static code.
  */
-export function InlineScript({ html }: { html: string }) {
+export function InlineScript({ html, nonce }: { html: string; nonce?: string }) {
   return (
     <script
+      nonce={nonce}
       type={typeof window === 'undefined' ? 'text/javascript' : 'text/plain'}
       suppressHydrationWarning
       dangerouslySetInnerHTML={{ __html: html }}

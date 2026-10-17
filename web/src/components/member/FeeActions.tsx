@@ -121,10 +121,11 @@ export function ResendGuardian({
 }: {
   slug: string;
   responseId: string;
-  s: { resend: string; sent: string; tooSoon: string; failed: string };
+  s: { resend: string; sent: string; tooSoon: string; failed: string; demoReady?: string; openLink?: string };
 }) {
   const router = useRouter();
   const [msg, setMsg] = useState<{ tone: 'success' | 'info' | 'error'; text: string } | null>(null);
+  const [demoLink, setDemoLink] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
   return (
     <div className="stack" style={{ gap: 8 }}>
@@ -137,7 +138,14 @@ export function ResendGuardian({
           onClick={() =>
             startTransition(async () => {
               const r = await resendGuardianLink(slug, responseId);
-              setMsg(r.ok ? { tone: 'success', text: s.sent } : r.error === 'too_soon' ? { tone: 'info', text: s.tooSoon } : { tone: 'error', text: s.failed });
+              setDemoLink(r.ok && r.demoLink ? r.demoLink : null);
+              setMsg(
+                r.ok
+                  ? { tone: r.demoLink ? 'info' : 'success', text: r.demoLink ? (s.demoReady ?? s.sent) : s.sent }
+                  : r.error === 'too_soon'
+                    ? { tone: 'info', text: s.tooSoon }
+                    : { tone: 'error', text: s.failed },
+              );
               if (r.ok) router.refresh();
             })
           }
@@ -146,6 +154,13 @@ export function ResendGuardian({
         </Button>
       </div>
       {msg ? <AlertCard tone={msg.tone}>{msg.text}</AlertCard> : null}
+      {demoLink ? (
+        <div>
+          <Button size="sm" iconStart="external-link" href={demoLink}>
+            {s.openLink ?? s.resend}
+          </Button>
+        </div>
+      ) : null}
     </div>
   );
 }

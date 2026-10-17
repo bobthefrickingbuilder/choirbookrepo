@@ -1,5 +1,6 @@
 import { staffEn } from './staff.en';
 import { dashboardEn } from './dashboard.en';
+import { privacyEn } from './privacy.en';
 // English strings. Every key here must exist in fr.ts (enforced by its type).
 // Voice: calm, plain and specific. Sentence case. Buttons start with a verb.
 export const en = {
@@ -360,7 +361,7 @@ export const en = {
     downloadJson: 'Download (JSON)',
     downloadCsv: 'Download (CSV)',
     deleteAccount: 'Delete my account',
-    deleteSoon: 'Account deletion arrives with the privacy update. Until then, ask your choir office.',
+    deleteSoon: 'Delete your account and your personal information.',
     noNotifications: 'You are all caught up.',
     markAllRead: 'Mark all as read',
     newCount: '{n} new',
@@ -413,6 +414,7 @@ export const en = {
   },
   staff: staffEn,
   dash: dashboardEn,
+  privacy: privacyEn,
   common: {
     backHome: 'Back to home',
     cancel: 'Cancel',

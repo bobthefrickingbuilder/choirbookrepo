@@ -67,10 +67,16 @@ export async function saveForm(
   return { ok: true, guardians };
 }
 
-export async function resendGuardianLink(slug: string, responseId: string): Promise<ActionResult & { sent?: number }> {
+export async function resendGuardianLink(slug: string, responseId: string): Promise<ActionResult & { sent?: number; demoLink?: string }> {
   const ctx = await getChoirContext(slug);
   if (!ctx || !z.uuid().safeParse(responseId).success) return { ok: false, error: 'not_allowed' };
   const supabase = await createClient();
+  if (ctx.org.is_demo) {
+    // The demo sends no email: hand back the link a guardian would get instead.
+    const { data: token, error } = await supabase.rpc('demo_guardian_link', { response: responseId });
+    if (error || !token) return { ok: false, error: 'failed' };
+    return { ok: true, sent: 1, demoLink: `/guardian/${token}?demo=1` };
+  }
   const { data, error } = await supabase.rpc('request_guardian_signatures', { response: responseId });
   if (error) return { ok: false, error: 'failed' };
   if (data === -1) return { ok: false, error: 'too_soon' };

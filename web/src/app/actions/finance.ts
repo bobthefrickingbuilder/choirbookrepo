@@ -82,10 +82,17 @@ export async function reviewResponse(slug: string, responseId: string, decision:
   return done;
 }
 
-export async function staffResendGuardian(slug: string, responseId: string): Promise<ActionResult<{ sent: number }>> {
+export async function staffResendGuardian(slug: string, responseId: string): Promise<ActionResult<{ sent: number; demoLink?: string }>> {
   const ctx = await staffContext(slug, 'forms');
   if (!ctx || !uuid.safeParse(responseId).success) return fail('not_allowed');
   const supabase = await createClient();
+  if (ctx.org.is_demo) {
+    // The demo sends no email: hand back the link a guardian would get instead.
+    const { data: token, error } = await supabase.rpc('demo_guardian_link', { response: responseId });
+    if (error || !token) return fail(dbError(error));
+    revalidatePath(`/c/${slug}/forms-fees`, 'layout');
+    return { ok: true, data: { sent: 1, demoLink: `/guardian/${token}?demo=1` } };
+  }
   const { data, error } = await supabase.rpc('request_guardian_signatures', { response: responseId });
   if (error) return fail(dbError(error));
   if (data === -1) return fail('too_soon');

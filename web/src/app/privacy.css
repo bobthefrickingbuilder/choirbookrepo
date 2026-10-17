@@ -1,0 +1,70 @@
+/* Phase 6: guardian signing, consents, deletion, legal pages. */
+
+.public__legal {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  margin-top: 8px;
+}
+.public__legal a {
+  color: var(--text-2);
+}
+
+.bullets {
+  margin: 0;
+  padding-left: 1.25em;
+  display: grid;
+  gap: 6px;
+}
+
+.answers {
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+.answers dt {
+  font-weight: 600;
+}
+.answers dd {
+  margin: 2px 0 0;
+  white-space: pre-wrap;
+}
+
+.consent p {
+  margin: 8px 0;
+}
+
+.guardian-fields {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 12px 16px 16px;
+  margin: 4px 0 0;
+}
+.guardian-fields legend {
+  font-weight: 600;
+  padding: 0 6px;
+}
+
+.profile-grid > .span-all {
+  grid-column: 1 / -1;
+}
+
+.legal {
+  display: grid;
+  gap: 12px;
+  line-height: 1.55;
+}
+.legal h1 {
+  margin: 8px 0 0;
+}
+.legal h2 {
+  font-size: 1.1rem;
+  margin: 12px 0 4px;
+}
+.legal p {
+  margin: 0;
+}
+.legal section {
+  display: grid;
+  gap: 8px;
+}

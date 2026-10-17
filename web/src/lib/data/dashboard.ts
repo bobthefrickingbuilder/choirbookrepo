@@ -107,7 +107,7 @@ export async function getDashboard(ctx: ChoirContext, f: Filters, report: Report
   const [choristersRes, eventsRes, term, termAbsences, convRes, checksRes, guardianFormsRes] = await Promise.all([
     supabase
       .from('choristers')
-      .select('person_id, section_id, status, voice_parts(key), people!inner(first_name, last_name, preferred_name, date_of_birth)')
+      .select('person_id, section_id, status, voice_parts(key), people!inner(first_name, last_name, preferred_name, date_of_birth), guardian_links(guardian_id)')
       .eq('organization_id', org)
       .in('status', ['active', 'on_leave']),
     ctx.can('calendar')
@@ -294,6 +294,25 @@ export async function getDashboard(ctx: ChoirContext, f: Filters, report: Report
         detail: expiring.slice(0, 4).map((x) => x.name).join(', '),
         href: href('/volunteers'),
         action: s.reviewChecks,
+      });
+    }
+  }
+
+  if (ctx.can('roster')) {
+    const minorCut = addDays(today, -Math.round(18 * 365.25));
+    const alone = (choristersRes.data ?? []).filter(
+      (c) => c.status === 'active' && c.people.date_of_birth && c.people.date_of_birth > minorCut && !c.guardian_links.length && (!sectionId || c.section_id === sectionId),
+    );
+    if (alone.length) {
+      const names = alone.slice(0, 3).map((c) => `${c.people.preferred_name || c.people.first_name} ${c.people.last_name}`);
+      items.push({
+        id: 'no-guardian',
+        tone: 'warning',
+        icon: 'user-plus',
+        title: fill(s.minorsNoGuardian, { n: alone.length }),
+        detail: fill(s.minorsNoGuardianBody, { names: names.join(', ') + (alone.length > 3 ? '…' : '') }),
+        href: href(alone.length === 1 ? `/roster/${alone[0]!.person_id}` : '/roster'),
+        action: s.addGuardian,
       });
     }
   }

@@ -85,7 +85,17 @@ export function RosterTable({
       sortable: true,
       render: (r) => <Badge tone={statusTone[r.status]}>{statusLabel[r.status]}</Badge>,
     },
-    { key: 'guardian', header: s.colGuardian, sortable: true, render: (r) => <span style={{ whiteSpace: 'nowrap' }}>{r.guardian ?? '—'}</span> },
+    {
+      key: 'guardian',
+      header: s.colGuardian,
+      sortable: true,
+      render: (r) =>
+        r.minor && !r.guardian ? (
+          <Badge tone="warning">{s.minorNoGuardian}</Badge>
+        ) : (
+          <span style={{ whiteSpace: 'nowrap' }}>{r.guardian ?? '—'}</span>
+        ),
+    },
     ...(can.attendance
       ? [
           {

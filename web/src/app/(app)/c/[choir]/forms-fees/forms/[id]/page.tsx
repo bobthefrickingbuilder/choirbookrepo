@@ -34,6 +34,8 @@ export default async function StaffFormPage({ params, searchParams }: PageProps<
     supabase.from('guardian_signatures').select('response_id, used_at, revoked_at, sent_at'),
     getSections(ctx.org.id),
   ]);
+  // Staff reading members' answers is recorded in the audit log.
+  if (responses?.length) await supabase.rpc('log_event', { org: ctx.org.id, action: 'view', entity: 'form_responses', entity_id: id });
   if (!form) notFound();
   const s = staffStrings(t);
   const fields = parseFields(form.fields);
@@ -130,7 +132,7 @@ export default async function StaffFormPage({ params, searchParams }: PageProps<
                   {canEdit && r ? (
                     <span style={{ display: 'inline-flex', gap: 6, flexWrap: 'wrap' }}>
                       {r.status === 'submitted' ? <ReviewButtons slug={choir} responseId={r.id} s={s} /> : null}
-                      {form.guardian_signature_required && minor && !guardianDone && r.status !== 'in_progress' ? (
+                      {form.guardian_signature_required && minor && (!guardianDone || ctx.org.is_demo) && r.status !== 'in_progress' ? (
                         <ResendGuardianButton slug={choir} responseId={r.id} s={s} />
                       ) : null}
                     </span>

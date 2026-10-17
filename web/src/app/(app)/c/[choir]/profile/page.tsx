@@ -1,12 +1,16 @@
 import type { Messages } from '@choirbook/shared/i18n';
-import { Button, Card, Field, VoicePartBadge } from '@choirbook/ui';
+import { format } from '@choirbook/shared/i18n';
+import { Badge, Button, Card, Field, VoicePartBadge } from '@choirbook/ui';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { LanguageSwitch } from '@/components/auth/LanguageSwitch';
 import { ThemeSwitch } from '@/components/auth/ThemeSwitch';
+import { ConsentItem } from '@/components/member/Consents';
 import { ProfileForm } from '@/components/member/ProfileForm';
 import { PrefToggle } from '@/components/member/SmallActions';
 import { getMemberProfile } from '@/lib/data/member';
+import { getMyConsents, getMyGuardians } from '@/lib/data/privacy';
+import { formatDate } from '@/lib/format';
 import { getT, getTheme } from '@/lib/prefs';
 import { getChoirContext } from '@/lib/session';
 import { createClient } from '@/lib/supabase/server';
@@ -31,11 +35,15 @@ export default async function ProfilePage({ params }: PageProps<'/c/[choir]/prof
   const [ctx, { lang, t }, theme] = await Promise.all([getChoirContext(choir), getT(), getTheme()]);
   if (!ctx) notFound();
   const supabase = await createClient();
-  const [profile, { data: me }, { data: prefs }] = await Promise.all([
+  const [profile, { data: me }, { data: prefs }, consents, guardians] = await Promise.all([
     getMemberProfile(ctx),
     supabase.from('people').select('email, preferred_name, pronouns, phone, contact_visibility').eq('id', ctx.personId).single(),
     supabase.from('notification_preferences').select('*'),
+    ctx.isChorister ? getMyConsents(ctx) : Promise.resolve([]),
+    getMyGuardians(ctx),
   ]);
+  const p = t.privacy;
+  const kindLabel = { participation: t.staff.consent_participation, code_of_conduct: t.staff.consent_code_of_conduct, photo_video: t.staff.consent_photo_video, medical_info: t.staff.consent_medical_info };
   const pref = (c: string) => prefs?.find((p) => p.category === c) ?? { in_app: true, email_digest: true, push: false };
 
   return (
@@ -74,6 +82,77 @@ export default async function ProfilePage({ params }: PageProps<'/c/[choir]/prof
           />
         </div>
       </Card>
+
+      {consents.length ? (
+        <Card title={p.consentsTitle}>
+          <div className="stack" id="consents" style={{ scrollMarginTop: 80 }}>
+            <p className="muted" style={{ margin: 0 }}>
+              {p.consentsIntro} {p.requiredNote}
+            </p>
+            {consents.map((c) => (
+              <ConsentItem
+                key={c.kind}
+                slug={choir}
+                c={{
+                  kind: c.kind,
+                  label: kindLabel[c.kind],
+                  required: c.required,
+                  wording: c.wording ? (lang === 'fr' ? c.wording.fr : c.wording.en) : null,
+                  granted: c.answer ? c.answer.granted : null,
+                  needsAnswer: c.needsAnswer,
+                  stateLine: c.answer
+                    ? format(p.stateOn, { state: c.answer.granted ? p.given : p.withdrawn, date: formatDate(c.answer.at, lang, { dateStyle: 'medium' }), v: c.answer.version })
+                    : null,
+                }}
+                s={{
+                  required: p.required,
+                  optional: p.optional,
+                  given: p.given,
+                  withdrawn: p.withdrawn,
+                  notAnswered: p.notAnswered,
+                  agree: p.agree,
+                  withdraw: p.withdraw,
+                  newWording: p.newWording,
+                  noWording: p.noWordingYet,
+                  saved: p.consentSaved,
+                  failed: t.member.genericFail,
+                }}
+              />
+            ))}
+          </div>
+        </Card>
+      ) : null}
+
+      {guardians ? (
+        <Card title={p.guardiansTitle}>
+          <div className="stack">
+            <p className="muted" style={{ margin: 0 }}>
+              {p.guardiansIntro}
+            </p>
+            {guardians.length ? (
+              <ul className="plain-list">
+                {guardians.map((g) => (
+                  <li key={g.name} className="note">
+                    <div className="person-row__name">
+                      {g.name}
+                      {g.relationship ? <span className="muted small">{g.relationship}</span> : null}
+                    </div>
+                    <p className="muted small" style={{ margin: '4px 0' }}>
+                      {[g.email, g.phone].filter(Boolean).join(' · ')}
+                    </p>
+                    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                      <Badge tone="neutral">{g.copies ? p.getsCopies : p.noCopies}</Badge>
+                      {g.emergency ? <Badge tone="neutral">{p.emergencyContact}</Badge> : null}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>{p.guardiansNone}</p>
+            )}
+          </div>
+        </Card>
+      ) : null}
 
       <Card title={`${t.account.language} · ${t.account.appearance}`}>
         <div className="form-2col">
@@ -136,7 +215,10 @@ export default async function ProfilePage({ params }: PageProps<'/c/[choir]/prof
             </Button>
           </div>
           <p className="muted">
-            <strong>{t.member.deleteAccount}.</strong> {t.member.deleteSoon}
+            {t.member.deleteSoon}{' '}
+            <a href="/account/delete" className="cb-link">
+              {p.delLink}
+            </a>
           </p>
         </div>
       </Card>

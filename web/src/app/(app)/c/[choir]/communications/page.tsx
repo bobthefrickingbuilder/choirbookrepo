@@ -10,6 +10,7 @@ import { categoryLabel } from '@/lib/labels';
 import { getT } from '@/lib/prefs';
 import { getChoirContext, type ChoirContext } from '@/lib/session';
 import { staffStrings } from '@/lib/staff';
+import { HeldMessageActions } from '@/components/staff/PrivacySettings';
 import { createClient } from '@/lib/supabase/server';
 
 export const metadata: Metadata = { title: 'Communications' };
@@ -268,7 +269,7 @@ async function Updates({ ctx, slug, lang, t }: Props) {
 
 async function Moderation({ ctx, slug, lang, t }: Props) {
   const supabase = await createClient();
-  const [{ data: reports }, { data: suspended }] = await Promise.all([
+  const [{ data: reports }, { data: suspended }, { data: held }] = await Promise.all([
     supabase
       .from('message_reports')
       .select('id, reason, created_at, reporter_person_id, message_id, messages!inner(id, body, author_person_id, hidden_at, conversation_id)')
@@ -276,8 +277,20 @@ async function Moderation({ ctx, slug, lang, t }: Props) {
       .eq('status', 'open')
       .order('created_at'),
     supabase.from('people').select('id, first_name, last_name').eq('organization_id', ctx.org.id).not('messaging_suspended_at', 'is', null),
+    supabase
+      .from('messages')
+      .select('id, body, created_at, author_person_id, conversation_id, conversations(subject)')
+      .eq('organization_id', ctx.org.id)
+      .eq('held_for_review', true)
+      .is('hidden_at', null)
+      .order('created_at')
+      .limit(50),
   ]);
-  const ids = [...new Set((reports ?? []).flatMap((r) => [r.reporter_person_id, r.messages.author_person_id]).filter((x): x is string => Boolean(x)))];
+  const ids = [
+    ...new Set(
+      [...(reports ?? []).flatMap((r) => [r.reporter_person_id, r.messages.author_person_id]), ...(held ?? []).map((m) => m.author_person_id)].filter((x): x is string => Boolean(x)),
+    ),
+  ];
   const { data: people } = ids.length ? await supabase.from('member_directory').select('id, first_name, last_name').in('id', ids) : { data: [] };
   const name = (id: string | null) => {
     const p = people?.find((x) => x.id === id);
@@ -287,6 +300,35 @@ async function Moderation({ ctx, slug, lang, t }: Props) {
   const canEdit = ctx.can('moderation', 'edit');
   return (
     <div className="profile-grid profile-grid--wide-left">
+      <Card title={t.privacy.heldTitle} className="span-all">
+        <p className="muted" style={{ marginTop: 0 }}>
+          {t.privacy.heldIntro}
+        </p>
+        {held?.length ? (
+          <ul className="plain-list" aria-label={t.privacy.heldTitle}>
+            {held.map((m) => (
+              <li key={m.id} className="note" style={{ marginBottom: 10 }}>
+                <div className="muted small">
+                  {format(t.privacy.heldBy, {
+                    name: name(m.author_person_id),
+                    date: formatDate(m.created_at, lang, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }),
+                    subject: (Array.isArray(m.conversations) ? m.conversations[0]?.subject : m.conversations?.subject) ?? '',
+                  })}
+                </div>
+                <p>{m.body}</p>
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 8 }}>
+                  <Button size="sm" variant="ghost" iconStart="message-square" href={`/c/${slug}/messages/${m.conversation_id}`}>
+                    {t.staff.openThread}
+                  </Button>
+                  {canEdit ? <HeldMessageActions slug={slug} messageId={m.id} s={{ release: t.privacy.release, hide: t.privacy.hide, failed: s.failed }} /> : null}
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="muted">{t.privacy.heldNone}</p>
+        )}
+      </Card>
       <Card title={t.staff.reportsQueue}>
         {reports?.length ? (
           <ul className="plain-list">

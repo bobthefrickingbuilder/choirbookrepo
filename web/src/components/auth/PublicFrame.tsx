@@ -1,4 +1,5 @@
-import type { Lang } from '@choirbook/shared/i18n';
+import { getMessages, type Lang } from '@choirbook/shared/i18n';
+import Link from 'next/link';
 import { PoweredBy, Wordmark } from '@choirbook/ui';
 import { LanguageSwitch } from './LanguageSwitch';
 
@@ -21,6 +22,10 @@ export function PublicFrame({
         {children}
         <div className="public__foot">
           <LanguageSwitch lang={lang} label={languageLabel} />
+          <nav className="public__legal small" aria-label={getMessages(lang).privacy.legalLinks}>
+            <Link href="/privacy">{getMessages(lang).privacy.privacy}</Link>
+            <Link href="/terms">{getMessages(lang).privacy.terms}</Link>
+          </nav>
         </div>
       </div>
       <PoweredBy lang={lang} />

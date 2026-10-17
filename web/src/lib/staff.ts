@@ -78,6 +78,8 @@ export function staffStrings(t: import('@choirbook/shared/i18n').Messages) {
       in_use: t.staff.inUse,
       too_soon: t.staff.tooSoon,
       payments_off: t.staff.paymentsOff,
+      under_14: t.privacy.under14,
+      guardian_required: t.privacy.guardianRequired,
     } as Record<string, string>,
   };
 }
