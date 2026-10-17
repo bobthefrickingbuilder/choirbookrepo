@@ -4,7 +4,8 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { BoardReport } from '@/components/staff/BoardReport';
 import { Forbidden } from '@/components/staff/Forbidden';
-import { getReport, resolvePeriod } from '@/lib/data/reports';
+import { filterQuery, readFilters } from '@/lib/data/filters';
+import { getReport } from '@/lib/data/reports';
 import { formatDate, formatMoney, isoDaysFromNow } from '@/lib/format';
 import { getT } from '@/lib/prefs';
 import { getChoirContext } from '@/lib/session';
@@ -13,12 +14,13 @@ export const metadata: Metadata = { title: 'Board report' };
 
 export default async function BoardReportPage({ params, searchParams }: PageProps<'/c/[choir]/reports/board'>) {
   const { choir } = await params;
-  const { period: wanted } = await searchParams;
+  const search = await searchParams;
   const [ctx, { lang, t }] = await Promise.all([getChoirContext(choir), getT()]);
   if (!ctx) notFound();
   if (!ctx.can('reports')) return <Forbidden t={t} homeHref={`/c/${choir}`} />;
-  const period = await resolvePeriod(ctx, typeof wanted === 'string' ? wanted : undefined, lang);
-  const r = await getReport(ctx, period);
+  const f = await readFilters(ctx, search, lang);
+  const period = f.period;
+  const r = await getReport(ctx, period, f.section?.id ?? null);
   const st = t.staff;
   const money = (c: number) => formatMoney(c, lang);
   const name = (x: { name_en: string; name_fr: string }) => (lang === 'fr' ? x.name_fr : x.name_en);
@@ -32,14 +34,14 @@ export default async function BoardReportPage({ params, searchParams }: PageProp
 
   return (
     <div className="page page--wide">
-      <Link href={`/c/${choir}/reports?period=${period.key}` as never} className="back-link no-print">
+      <Link href={`/c/${choir}/reports?${filterQuery(f)}` as never} className="back-link no-print">
         ← {st.reportsTitle}
       </Link>
       <BoardReport
         storageKey={`cb-board-${ctx.org.id}`}
         data={{
           choir: ctx.org.name,
-          periodLabel: period.label,
+          periodLabel: f.section ? `${period.label} · ${lang === 'fr' ? f.section.name_fr : f.section.name_en}` : period.label,
           asOf: format(st.figuresAsOf, { date: formatDate(isoDaysFromNow(0), lang, { dateStyle: 'long' }) }),
           preparedBy: `${ctx.displayName}${ctx.roles[0] ? `, ${lang === 'fr' ? ctx.roles[0].nameFr : ctx.roles[0].nameEn}` : ''}`,
           kpis,

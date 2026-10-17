@@ -1,7 +1,8 @@
 import { toCsv } from '@choirbook/shared/import';
 import type { PermArea } from '@choirbook/shared/permissions';
 import { NextResponse, type NextRequest } from 'next/server';
-import { getReport, resolvePeriod } from '@/lib/data/reports';
+import { readFilters } from '@/lib/data/filters';
+import { getReport } from '@/lib/data/reports';
 import { getChoirContext } from '@/lib/session';
 import { createClient } from '@/lib/supabase/server';
 
@@ -22,8 +23,9 @@ export async function GET(request: NextRequest, { params }: RouteContext<'/c/[ch
   const ctx = await getChoirContext(choir);
   const area = AREA[kind];
   if (!ctx || !area || !ctx.can('reports') || !ctx.can(area)) return new NextResponse('Not found', { status: 404 });
-  const period = await resolvePeriod(ctx, request.nextUrl.searchParams.get('period') ?? undefined, 'en');
-  const r = await getReport(ctx, period);
+  const f = await readFilters(ctx, Object.fromEntries(request.nextUrl.searchParams), 'en');
+  const period = f.period;
+  const r = await getReport(ctx, period, f.section?.id ?? null);
   const money = (c: number) => (c / 100).toFixed(2);
 
   let header: string[] = [];
@@ -60,11 +62,11 @@ export async function GET(request: NextRequest, { params }: RouteContext<'/c/[ch
   }
 
   const supabase = await createClient();
-  await supabase.rpc('log_event', { org: ctx.org.id, action: 'export', entity: `report_${kind}`, details: { period: period.key, rows: rows.length } });
+  await supabase.rpc('log_event', { org: ctx.org.id, action: 'export', entity: `report_${kind}`, details: { period: period.key, section: f.section?.key ?? null, rows: rows.length } });
   return new NextResponse(toCsv(header, rows), {
     headers: {
       'Content-Type': 'text/csv; charset=utf-8',
-      'Content-Disposition': `attachment; filename="${ctx.org.slug}-${kind}-${period.from}-to-${period.to}.csv"`,
+      'Content-Disposition': `attachment; filename="${ctx.org.slug}-${kind}${f.section ? `-${f.section.key}` : ''}-${period.from}-to-${period.to}.csv"`,
       'Cache-Control': 'no-store',
     },
   });

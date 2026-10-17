@@ -1,13 +1,14 @@
 import { format } from '@choirbook/shared/i18n';
 import { Button, Card } from '@choirbook/ui';
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { PrintButton } from '@/components/PrintButton';
 import { Forbidden } from '@/components/staff/Forbidden';
 import { BarList, CsvLink, Kpi } from '@/components/staff/ReportBits';
 import { formatDate, formatMoney } from '@/lib/format';
-import { getReport, resolvePeriod } from '@/lib/data/reports';
+import { FilterBar } from '@/components/dashboard/FilterBar';
+import { filterQuery, readFilters } from '@/lib/data/filters';
+import { getReport } from '@/lib/data/reports';
 import { getT } from '@/lib/prefs';
 import { getChoirContext } from '@/lib/session';
 
@@ -15,43 +16,33 @@ export const metadata: Metadata = { title: 'Reports' };
 
 export default async function ReportsPage({ params, searchParams }: PageProps<'/c/[choir]/reports'>) {
   const { choir } = await params;
-  const { period: wanted } = await searchParams;
+  const search = await searchParams;
   const [ctx, { lang, t }] = await Promise.all([getChoirContext(choir), getT()]);
   if (!ctx) notFound();
   if (!ctx.can('reports')) return <Forbidden t={t} homeHref={`/c/${choir}`} />;
-  const period = await resolvePeriod(ctx, typeof wanted === 'string' ? wanted : undefined, lang);
-  const r = await getReport(ctx, period);
+  const f = await readFilters(ctx, search, lang);
+  const period = f.period;
+  const r = await getReport(ctx, period, f.section?.id ?? null);
+  const q = filterQuery(f);
   const name = (x: { name_en: string; name_fr: string }) => (lang === 'fr' ? x.name_fr : x.name_en);
-  const csv = (kind: string) => `/c/${choir}/reports/export?kind=${kind}&period=${period.key}`;
+  const csv = (kind: string) => `/c/${choir}/reports/export?kind=${kind}&${q}`;
   const money = (c: number) => formatMoney(c, lang);
-  const periods: [string, string][] = [
-    ['month', t.staff.periodMonth],
-    ['term', t.staff.periodTerm],
-    ['season', t.staff.periodSeason],
-    ['last30', t.staff.periodLast30],
-  ];
 
   return (
     <div className="page page--wide" data-print-report="">
       <div className="page__head">
         <div>
           <h1 className="page__title">{t.staff.reportsTitle}</h1>
-          <p className="page__lede">{format(t.staff.reportsSub, { period: period.label })}</p>
+          <p className="page__lede">{format(t.staff.reportsSub, { period: f.section ? `${period.label} · ${lang === 'fr' ? f.section.name_fr : f.section.name_en}` : period.label })}</p>
         </div>
         <div className="page__actions">
-          <Button iconStart="file-text" href={`/c/${choir}/reports/board?period=${period.key}`}>
+          <Button iconStart="file-text" href={`/c/${choir}/reports/board?${q}`}>
             {t.staff.boardReport}
           </Button>
           <PrintButton label={t.staff.savePdf} />
         </div>
       </div>
-      <nav className="chip-row no-print" aria-label={t.staff.period}>
-        {periods.map(([k, label]) => (
-          <Link key={k} href={`/c/${choir}/reports?period=${k}` as never} className="chip-link" aria-current={period.key === k ? 'true' : undefined}>
-            {label}
-          </Link>
-        ))}
-      </nav>
+      <FilterBar ctx={ctx} f={f} t={t} lang={lang} />
 
       <Card title={t.staff.repMembership} action={ctx.can('roster') ? <CsvLink href={csv('membership')} label={t.staff.downloadCsv} /> : undefined}>
         <div className="kpi-row">

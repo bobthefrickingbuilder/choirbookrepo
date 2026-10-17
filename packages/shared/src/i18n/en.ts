@@ -1,4 +1,5 @@
 import { staffEn } from './staff.en';
+import { dashboardEn } from './dashboard.en';
 // English strings. Every key here must exist in fr.ts (enforced by its type).
 // Voice: calm, plain and specific. Sentence case. Buttons start with a verb.
 export const en = {
@@ -411,6 +412,7 @@ export const en = {
     ],
   },
   staff: staffEn,
+  dash: dashboardEn,
   common: {
     backHome: 'Back to home',
     cancel: 'Cancel',

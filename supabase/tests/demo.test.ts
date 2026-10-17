@@ -126,6 +126,17 @@ describe('demo choir', () => {
     expect(notes.rows[0]!.n).toBe(0);
   });
 
+  it('the rebuild gives the dashboard a thin section to warn about: only two tenors for the sectional', async () => {
+    const r = await db.query<{ requested: boolean; soon: boolean; tenors: number }>(
+      `select e.availability_requested as requested, e.starts_at < now() + interval '7 days' as soon,
+              (select count(*)::int from public.availability_replies a join public.choristers c on c.person_id = a.person_id
+                 join public.sections s on s.id = c.section_id where a.event_id = e.id and a.answer = 'yes' and s.key = 'T') as tenors
+         from public.events e where e.organization_id = $1 and e.title = 'Tenor and bass sectional'`,
+      [DEMO_ORG],
+    );
+    expect(r.rows).toEqual([{ requested: true, soon: true, tenors: 2 }]);
+  });
+
   it('leaves the real choirs untouched', async () => {
     const r = await db.query<{ n: number }>(`select count(*)::int as n from public.people where organization_id = $1`, [ORG_A]);
     expect(r.rows[0]!.n).toBe(6);

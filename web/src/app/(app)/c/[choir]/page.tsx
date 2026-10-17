@@ -1,17 +1,21 @@
 import { format } from '@choirbook/shared/i18n';
-import { Badge, Card, EmptyState } from '@choirbook/ui';
+import { Badge, Card } from '@choirbook/ui';
 import { notFound } from 'next/navigation';
+import { StaffDashboard } from '@/components/dashboard/StaffDashboard';
 import { MemberHome } from '@/components/member/MemberHome';
+import { readFilters } from '@/lib/data/filters';
 import { getT } from '@/lib/prefs';
 import { getChoirContext } from '@/lib/session';
 
-// Home: the chorister home (Phase 3), or the staff dashboard (Phase 5).
-export default async function ChoirHome({ params }: PageProps<'/c/[choir]'>) {
+// Home: the chorister home, or the staff dashboard. Staff without dashboard
+// access (a chaperone, say) get a short welcome with their roles.
+export default async function ChoirHome({ params, searchParams }: PageProps<'/c/[choir]'>) {
   const { choir } = await params;
   const [ctx, { lang, t }] = await Promise.all([getChoirContext(choir), getT()]);
   if (!ctx) notFound();
 
   if (!ctx.isStaff) return <MemberHome ctx={ctx} t={t} lang={lang} />;
+  if (ctx.can('dashboard')) return <StaffDashboard ctx={ctx} t={t} lang={lang} filters={await readFilters(ctx, await searchParams, lang)} />;
 
   return (
     <div className="page">
@@ -30,11 +34,6 @@ export default async function ChoirHome({ params }: PageProps<'/c/[choir]'>) {
             </Badge>
           ))}
         </div>
-      </Card>
-      <Card padded={false}>
-        <EmptyState icon="layout-grid" title={t.common.comingSoon}>
-          {t.common.comingSoonBody}
-        </EmptyState>
       </Card>
     </div>
   );

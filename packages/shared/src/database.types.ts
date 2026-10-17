@@ -701,6 +701,38 @@ export type Database = {
           },
         ]
       }
+      dashboard_layouts: {
+        Row: {
+          hidden: string[]
+          organization_id: string
+          updated_at: string
+          user_id: string
+          widgets: string[]
+        }
+        Insert: {
+          hidden?: string[]
+          organization_id: string
+          updated_at?: string
+          user_id: string
+          widgets?: string[]
+        }
+        Update: {
+          hidden?: string[]
+          organization_id?: string
+          updated_at?: string
+          user_id?: string
+          widgets?: string[]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dashboard_layouts_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       email_queue: {
         Row: {
           attempts: number
@@ -3231,6 +3263,43 @@ export type Database = {
       }
     }
     Views: {
+      attendance_facts: {
+        Row: {
+          cancelled_at: string | null
+          counts_for_attendance: boolean | null
+          event_id: string | null
+          event_type: Database["public"]["Enums"]["event_type"] | null
+          organization_id: string | null
+          person_id: string | null
+          section_id: string | null
+          starts_at: string | null
+          status: Database["public"]["Enums"]["attendance_status"] | null
+          title: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attendance_organization_id_event_id_fkey"
+            columns: ["organization_id", "event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "attendance_organization_id_person_id_fkey"
+            columns: ["organization_id", "person_id"]
+            isOneToOne: false
+            referencedRelation: "member_directory"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "attendance_organization_id_person_id_fkey"
+            columns: ["organization_id", "person_id"]
+            isOneToOne: false
+            referencedRelation: "people"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
       fee_balances: {
         Row: {
           adjusted_cents: number | null
