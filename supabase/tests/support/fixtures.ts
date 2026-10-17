@@ -128,7 +128,7 @@ export async function seed(db: PGlite): Promise<void> {
       insert into public.guardian_signatures (organization_id, response_id, guardian_id, token_hash, expires_at)
         values ('${org}', '38100000-0000-4000-${o}000-000000000001', '32000000-0000-4000-${o}000-000000000001', 'hash-${o}', now() + interval '7 days');
       insert into public.consent_wording_versions (id, organization_id, kind, version, body_en, body_fr)
-        values ('39000000-0000-4000-${o}000-000000000001', '${org}', 'photo_video', 1, 'I agree', 'J’accepte');
+        values ('39000000-0000-4000-${o}000-000000000001', '${org}', 'photo_video', 2, 'I agree', 'J’accepte');
       insert into public.consents (organization_id, person_id, kind, granted, wording_version_id)
         values ('${org}', '${c1}', 'photo_video', true, '39000000-0000-4000-${o}000-000000000001');
       insert into public.fees (id, organization_id, name, amount_cents) values ('3a000000-0000-4000-${o}000-000000000001', '${org}', 'Annual fee', 39000);

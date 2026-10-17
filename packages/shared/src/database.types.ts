@@ -72,6 +72,36 @@ export type Database = {
           },
         ]
       }
+      account_deletions: {
+        Row: {
+          cancelled_at: string | null
+          completed_at: string | null
+          expires_at: string
+          id: string
+          requested_at: string
+          token_hash: string
+          user_id: string | null
+        }
+        Insert: {
+          cancelled_at?: string | null
+          completed_at?: string | null
+          expires_at: string
+          id?: string
+          requested_at?: string
+          token_hash: string
+          user_id?: string | null
+        }
+        Update: {
+          cancelled_at?: string | null
+          completed_at?: string | null
+          expires_at?: string
+          id?: string
+          requested_at?: string
+          token_hash?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       announcement_recipients: {
         Row: {
           acknowledged_at: string | null
@@ -3300,6 +3330,41 @@ export type Database = {
           },
         ]
       }
+      current_consents: {
+        Row: {
+          granted: boolean | null
+          kind: Database["public"]["Enums"]["consent_kind"] | null
+          method: string | null
+          organization_id: string | null
+          person_id: string | null
+          recorded_at: string | null
+          wording_version: number | null
+          wording_version_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "consents_organization_id_person_id_fkey"
+            columns: ["organization_id", "person_id"]
+            isOneToOne: false
+            referencedRelation: "member_directory"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "consents_organization_id_person_id_fkey"
+            columns: ["organization_id", "person_id"]
+            isOneToOne: false
+            referencedRelation: "people"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "consents_organization_id_wording_version_id_fkey"
+            columns: ["organization_id", "wording_version_id"]
+            isOneToOne: false
+            referencedRelation: "consent_wording_versions"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
       fee_balances: {
         Row: {
           adjusted_cents: number | null
@@ -3363,6 +3428,8 @@ export type Database = {
       }
     }
     Functions: {
+      account_deletion_state: { Args: { token: string }; Returns: string }
+      age_years: { Args: { dob: string }; Returns: number }
       calendar_feed: {
         Args: { feed_token: string }
         Returns: {
@@ -3379,12 +3446,18 @@ export type Database = {
           updated_at: string
         }[]
       }
+      cancel_account_deletion: { Args: never; Returns: undefined }
       checkin_code: {
         Args: { event: string }
         Returns: {
           code: string
           seconds_left: number
         }[]
+      }
+      complete_account_deletion: { Args: { token: string }; Returns: Json }
+      contains_profanity: {
+        Args: { body: string; org: string }
+        Returns: boolean
       }
       demo_accounts: {
         Args: never
@@ -3394,6 +3467,7 @@ export type Database = {
           user_id: string
         }[]
       }
+      demo_guardian_link: { Args: { response: string }; Returns: string }
       email_budget_today: {
         Args: { org: string }
         Returns: {
@@ -3404,7 +3478,18 @@ export type Database = {
       }
       email_daily_cap: { Args: never; Returns: number }
       generate_monthly_update: { Args: { target: string }; Returns: number }
+      guardian_link_lookup: { Args: { token: string }; Returns: Json }
+      guardian_link_sign: {
+        Args: {
+          ip?: unknown
+          signed_name: string
+          token: string
+          user_agent?: string
+        }
+        Returns: string
+      }
       is_demo_user: { Args: never; Returns: boolean }
+      is_minor: { Args: { dob: string }; Returns: boolean }
       link_existing_account: { Args: { person: string }; Returns: boolean }
       log_event: {
         Args: {
@@ -3426,6 +3511,7 @@ export type Database = {
           tickets: number
         }[]
       }
+      nightly_privacy: { Args: never; Returns: Json }
       notify_due_announcements: { Args: never; Returns: number }
       notify_people: {
         Args: {
@@ -3440,9 +3526,22 @@ export type Database = {
         }
         Returns: number
       }
+      process_coming_of_age: { Args: never; Returns: number }
+      profanity_list_size: {
+        Args: never
+        Returns: {
+          lang: Database["public"]["Enums"]["lang"]
+          words: number
+        }[]
+      }
       publish_announcement: { Args: { ann_id: string }; Returns: number }
       qr_check_in: { Args: { code: string; event: string }; Returns: string }
+      rate_limit_hit: {
+        Args: { bucket: string; max_hits: number; window_seconds: number }
+        Returns: boolean
+      }
       rebuild_demo: { Args: { demo_password: string }; Returns: Json }
+      request_account_deletion: { Args: never; Returns: string }
       request_guardian_signatures: {
         Args: { response: string }
         Returns: number
