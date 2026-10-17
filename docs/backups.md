@@ -11,6 +11,11 @@ repository **private**.
 
 ## Turning it on (once)
 
+0. Make the repository **private**: GitHub → the repository → **Settings →
+   General → Danger Zone → Change visibility → Make private**. It is free.
+   Files attached to releases of a public repository can be downloaded by
+   anyone, so the job refuses to run while the repository is public. (Vercel
+   keeps deploying from a private repository on the free plan.)
 1. In Supabase: **Connect → Session pooler**, copy the connection string, and put
    your database password in it (Project Settings → Database if you need to
    reset the password).
@@ -23,7 +28,8 @@ repository **private**.
    first one now. A file named `choirbook-YYYY-MM-DD.tar.gz.gpg` appears under
    **Releases → Database backups**.
 
-Until both secrets exist, the job runs, does nothing, and leaves a notice.
+Until both secrets exist and the repository is private, the job runs, does
+nothing, and leaves a notice.
 
 ## Restoring
 

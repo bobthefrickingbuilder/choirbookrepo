@@ -129,7 +129,8 @@ a caveat, ⏳ needs Matthew.
 
 - ⏳ **Nightly encrypted database backup** to this GitHub repository's private
   releases (`.github/workflows/backup.yml`, `docs/backups.md`). Built; Matthew
-  adds two repository secrets to turn it on.
+  makes the repository private and adds two repository secrets to turn it on.
+  The job refuses to run while the repository is public.
 - ✅ A nightly job keeps the free Supabase project from pausing.
 - ✅ Errors are visible in Vercel's logs (no extra tracking service).
 

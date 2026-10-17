@@ -8,7 +8,8 @@ name: Nightly database backup
 #   SUPABASE_DB_URL    the "Session pooler" connection string from Supabase
 #                      (Connect → Session pooler), with the database password in it
 #   BACKUP_PASSPHRASE  a long passphrase; without it the backups cannot be opened
-# Until both are set, the job does nothing and says so. See docs/backups.md.
+# Until both are set, and while the repository is public, the job does nothing
+# and says so. See docs/backups.md.
 
 on:
   schedule:
@@ -34,7 +35,12 @@ jobs:
       - name: Check the secrets are set
         id: ready
         run: |
-          if [ -z "$SUPABASE_DB_URL" ] || [ -z "$BACKUP_PASSPHRASE" ]; then
+          private=$(gh api "repos/$GITHUB_REPOSITORY" --jq .private)
+          if [ "$private" != "true" ]; then
+            # Release files of a public repository can be downloaded by anyone.
+            echo "::warning::This repository is public, so backups stay off. Make it private first (see docs/backups.md)."
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          elif [ -z "$SUPABASE_DB_URL" ] || [ -z "$BACKUP_PASSPHRASE" ]; then
             echo "::notice::Backups are not set up yet: add SUPABASE_DB_URL and BACKUP_PASSPHRASE (see docs/backups.md)."
             echo "ok=false" >> "$GITHUB_OUTPUT"
           else
