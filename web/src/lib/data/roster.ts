@@ -1,4 +1,5 @@
 import 'server-only';
+import { isMinor } from '@choirbook/shared/rules/age';
 import { cache } from 'react';
 import type { FeeStatus, FormStatus } from '@choirbook/ui';
 import { todayLocal } from '@/lib/format';
@@ -25,6 +26,8 @@ export interface RosterRow {
   account: AccountState;
   guardian: string | null;
   guardianEmails: string[];
+  /** Under 18 today (so a parent or guardian contact is needed). */
+  minor: boolean;
   joinedOn: string | null;
   absences: number | null;
   forms: FormStatus | null;
@@ -129,7 +132,7 @@ export async function getRoster(ctx: ChoirContext, opts: { includeDeparted?: boo
   const choristersQuery = supabase
     .from('choristers')
     .select(
-      'person_id, section_id, voice_part_id, status, joined_on, school, people!inner(id, first_name, last_name, preferred_name, pronouns, email, phone, user_id, status), sections(key), voice_parts(key)',
+      'person_id, section_id, voice_part_id, status, joined_on, school, people!inner(id, first_name, last_name, preferred_name, pronouns, email, phone, user_id, status, date_of_birth), sections(key), voice_parts(key)',
     )
     .eq('organization_id', org);
   if (!opts.includeDeparted) choristersQuery.neq('status', 'departed');
@@ -178,6 +181,7 @@ export async function getRoster(ctx: ChoirContext, opts: { includeDeparted?: boo
       account: p.user_id ? 'active' : p.email ? 'invited' : 'none',
       guardian: guardians[0]?.name ?? null,
       guardianEmails: guardians.map((g) => g.email).filter((e): e is string => Boolean(e)),
+      minor: isMinor(p.date_of_birth),
       joinedOn: c.joined_on,
       absences: absences ? (absences.get(c.person_id) ?? 0) : null,
       forms: form.status,

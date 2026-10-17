@@ -1,7 +1,7 @@
 import type { PGlite } from '@electric-sql/pglite';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { asUser, createDatabase, expectDenied, rows } from './support/db';
-import { ORG_A, seed } from './support/fixtures';
+import { ORG_A, U, seed } from './support/fixtures';
 
 const DEMO_ORG = 'd0000000-0000-4000-8000-000000000001';
 const DEMO = {
@@ -65,6 +65,26 @@ describe('demo choir', () => {
       [DEMO_ORG],
     );
     expect(tooYoung.rows[0]!.n).toBe(0);
+  });
+
+  it('lets demo staff open a fresh guardian link to try signing, as often as they like', async () => {
+    const resp = (await db.query<{ id: string }>(
+      `select fr.id from public.form_responses fr join public.guardian_signatures gs on gs.response_id = fr.id where fr.organization_id = $1 limit 1`,
+      [DEMO_ORG],
+    )).rows[0]!.id;
+    // Each asUser is rolled back, so ask for the link and use it in one go.
+    await asUser(db, DEMO.admin, async (tx) => {
+      for (let round = 0; round < 2; round++) {
+        await tx.exec('set local role authenticated');
+        const token = (await rows<{ t: string }>(tx, `select public.demo_guardian_link($1) as t`, [resp]))[0]!.t;
+        expect(token).toMatch(/^[0-9a-f]{48}$/);
+        await tx.exec('reset role');
+        expect((await rows<{ j: { state: string } }>(tx, `select public.guardian_link_lookup($1) as j`, [token]))[0]!.j.state).toBe('valid');
+        expect((await rows<{ s: string }>(tx, `select public.guardian_link_sign($1, 'Demo Guardian') as s`, [token]))[0]!.s).toBe('signed');
+      }
+    });
+    // Real accounts cannot use it, even on the demo's forms.
+    await expectDenied(db, U.adminA, (tx) => tx.query(`select public.demo_guardian_link($1)`, [resp]));
   });
 
   it('gives the demo chorister a 19-year-old’s realistic history', async () => {

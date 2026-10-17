@@ -6,6 +6,7 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { demoRoleFor } from '@/lib/demo';
 import { publicEnv } from '@/lib/env';
+import { signInAllowed } from '@/lib/security';
 import { getT, LANG_COOKIE, PREF_COOKIE_OPTIONS, THEME_COOKIE, isTheme } from '@/lib/prefs';
 import { createClient } from '@/lib/supabase/server';
 import { translateKey } from '@/lib/translate';
@@ -51,6 +52,7 @@ export async function signInWithPassword(_prev: AuthFormState, fd: FormData): Pr
   if (!parsed.success) return { status: 'error', fieldErrors: await fieldErrorsFrom(parsed.error.issues), email: field(fd, 'email') };
 
   const { t } = await getT();
+  if (!(await signInAllowed(parsed.data.email))) return { status: 'error', message: t.auth.tooManyAttempts, email: parsed.data.email };
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword(parsed.data);
   if (error) {
@@ -67,6 +69,7 @@ export async function sendMagicLink(_prev: AuthFormState, fd: FormData): Promise
   if (!parsed.success) return { status: 'error', fieldErrors: await fieldErrorsFrom(parsed.error.issues), email: field(fd, 'email') };
 
   const { t } = await getT();
+  if (!(await signInAllowed(parsed.data.email))) return { status: 'error', message: t.auth.tooManyAttempts, email: parsed.data.email };
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithOtp({
     email: parsed.data.email,
@@ -84,6 +87,7 @@ export async function requestPasswordReset(_prev: AuthFormState, fd: FormData): 
   if (!parsed.success) return { status: 'error', fieldErrors: await fieldErrorsFrom(parsed.error.issues), email: field(fd, 'email') };
 
   const { t } = await getT();
+  if (!(await signInAllowed(parsed.data.email))) return { status: 'error', message: t.auth.tooManyAttempts, email: parsed.data.email };
   const supabase = await createClient();
   const { error } = await supabase.auth.resetPasswordForEmail(parsed.data.email, { redirectTo: confirmUrl('/reset-password') });
   if (error?.status === 429) return { status: 'error', message: t.auth.tooManyAttempts, email: parsed.data.email };

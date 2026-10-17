@@ -136,7 +136,7 @@ export default async function FormPage({ params }: PageProps<'/c/[choir]/forms-f
               <ResendGuardian
                 slug={choir}
                 responseId={response.id}
-                s={{ resend: t.member.guardianResend, sent: t.member.guardianSent, tooSoon: t.member.guardianTooSoon, failed: t.member.genericFail }}
+                s={{ resend: t.member.guardianResend, sent: t.member.guardianSent, tooSoon: t.member.guardianTooSoon, failed: t.member.genericFail, demoReady: t.privacy.demoLinkReady, openLink: t.privacy.openGuardianLink }}
               />
             ) : null}
           </div>

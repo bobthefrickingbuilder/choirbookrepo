@@ -1,6 +1,7 @@
 'use client';
 
 import type { Lang } from '@choirbook/shared/i18n';
+import { isMinor } from '@choirbook/shared/rules/age';
 import { AlertCard, Button, Modal, Select, TextInput } from '@choirbook/ui';
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
@@ -52,6 +53,10 @@ export function ChoristerForm({
   const set = (k: keyof ChoristerValues) => (e: { target: { value: string } }) => setV((x) => ({ ...x, [k]: e.target.value }));
   const name = (o: { name_en: string; name_fr: string }) => (lang === 'fr' ? o.name_fr : o.name_en);
   const parts = sections.find((x) => x.id === v.section_id)?.voice_parts ?? [];
+  // A new chorister under 18 is registered with a parent or guardian contact.
+  const [g, setG] = useState({ first_name: '', last_name: '', email: '', phone: '', relationship: '' });
+  const needsGuardian = !personId && isMinor(v.date_of_birth || null);
+  const setGuardian = (k: keyof typeof g) => (e: { target: { value: string } }) => setG((x) => ({ ...x, [k]: e.target.value }));
 
   const submit = () =>
     start(async () => {
@@ -63,7 +68,7 @@ export function ChoristerForm({
         setError(null);
         router.refresh();
       } else {
-        const r = await createChorister(slug, input);
+        const r = await createChorister(slug, input, needsGuardian ? { ...g, lang: v.lang as 'en' | 'fr' } : undefined);
         if (!r.ok) return setError(s.errors[r.error] ?? s.failed);
         setV(empty);
         router.push(`/c/${slug}/roster/${r.data.id}` as never);
@@ -86,7 +91,7 @@ export function ChoristerForm({
             <Button variant="ghost" onClick={() => setOpen(false)}>
               {s.cancel}
             </Button>
-            <Button onClick={submit} loading={pending} disabled={!v.first_name.trim() || !v.last_name.trim()}>
+            <Button onClick={submit} loading={pending} disabled={!v.first_name.trim() || !v.last_name.trim() || (needsGuardian && (!g.first_name.trim() || !g.last_name.trim()))}>
               {personId ? s.save : s.addChorister}
             </Button>
           </>
@@ -146,6 +151,19 @@ export function ChoristerForm({
           />
           <TextInput label={s.school} optional value={v.school} onChange={set('school')} maxLength={120} />
           <TextInput label={s.joined} optional type="date" value={v.joined_on} onChange={set('joined_on')} />
+          {needsGuardian ? (
+            <fieldset className="form-2col guardian-fields" style={{ gridColumn: '1 / -1' }}>
+              <legend>{s.guardianLegend}</legend>
+              <p className="muted small" style={{ gridColumn: '1 / -1', margin: 0 }}>
+                {s.guardianLegendHint}
+              </p>
+              <TextInput label={s.guardianFirst} value={g.first_name} onChange={setGuardian('first_name')} required maxLength={80} />
+              <TextInput label={s.guardianLast} value={g.last_name} onChange={setGuardian('last_name')} required maxLength={80} />
+              <TextInput label={s.email} type="email" value={g.email} onChange={setGuardian('email')} />
+              <TextInput label={s.phone} optional type="tel" value={g.phone} onChange={setGuardian('phone')} maxLength={40} />
+              <TextInput label={s.relationship} optional value={g.relationship} onChange={setGuardian('relationship')} maxLength={40} />
+            </fieldset>
+          ) : null}
           <button type="submit" hidden />
         </form>
       </Modal>

@@ -222,8 +222,11 @@ test('reports: figures, CSV export and the board report', async ({ page }) => {
   expect((await download).suggestedFilename()).toMatch(/\.csv$/);
   await page.getByRole('link', { name: 'Board report' }).click();
   await expect(page.getByRole('heading', { name: 'Report to the board of directors' })).toBeVisible();
-  await page.getByRole('textbox', { name: 'Highlights' }).fill('Sold-out winter concert (test)');
-  await expect(page.locator('.board__doc')).toContainText('Sold-out winter concert (test)');
+  // Typing before the page is ready is lost, so type until the report shows it.
+  await expect(async () => {
+    await page.getByRole('textbox', { name: 'Highlights' }).fill('Sold-out winter concert (test)');
+    await expect(page.locator('.board__doc')).toContainText('Sold-out winter concert (test)', { timeout: 3_000 });
+  }).toPass({ timeout: 30_000 });
   await page.getByRole('button', { name: 'Clear all' }).click();
 });
 

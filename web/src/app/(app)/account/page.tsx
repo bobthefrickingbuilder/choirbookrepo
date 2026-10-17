@@ -45,9 +45,22 @@ export default async function AccountPage() {
             </form>
           </div>
         </Card>
+        <Card title={t.privacy.delTitle} flat>
+          <div className="row-between">
+            <p className="muted" style={{ margin: 0 }}>
+              {t.member.deleteSoon}
+            </p>
+            <Button variant="secondary" iconStart="trash-2" href="/account/delete">
+              {t.privacy.delLink}
+            </Button>
+          </div>
+        </Card>
         <Button variant="ghost" iconStart="arrow-left" href="/">
           {t.common.backHome}
         </Button>
+        <p className="muted small">
+          <a href="/privacy">{t.privacy.privacy}</a> · <a href="/terms">{t.privacy.terms}</a>
+        </p>
       </div>
     </main>
   );

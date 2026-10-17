@@ -3,8 +3,10 @@ import { Badge, Card } from '@choirbook/ui';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Forbidden } from '@/components/staff/Forbidden';
+import { GuardianCopiesForm, MessageFilterForm } from '@/components/staff/PrivacySettings';
 import { ChoirDetailsForm, ConsentVersionForm, PoliciesForm, RangeForm, SectionForm, SmallAction } from '@/components/staff/SettingsParts';
 import { publicEnv } from '@/lib/env';
+import { GUARDIAN_COPY_KINDS } from '@/lib/data/privacy';
 import { formatDate } from '@/lib/format';
 import { getT } from '@/lib/prefs';
 import { getChoirContext } from '@/lib/session';
@@ -22,16 +24,26 @@ export default async function SettingsPage({ params }: PageProps<'/c/[choir]/set
   if (!ctx.can('settings')) return <Forbidden t={t} homeHref={`/c/${choir}`} />;
   const supabase = await createClient();
   const org = ctx.org.id;
-  const [{ data: o }, { data: seasons }, { data: sections }, { data: wording }] = await Promise.all([
+  const [{ data: o }, { data: seasons }, { data: sections }, { data: wording }, { data: listSize }] = await Promise.all([
     supabase.from('organizations').select('*').eq('id', org).single(),
     supabase.from('seasons').select('id, name, starts_on, ends_on, is_current, terms(id, name, starts_on, ends_on, absence_limit)').eq('organization_id', org).order('starts_on', { ascending: false }),
     supabase.from('sections').select('id, key, name_en, name_fr, sort, voice_parts(id, key, name_en, name_fr, sort)').eq('organization_id', org).order('sort'),
     supabase.from('consent_wording_versions').select('kind, version, body_en, body_fr, effective_at').eq('organization_id', org).order('version', { ascending: false }),
+    supabase.rpc('profanity_list_size'),
   ]);
   if (!o) notFound();
   const s = staffStrings(t);
   const canEdit = ctx.can('settings', 'edit');
-  const settings = (o.settings ?? {}) as { late_after_minutes?: number; family_discount_default?: number; etransfer_instructions?: string };
+  const settings = (o.settings ?? {}) as {
+    late_after_minutes?: number;
+    family_discount_default?: number;
+    etransfer_instructions?: string;
+    guardian_copies?: string[];
+    moderation?: { filter?: boolean; extra_words?: string[]; allowed_words?: string[] };
+  };
+  const p = t.privacy;
+  const copyLabel = { announcements: p.gc_announcements, monthly_update: p.gc_monthly_update, schedule: p.gc_schedule, fees: p.gc_fees, tours: p.gc_tours };
+  const words = (l: string) => String(listSize?.find((x) => x.lang === l)?.words ?? 0);
   const logoUrl = o.logo_path ? `${publicEnv().NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/choir-logos/${o.logo_path}` : null;
   const dmy = (d: string) => formatDate(`${d}T12:00:00Z`, lang, { dateStyle: 'medium' });
   const kindLabel = { participation: t.staff.consent_participation, code_of_conduct: t.staff.consent_code_of_conduct, photo_video: t.staff.consent_photo_video, medical_info: t.staff.consent_medical_info };
@@ -154,6 +166,51 @@ export default async function SettingsPage({ params }: PageProps<'/c/[choir]/set
             initial={{ late_after_minutes: settings.late_after_minutes ?? 10, family_discount_default: settings.family_discount_default ?? 0, etransfer_instructions: settings.etransfer_instructions ?? '' }}
           />
         ) : null}
+      </Card>
+
+      <Card title={p.guardianCopiesTitle}>
+        <div className="stack">
+          <p className="muted" style={{ margin: 0 }}>
+            {o.kind === 'youth' ? p.guardianCopiesIntro : p.adultNoCopies}
+          </p>
+          {o.kind === 'youth' ? (
+            <GuardianCopiesForm
+              slug={choir}
+              options={GUARDIAN_COPY_KINDS.map((k) => ({ key: k, label: copyLabel[k] }))}
+              initial={settings.guardian_copies ?? []}
+              disabled={!canEdit}
+              s={{ save: s.save, saved: s.saved, failed: s.failed }}
+            />
+          ) : null}
+        </div>
+      </Card>
+
+      <Card title={p.filterTitle}>
+        <div className="stack">
+          <p className="muted" style={{ margin: 0 }}>
+            {format(p.filterIntro, { en: words('en'), fr: words('fr') })}
+          </p>
+          {canEdit ? (
+            <MessageFilterForm
+              slug={choir}
+              initial={{
+                filter: settings.moderation?.filter ?? true,
+                extra: settings.moderation?.extra_words ?? [],
+                allowed: settings.moderation?.allowed_words ?? [],
+              }}
+              s={{
+                filterOn: p.filterOn,
+                extraWords: p.extraWords,
+                extraHint: p.extraHint,
+                allowedWords: p.allowedWords,
+                allowedHint: p.allowedHint,
+                save: s.save,
+                saved: s.saved,
+                failed: s.failed,
+              }}
+            />
+          ) : null}
+        </div>
       </Card>
 
       <Card title={t.staff.consentWording}>

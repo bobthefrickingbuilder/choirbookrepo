@@ -1,6 +1,7 @@
 import type { Messages } from './en';
 import { staffFr } from './staff.fr';
 import { dashboardFr } from './dashboard.fr';
+import { privacyFr } from './privacy.fr';
 
 // Chaînes françaises. Première version : à faire relire par une personne de langue maternelle française canadienne.
 export const fr: Messages = {
@@ -364,7 +365,7 @@ export const fr: Messages = {
     downloadJson: 'Télécharger (JSON)',
     downloadCsv: 'Télécharger (CSV)',
     deleteAccount: 'Supprimer mon compte',
-    deleteSoon: 'La suppression de compte arrive avec la mise à jour sur la confidentialité. D’ici là, communiquez avec le bureau du chœur.',
+    deleteSoon: 'Supprimer votre compte et vos renseignements personnels.',
     noNotifications: 'Vous êtes à jour.',
     markAllRead: 'Tout marquer comme lu',
     newCount: '{n} nouvelles',
@@ -417,6 +418,7 @@ export const fr: Messages = {
   },
   staff: staffFr,
   dash: dashboardFr,
+  privacy: privacyFr,
   common: {
     backHome: 'Retour à l’accueil',
     cancel: 'Annuler',

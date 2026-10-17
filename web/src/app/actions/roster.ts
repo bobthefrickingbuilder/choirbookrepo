@@ -2,6 +2,7 @@
 
 import { getMessages } from '@choirbook/shared/i18n';
 import { readRosterCsv } from '@choirbook/shared/import';
+import { canSelfRegister, isMinor } from '@choirbook/shared/rules/age';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { getSections } from '@/lib/data/roster';
@@ -32,12 +33,31 @@ export type ChoristerInput = z.input<typeof choristerSchema>;
 
 const firstIssue = (e: z.ZodError) => e.issues[0]?.message ?? 'invalid';
 
-export async function createChorister(slug: string, input: ChoristerInput): Promise<ActionResult<{ id: string }>> {
+const guardianSchema = z.object({
+  first_name: z.string().trim().min(1, 'required').max(80),
+  last_name: z.string().trim().min(1, 'required').max(80),
+  email: z.union([z.literal(''), z.email('bad_email')]).optional().transform((v) => (v ? v.toLowerCase() : null)),
+  phone: text(40),
+  lang: z.enum(['en', 'fr']).default('en'),
+  relationship: text(40),
+  is_primary: z.boolean().default(false),
+  receives_copies: z.boolean().default(true),
+  is_emergency_contact: z.boolean().default(true),
+});
+export type GuardianInput = z.input<typeof guardianSchema>;
+
+export async function createChorister(slug: string, input: ChoristerInput, guardianInput?: GuardianInput): Promise<ActionResult<{ id: string }>> {
   const ctx = await staffContext(slug, 'roster');
   if (!ctx) return fail('not_allowed');
   const parsed = choristerSchema.safeParse(input);
   if (!parsed.success) return fail(firstIssue(parsed.error));
   const d = parsed.data;
+  if (d.date_of_birth && !canSelfRegister(d.date_of_birth)) return fail('under_14');
+  // Choristers under 18 are registered with at least one parent or guardian contact.
+  const minor = isMinor(d.date_of_birth);
+  const guardian = minor ? guardianSchema.safeParse({ is_primary: true, ...guardianInput }) : null;
+  if (minor && !guardianInput?.first_name?.trim()) return fail('guardian_required');
+  if (guardian && !guardian.success) return fail(firstIssue(guardian.error));
   const supabase = await createClient();
   const { data: person, error } = await supabase
     .from('people')
@@ -66,6 +86,10 @@ export async function createChorister(slug: string, input: ChoristerInput): Prom
     joined_on: d.joined_on ?? todayLocal(),
   });
   if (cErr) return fail(dbError(cErr));
+  if (guardian?.success) {
+    const saved = await saveGuardian(slug, person.id, null, { is_primary: true, ...guardianInput, first_name: guardianInput?.first_name ?? '', last_name: guardianInput?.last_name ?? '' });
+    if (!saved.ok) return saved;
+  }
   revalidatePath(`/c/${slug}/roster`);
   return { ok: true, data: { id: person.id } };
 }
@@ -76,6 +100,7 @@ export async function updateChorister(slug: string, personId: string, input: Cho
   const parsed = choristerSchema.safeParse(input);
   if (!parsed.success) return fail(firstIssue(parsed.error));
   const d = parsed.data;
+  if (d.date_of_birth && !canSelfRegister(d.date_of_birth)) return fail('under_14');
   const supabase = await createClient();
   const { error } = await supabase
     .from('people')
@@ -174,18 +199,7 @@ export async function deleteCareNote(slug: string, noteId: string): Promise<Acti
   return done;
 }
 
-const guardianSchema = z.object({
-  first_name: z.string().trim().min(1, 'required').max(80),
-  last_name: z.string().trim().min(1, 'required').max(80),
-  email: z.union([z.literal(''), z.email('bad_email')]).optional().transform((v) => (v ? v.toLowerCase() : null)),
-  phone: text(40),
-  lang: z.enum(['en', 'fr']).default('en'),
-  relationship: text(40),
-  is_primary: z.boolean().default(false),
-  receives_copies: z.boolean().default(true),
-  is_emergency_contact: z.boolean().default(true),
-});
-export type GuardianInput = z.input<typeof guardianSchema>;
+
 
 export async function saveGuardian(slug: string, choristerId: string, guardianId: string | null, input: GuardianInput): Promise<ActionResult> {
   const ctx = await staffContext(slug, 'roster');

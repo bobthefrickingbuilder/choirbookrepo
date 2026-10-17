@@ -242,6 +242,7 @@ export function ReviewButtons({ slug, responseId, s }: { slug: string; responseI
 
 export function ResendGuardianButton({ slug, responseId, s }: { slug: string; responseId: string; s: StaffStrings }) {
   const [notice, setNotice] = useState<string | null>(null);
+  const [demoLink, setDemoLink] = useState<string | null>(null);
   const { pending, start, msg, router } = useRun(s);
   return (
     <span style={{ display: 'inline-flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' }}>
@@ -253,7 +254,8 @@ export function ResendGuardianButton({ slug, responseId, s }: { slug: string; re
         onClick={() =>
           start(async () => {
             const r = await staffResendGuardian(slug, responseId);
-            setNotice(r.ok ? format(s.resentN, { n: r.data.sent }) : msg(r.error));
+            setDemoLink(r.ok && r.data.demoLink ? r.data.demoLink : null);
+            setNotice(r.ok ? (r.data.demoLink ? s.demoLinkReady : format(s.resentN, { n: r.data.sent })) : msg(r.error));
             router.refresh();
           })
         }
@@ -261,6 +263,11 @@ export function ResendGuardianButton({ slug, responseId, s }: { slug: string; re
         {s.resendGuardian}
       </Button>
       {notice ? <span className="muted small" role="status">{notice}</span> : null}
+      {demoLink ? (
+        <Button size="sm" iconStart="external-link" href={demoLink}>
+          {s.openGuardianLink}
+        </Button>
+      ) : null}
     </span>
   );
 }

@@ -12,6 +12,7 @@ import {
   getUpcomingEvents,
   type EventRow,
 } from '@/lib/data/member';
+import { missingRequiredConsents } from '@/lib/data/privacy';
 import { daysBetween, formatDate, formatMoney, formatTime, localParts, todayLocal } from '@/lib/format';
 import { hrefFor } from '@/lib/nav';
 import type { ChoirContext } from '@/lib/session';
@@ -39,7 +40,7 @@ function countdown(e: EventRow, t: Messages, lang: Lang): string | undefined {
 export async function MemberHome({ ctx, t, lang }: { ctx: ChoirContext; t: Messages; lang: Lang }) {
   const slug = ctx.org.slug;
   const profile = await getMemberProfile(ctx);
-  const [events, reports, replies, forms, fees, assignments, unread] = await Promise.all([
+  const [events, reports, replies, forms, fees, assignments, unread, consents] = await Promise.all([
     getUpcomingEvents(ctx, profile.sectionId),
     getMyAbsenceReports(ctx),
     getMyAvailability(ctx),
@@ -47,6 +48,7 @@ export async function MemberHome({ ctx, t, lang }: { ctx: ChoirContext; t: Messa
     getFeeBalances(ctx),
     getMyAssignments(ctx, profile.sectionId),
     getUnreadAnnouncements(ctx),
+    missingRequiredConsents(ctx),
   ]);
 
   const attendable = events.filter((e) => e.type !== 'deadline' && !e.cancelled_at);
@@ -61,7 +63,18 @@ export async function MemberHome({ ctx, t, lang }: { ctx: ChoirContext; t: Messa
   const years = profile.joinedOn ? Math.max(1, daysBetween(profile.joinedOn, today) / 365 + 1) : 1;
   const yearLine = Math.floor(years) <= 1 ? t.member.firstYear : format(t.member.yearN, { n: Math.floor(years) });
 
+  const kindLabel = { participation: t.staff.consent_participation, code_of_conduct: t.staff.consent_code_of_conduct, photo_video: t.staff.consent_photo_video, medical_info: t.staff.consent_medical_info };
   const todo = [
+    ...(consents.length
+      ? [
+          {
+            key: 'consents',
+            icon: 'shield-check' as const,
+            text: format(t.privacy.missingBody, { list: consents.map((k) => kindLabel[k].toLowerCase()).join(', ') }),
+            href: `/c/${slug}/profile#consents`,
+          },
+        ]
+      : []),
     ...asks.map((e) => ({
       key: `a-${e.id}`,
       icon: 'calendar-check' as const,

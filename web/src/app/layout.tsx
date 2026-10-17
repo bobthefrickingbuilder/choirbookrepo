@@ -2,7 +2,9 @@ import '@choirbook/ui/styles.css';
 import './app.css';
 import './staff.css';
 import './dashboard.css';
+import './privacy.css';
 import type { Metadata, Viewport } from 'next';
+import { headers } from 'next/headers';
 import { InlineScript, THEME_SCRIPT } from '@/components/InlineScript';
 import { getLang, getTheme } from '@/lib/prefs';
 
@@ -23,7 +25,7 @@ export const viewport: Viewport = {
 };
 
 export default async function RootLayout({ children }: LayoutProps<'/'>) {
-  const [lang, theme] = await Promise.all([getLang(), getTheme()]);
+  const [lang, theme, h] = await Promise.all([getLang(), getTheme(), headers()]);
   return (
     <html
       lang={lang === 'fr' ? 'fr-CA' : 'en-CA'}
@@ -34,7 +36,7 @@ export default async function RootLayout({ children }: LayoutProps<'/'>) {
       suppressHydrationWarning
     >
       <head>
-        <InlineScript html={THEME_SCRIPT} />
+        <InlineScript html={THEME_SCRIPT} nonce={h.get('x-nonce') ?? undefined} />
       </head>
       <body>{children}</body>
     </html>
