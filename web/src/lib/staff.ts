@@ -1,5 +1,6 @@
 import 'server-only';
 import type { PermArea, PermLevel } from '@choirbook/shared/permissions';
+import { cache } from 'react';
 import { z } from 'zod';
 import { getChoirContext, type ChoirContext } from './session';
 import { createClient } from './supabase/server';
@@ -48,7 +49,7 @@ export interface Term {
 }
 
 /** The term today falls in, or the most recent one, in the current season. */
-export async function getCurrentTerm(orgId: string, today: string): Promise<Term | null> {
+export const getCurrentTerm = cache(async (orgId: string, today: string): Promise<Term | null> => {
   const supabase = await createClient();
   const { data } = await supabase
     .from('terms')
@@ -57,7 +58,7 @@ export async function getCurrentTerm(orgId: string, today: string): Promise<Term
     .order('starts_on', { ascending: false });
   const terms = (data ?? []).map(({ seasons: _s, ...t }) => t);
   return terms.find((t) => t.starts_on <= today && t.ends_on >= today) ?? terms.find((t) => t.starts_on <= today) ?? terms[terms.length - 1] ?? null;
-}
+});
 
 /** Staff strings plus the error messages actions can return, for client components. */
 export function staffStrings(t: import('@choirbook/shared/i18n').Messages) {

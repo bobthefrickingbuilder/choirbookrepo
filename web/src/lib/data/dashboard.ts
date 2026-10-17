@@ -94,7 +94,8 @@ type AttentionStrings = Messages['dash'];
 
 const fill = (s: string, v: Record<string, string | number>) => s.replace(/\{(\w+)\}/g, (_, k) => String(v[k] ?? ''));
 
-export async function getDashboard(ctx: ChoirContext, f: Filters, r: Report, s: AttentionStrings, lang: 'en' | 'fr') {
+/** `report` may still be loading: the dashboard's own queries start alongside it. */
+export async function getDashboard(ctx: ChoirContext, f: Filters, report: Report | Promise<Report>, s: AttentionStrings, lang: 'en' | 'fr') {
   const supabase = await createClient();
   const org = ctx.org.id;
   const slug = ctx.org.slug;
@@ -102,7 +103,8 @@ export async function getDashboard(ctx: ChoirContext, f: Filters, r: Report, s: 
   const sectionId = f.section?.id ?? null;
   const sectionName = (x: { name_en: string; name_fr: string }) => (lang === 'fr' ? x.name_fr : x.name_en);
 
-  const [choristersRes, eventsRes, term, convRes, checksRes, guardianFormsRes] = await Promise.all([
+  const termP = getCurrentTerm(org, today);
+  const [choristersRes, eventsRes, term, termAbsences, convRes, checksRes, guardianFormsRes] = await Promise.all([
     supabase
       .from('choristers')
       .select('person_id, section_id, status, voice_parts(key), people!inner(first_name, last_name, preferred_name, date_of_birth)')
@@ -119,7 +121,8 @@ export async function getDashboard(ctx: ChoirContext, f: Filters, r: Report, s: 
           .order('starts_at')
           .limit(12)
       : Promise.resolve({ data: null }),
-    getCurrentTerm(org, today),
+    termP,
+    termP.then((t) => (ctx.can('attendance') && t?.absence_limit ? getTermAbsences(org, t) : null)),
     ctx.can('inbox')
       ? supabase.from('conversations').select('id, member_id, created_at').eq('organization_id', org).eq('status', 'open').is('first_staff_reply_at', null).lt('created_at', isoDaysFromNow(-2))
       : Promise.resolve({ data: null }),
@@ -139,9 +142,13 @@ export async function getDashboard(ctx: ChoirContext, f: Filters, r: Report, s: 
 
   // Next full rehearsal (else a sectional, else any event), with reported absences.
   const next = events.find((e) => e.type === 'rehearsal') ?? events.find((e) => e.type === 'sectional') ?? events[0] ?? null;
-  const reports = next
-    ? ((await supabase.from('absence_reports').select('person_id, kind, reason, arrives_at, created_at').eq('event_id', next.id)).data ?? []).filter((a) => memberIds.has(a.person_id))
-    : [];
+  const five = events.slice(0, 5);
+  const [reportsRes, repliesRes, r] = await Promise.all([
+    next ? supabase.from('absence_reports').select('person_id, kind, reason, arrives_at, created_at').eq('event_id', next.id) : Promise.resolve({ data: [] }),
+    five.length ? supabase.from('availability_replies').select('event_id, person_id, answer').in('event_id', five.map((e) => e.id)) : Promise.resolve({ data: [] }),
+    report,
+  ]);
+  const reports = (reportsRes.data ?? []).filter((a) => memberIds.has(a.person_id));
   const nextEvent = next
     ? {
         ...next,
@@ -155,10 +162,7 @@ export async function getDashboard(ctx: ChoirContext, f: Filters, r: Report, s: 
     : null;
 
   // Upcoming: the next five events with availability by section and balance warnings.
-  const five = events.slice(0, 5);
-  const replies = five.length
-    ? ((await supabase.from('availability_replies').select('event_id, person_id, answer').in('event_id', five.map((e) => e.id))).data ?? [])
-    : [];
+  const replies = repliesRes.data ?? [];
   const sections = f.sections.filter((x) => !sectionId || x.id === sectionId);
   const upcoming = five.map((e) => {
     const called = calledFor(e);
@@ -189,8 +193,8 @@ export async function getDashboard(ctx: ChoirContext, f: Filters, r: Report, s: 
   const items: AttentionItem[] = [];
   const href = (path: string) => `/c/${slug}${path}`;
 
-  if (ctx.can('attendance') && term?.absence_limit) {
-    const counts = await getTermAbsences(org, term);
+  if (term?.absence_limit && termAbsences) {
+    const counts = termAbsences;
     const lim = term.absence_limit;
     const at = members.filter((c) => (counts.get(c.person_id) ?? 0) >= lim);
     const near = members.filter((c) => (counts.get(c.person_id) ?? 0) === lim - 1 && lim > 1);

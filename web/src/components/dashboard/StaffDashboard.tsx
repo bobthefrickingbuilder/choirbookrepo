@@ -33,8 +33,7 @@ export async function StaffDashboard({ ctx, t, lang, filters: f }: { ctx: ChoirC
   const user = await getUser();
   const sectionId = f.section?.id ?? null;
   const reportP = getReport(ctx, f.period, sectionId);
-  const [r, layout] = await Promise.all([reportP, getLayout(ctx, user!.id)]);
-  const dash = await getDashboard(ctx, f, r, d, lang);
+  const [r, layout, dash] = await Promise.all([reportP, getLayout(ctx, user!.id), getDashboard(ctx, f, reportP, d, lang)]);
 
   const q = (extra: Record<string, string | undefined> = {}) => filterQuery(f, extra);
   const drill = (kind: string, extra: Record<string, string | undefined> = {}) => {

@@ -1,4 +1,5 @@
 import 'server-only';
+import { cache } from 'react';
 import type { FeeStatus, FormStatus } from '@choirbook/ui';
 import { todayLocal } from '@/lib/format';
 import type { ChoirContext } from '@/lib/session';
@@ -40,7 +41,7 @@ export interface SectionInfo {
   voice_parts: { id: string; key: string; name_en: string; name_fr: string }[];
 }
 
-export async function getSections(orgId: string): Promise<SectionInfo[]> {
+export const getSections = cache(async (orgId: string): Promise<SectionInfo[]> => {
   const supabase = await createClient();
   const { data } = await supabase
     .from('sections')
@@ -51,7 +52,7 @@ export async function getSections(orgId: string): Promise<SectionInfo[]> {
     ...s,
     voice_parts: [...voice_parts].sort((a, b) => a.sort - b.sort).map(({ sort: _p, ...p }) => p),
   }));
-}
+});
 
 interface Balance {
   person_id: string | null;

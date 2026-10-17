@@ -80,9 +80,12 @@ export async function resolvePeriod(ctx: ChoirContext, wanted: string | undefine
 
   const termId = key.startsWith('term:') && UUID.test(key.slice(5)) ? key.slice(5) : null;
   if (key === 'term' || termId) {
-    const { data: terms } = await supabase.from('terms').select('id, name, starts_on, ends_on').eq('organization_id', org).order('starts_on');
+    const [{ data: terms }, currentTerm] = await Promise.all([
+      supabase.from('terms').select('id, name, starts_on, ends_on').eq('organization_id', org).order('starts_on'),
+      termId ? Promise.resolve(null) : getCurrentTerm(org, today),
+    ]);
     const list = terms ?? [];
-    const current = termId ? list.find((t) => t.id === termId) : await getCurrentTerm(org, today);
+    const current = termId ? list.find((t) => t.id === termId) : currentTerm;
     if (current) {
       const i = list.findIndex((t) => t.id === current.id);
       const p = i > 0 ? list[i - 1]! : null;
@@ -168,6 +171,7 @@ export async function getReport(ctx: ChoirContext, p: Period, sectionId: string 
     announcements,
     conversations,
     term,
+    upcoming,
   ] = await Promise.all([
     supabase.from('sections').select('id, key, name_en, name_fr, sort').eq('organization_id', org).order('sort'),
     supabase
@@ -203,6 +207,16 @@ export async function getReport(ctx: ChoirContext, p: Period, sectionId: string 
       .lte('published_at', dayEnd(p.to)),
     supabase.from('conversations').select('member_id, status, created_at, first_staff_reply_at').eq('organization_id', org).gte('created_at', dayStart(p.from)).lte('created_at', dayEnd(p.to)),
     getCurrentTerm(org, today),
+    supabase
+      .from('events')
+      .select('id, title, starts_at, type')
+      .eq('organization_id', org)
+      .is('cancelled_at', null)
+      .neq('type', 'rehearsal')
+      .gte('starts_at', dayStart(today))
+      .lte('starts_at', dayEnd(addDays(today, 90)))
+      .order('starts_at')
+      .limit(8),
   ]);
 
   const secs = (sections.data ?? []).filter((s) => !sectionId || s.id === sectionId);
@@ -451,17 +465,6 @@ export async function getReport(ctx: ChoirContext, p: Period, sectionId: string 
     unanswered: convs.filter((c) => c.status === 'open' && !c.first_staff_reply_at).length,
     medianReplyHours: replyHours.length ? Math.round(replyHours[Math.floor(replyHours.length / 2)]! * 10) / 10 : null,
   };
-
-  const upcoming = await supabase
-    .from('events')
-    .select('id, title, starts_at, type')
-    .eq('organization_id', org)
-    .is('cancelled_at', null)
-    .neq('type', 'rehearsal')
-    .gte('starts_at', dayStart(today))
-    .lte('starts_at', dayEnd(addDays(today, 90)))
-    .order('starts_at')
-    .limit(8);
 
   return {
     period: p,
